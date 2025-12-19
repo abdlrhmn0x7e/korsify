@@ -54,7 +54,7 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.60 0.13 163);
+  --primary: oklch(0.6 0.13 163);
   --primary-foreground: oklch(0.98 0.02 166);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -68,13 +68,13 @@
   --ring: oklch(0.705 0.015 286.067);
   --chart-1: oklch(0.85 0.13 165);
   --chart-2: oklch(0.77 0.15 163);
-  --chart-3: oklch(0.70 0.15 162);
-  --chart-4: oklch(0.60 0.13 163);
-  --chart-5: oklch(0.51 0.10 166);
+  --chart-3: oklch(0.7 0.15 162);
+  --chart-4: oklch(0.6 0.13 163);
+  --chart-5: oklch(0.51 0.1 166);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.60 0.13 163);
+  --sidebar-primary: oklch(0.6 0.13 163);
   --sidebar-primary-foreground: oklch(0.98 0.02 166);
   --sidebar-accent: oklch(0.967 0.001 286.375);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
@@ -89,7 +89,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.70 0.15 162);
+  --primary: oklch(0.7 0.15 162);
   --primary-foreground: oklch(0.26 0.05 173);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -103,9 +103,9 @@
   --ring: oklch(0.552 0.016 285.938);
   --chart-1: oklch(0.85 0.13 165);
   --chart-2: oklch(0.77 0.15 163);
-  --chart-3: oklch(0.70 0.15 162);
-  --chart-4: oklch(0.60 0.13 163);
-  --chart-5: oklch(0.51 0.10 166);
+  --chart-3: oklch(0.7 0.15 162);
+  --chart-4: oklch(0.6 0.13 163);
+  --chart-5: oklch(0.51 0.1 166);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.77 0.15 163);
@@ -122,5 +122,37 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1 {
+    @apply text-zinc-800 scroll-m-20 pb-2 text-5xl font-extrabold tracking-tight text-balance font-serif;
+  }
+
+  h2 {
+    @apply text-zinc-800 scroll-m-20 pb-1 text-4xl font-semibold tracking-tight first:mt-0 font-serif;
+  }
+
+  h3 {
+    @apply text-zinc-800 scroll-m-20 text-3xl font-semibold tracking-tight;
+  }
+
+  h4 {
+    @apply text-zinc-800 scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+
+  h5 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+
+  h6 {
+    @apply scroll-m-20 text-base font-semibold tracking-tight;
+  }
+
+  p {
+    @apply leading-7 [&:not(:first-child)]:mt-6;
   }
 }
