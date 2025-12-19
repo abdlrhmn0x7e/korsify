@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Korsify
 
-## Getting Started
+A Shopify-like platform for secure course selling. Korsify enables teachers to create their own branded storefronts with custom subdomains, sell courses with video lessons, and manage students with secure, watermarked video delivery.
 
-First, run the development server:
+## Development
+
+### Getting Started
+
+1. **Install dependencies**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
+```
+
+2. **Set up Convex**
+
+```bash
+# Login to Convex (first time only)
+bunx convex login
+
+# Initialize Convex dev server (creates .env.local with CONVEX_URL)
+bunx convex dev
+```
+
+3. **Run the Next.js dev server** (in a separate terminal)
+
+```bash
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## MVP Todo
 
-## Learn More
+### Teacher Onboarding
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] Teacher signup & subdomain provisioning (`teachername.yoursite.com`)
+- [ ] Teacher branding (logo, primary color, cover image)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Course Management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [ ] Course creation (title, price, description, thumbnail)
+- [ ] Lesson upload (video + PDF)
+- [ ] Bunny.net integration for HLS video streaming
 
-## Deploy on Vercel
+### Secure Video Player
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [ ] Watermarked video player (dynamic watermark: student name/phone + timestamp)
+- [ ] Secure media delivery (HLS + disabled downloads/right-click protections)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Student Management
+
+- [ ] Student signup (name + phone + email)
+- [ ] Student management list (name, phone, enrolled courses, status)
+- [ ] Manual student add/override (teacher can grant access without payment)
+- [ ] Block/ban student action (revoke access)
+
+### Payment & Access Control
+
+- [ ] Checkout flow with manual-payment option (show payment instructions: Vodafone Cash / InstaPay)
+- [ ] Receipt upload & pending-payment queue (student uploads screenshot)
+- [ ] Teacher approval UI (view receipt → Approve / Reject → grant access)
+- [ ] Access control (locked lessons until approved; instant unlock on approve)
+
+### Analytics
+
+- [ ] Basic analytics/dashboard (pending payments, active students, revenue total)
