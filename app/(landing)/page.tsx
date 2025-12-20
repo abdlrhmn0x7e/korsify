@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
 import { IconInfoCircle, IconSend } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
 
 const ASCII = `
                                                                                    ------                                
@@ -80,6 +81,9 @@ const ASCII = `
 `;
 
 export default function Page() {
+  const t = useTranslations("landing");
+  const locale = useLocale();
+
   return (
     <Container className="h-screen w-screen flex flex-col items-center justify-center">
       <div className="absolute -z-10 inset-0 isolate overflow-hidden bg-background">
@@ -123,43 +127,39 @@ export default function Page() {
       <div className="flex flex-col items-center justify-center text-center pb-48 px-4 max-w-3xl mx-auto space-y-4">
         <Badge>
           <IconInfoCircle />
-          We&apos;re onboarding a limited number of teachers.
+          {t("limitedOnboarding")}
         </Badge>
+
         {/* Headline */}
-        <h1 className="leading-18">
-          Professional websites for{" "}
+        <h1 className={cn("leading-18", locale === "ar" && "leading-24")}>
+          {t("title.start")}{" "}
           <span className="capitalize px-1 text-primary-foreground bg-primary rounded-md">
-            teachers
+            {t("title.highlight")}
           </span>{" "}
-          selling online
+          {t("title.end")}
         </h1>
 
         {/* Sub-headline */}
-        <p className="text-pretty">
-          Create your own branded site for videos, PDFs, and quizzes. Reach more
-          students and sell with confidence — without relying on Telegram or
-          WhatsApp.
-        </p>
+        <p className="text-pretty">{t("description")}</p>
 
         {/* Who It's For */}
         <p className="text-sm text-muted-foreground italic max-w-md">
-          Built for teachers who already sell online and want a more
-          professional, reliable setup.
+          {t("forWho")}
         </p>
 
         {/* Call to Action */}
         <div className="flex flex-col items-center gap-3 max-w-2xl w-full mt-4">
-          <InputGroup className="bg-background h-14 pl-4 w-full">
-            <InputGroupInput placeholder="Your email address" />
+          <InputGroup className="bg-background h-14 ps-4  w-full">
+            <InputGroupInput placeholder={t("yourPhoneNumber")} />
             <InputGroupAddon align="inline-end">
               <Button size="lg" className="h-12 px-4">
-                Request Early Access
+                {t("requestEarlyAccess")}
                 <IconSend />
               </Button>
             </InputGroupAddon>
           </InputGroup>
           <span className="text-sm text-muted-foreground  max-w-lg">
-            We’ll contact you on your email address.
+            {t("weWillContactYou")}
           </span>
         </div>
       </div>

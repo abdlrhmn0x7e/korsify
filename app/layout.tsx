@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans, Noto_Serif } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Noto_Sans,
+  Noto_Serif,
+  Noto_Kufi_Arabic,
+} from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
+import { NextIntlClientProvider, useLocale } from "next-intl";
 
 const notoSans = Noto_Sans({ variable: "--font-sans" });
 const notoSerif = Noto_Serif({ variable: "--font-serif" });
+const notoKufiArabic = Noto_Kufi_Arabic({
+  variable: "--font-serif",
+  subsets: ["arabic"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,12 +38,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = useLocale();
+
   return (
-    <html lang="en" className={notoSans.variable}>
+    <html
+      lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className={`${notoSans.variable} ${notoKufiArabic.variable}`}
+    >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${locale === "ar" ? notoKufiArabic.variable : notoSerif.variable} antialiased`}
       >
-        <ConvexClientProvider>{children}</ConvexClientProvider>
+        <NextIntlClientProvider>
+          <ConvexClientProvider>{children}</ConvexClientProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

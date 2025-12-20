@@ -6,9 +6,13 @@ import { useScroll } from "@/hooks/use-scroll";
 import Link from "next/link";
 import { Container } from "./ui/container";
 import { IconArrowRight } from "@tabler/icons-react";
+import { LocaleSwitcherSelect } from "./locale-switcher";
+import { useTranslations } from "next-intl";
+import { Logo } from "./logo";
 
-export function Navbar({}) {
+export function Navbar() {
   const scrolled = useScroll(0);
+  const t = useTranslations("navbar");
 
   return (
     <header
@@ -27,14 +31,13 @@ export function Navbar({}) {
 
       <Container className="flex items-center justify-between py-4">
         <Link href="/">
-          <span className="font-serif text-zinc-700 text-2xl font-medium">
-            Korsify
-          </span>
+          <Logo />
         </Link>
 
         <div className="flex items-center gap-2">
+          <LocaleSwitcherSelect />
           <Button nativeButton={false} render={<Link href="#" />}>
-            Log in
+            {t("logIn")}
             <IconArrowRight />
           </Button>
         </div>
