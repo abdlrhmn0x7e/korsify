@@ -1,25 +1,26 @@
 import type { Metadata } from "next";
 import {
-  Geist,
+  Instrument_Sans,
+  Old_Standard_TT,
   Geist_Mono,
-  Noto_Sans,
-  Noto_Serif,
   Noto_Kufi_Arabic,
 } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { NextIntlClientProvider, useLocale } from "next-intl";
 
-const notoSans = Noto_Sans({ variable: "--font-sans" });
-const notoSerif = Noto_Serif({ variable: "--font-serif" });
+const instrumentSans = Instrument_Sans({
+  variable: "--font-sans",
+  subsets: ["latin"],
+});
+const instrumentSerif = Old_Standard_TT({
+  variable: "--font-serif",
+  weight: "400",
+});
+
 const notoKufiArabic = Noto_Kufi_Arabic({
   variable: "--font-serif",
   subsets: ["arabic"],
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
@@ -44,10 +45,10 @@ export default function RootLayout({
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
-      className={`${notoSans.variable} ${notoKufiArabic.variable}`}
+      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoKufiArabic.variable}`}
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${locale === "ar" ? notoKufiArabic.variable : notoSerif.variable} antialiased`}
+        className={`${locale === "ar" ? notoKufiArabic.variable : instrumentSerif.variable} antialiased`}
       >
         <NextIntlClientProvider>
           <ConvexClientProvider>{children}</ConvexClientProvider>
