@@ -8,7 +8,7 @@ import { AdminBreadcrumb } from "./_components/admin-breadcrumb";
 import { Suspense } from "react";
 import { AdminSidebar } from "./_components/admin-sidebar";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;

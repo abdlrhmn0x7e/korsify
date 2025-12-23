@@ -20,7 +20,7 @@ export async function requireAdmin() {
 
   const user = await fetchAuthQuery(api.auth.getCurrentUser);
 
-  if (user.role !== "admin") {
+  if (user?.role !== "admin") {
     return notFound();
   }
 }

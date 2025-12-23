@@ -8,6 +8,7 @@ import {
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { NextIntlClientProvider, useLocale } from "next-intl";
+import { Toaster } from "@/components/ui/sonner";
 
 const instrumentSans = Instrument_Sans({
   variable: "--font-sans",
@@ -53,6 +54,8 @@ export default function RootLayout({
         <NextIntlClientProvider>
           <ConvexClientProvider>{children}</ConvexClientProvider>
         </NextIntlClientProvider>
+
+        <Toaster richColors />
       </body>
     </html>
   );

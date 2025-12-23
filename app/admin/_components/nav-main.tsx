@@ -42,7 +42,7 @@ function NavMainItem({ data }: { data: AdminSidebarItem }) {
         )}
         render={<Link href={data.url} />}
       >
-        {data.icon && (isActive ? <data.icon /> : <data.iconFilled />)}
+        {isActive ? <data.iconFilled /> : <data.icon />}
         <span>{data.title}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>

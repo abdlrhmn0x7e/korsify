@@ -8,7 +8,11 @@
  * @module
  */
 
+import type * as admin_tokens from "../admin/tokens.js";
 import type * as auth from "../auth.js";
+import type * as db_admin_index from "../db/admin/index.js";
+import type * as db_admin_tokens from "../db/admin/tokens.js";
+import type * as db_index from "../db/index.js";
 import type * as http from "../http.js";
 
 import type {
@@ -18,7 +22,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "admin/tokens": typeof admin_tokens;
   auth: typeof auth;
+  "db/admin/index": typeof db_admin_index;
+  "db/admin/tokens": typeof db_admin_tokens;
+  "db/index": typeof db_index;
   http: typeof http;
 }>;
 
