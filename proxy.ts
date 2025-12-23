@@ -7,7 +7,7 @@ export async function proxy(req: NextRequest) {
   const user = await fetchAuthQuery(api.auth.getCurrentUser);
 
   // Return not found if the user trying to access an admin route without proper authentication
-  if (user.role !== "admin" && path.startsWith("/admin")) {
+  if (user?.role !== "admin" && path.startsWith("/admin")) {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }
 
