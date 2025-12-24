@@ -12,6 +12,7 @@ import { api } from "@/convex/_generated/api";
 import { ProfileDropdown } from "./profile-dropdown";
 import { Button } from "./ui/button";
 import { IconArrowRight } from "@tabler/icons-react";
+import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
   const scrolled = useScroll(0);
@@ -50,7 +51,14 @@ export function Navbar() {
               photoUrl={user.image ?? ""}
             />
           ) : (
-            <Button>
+            <Button
+              onClick={() =>
+                authClient.signIn.email({
+                  email: "test@test.com",
+                  password: "test",
+                })
+              }
+            >
               {t("logIn")}
               <IconArrowRight />
             </Button>
