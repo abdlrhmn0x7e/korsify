@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {
   Instrument_Sans,
-  Old_Standard_TT,
+  Instrument_Serif,
   Geist_Mono,
   Noto_Kufi_Arabic,
 } from "next/font/google";
@@ -14,8 +14,9 @@ const instrumentSans = Instrument_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
 });
-const instrumentSerif = Old_Standard_TT({
+const instrumentSerif = Instrument_Serif({
   variable: "--font-serif",
+  subsets: ["latin"],
   weight: "400",
 });
 

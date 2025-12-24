@@ -7,22 +7,20 @@ import { betterAuth, BetterAuthOptions } from "better-auth";
 import { admin } from "better-auth/plugins";
 import authConfig from "./auth.config";
 import authSchema from "./betterAuth/schema";
+import { env } from "../env";
 
-const siteUrl = process.env.SITE_URL!;
-
-// export const authComponent = createClient<DataModel>(components.betterAuth);
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
   {
     local: {
       schema: authSchema,
     },
-  },
+  }
 );
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
-    baseURL: siteUrl,
+    baseURL: env.NEXT_PUBLIC_SITE_URL,
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,
