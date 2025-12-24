@@ -1,5 +1,5 @@
-import { NextConfig } from "next";
 import "./env";
+import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {};
