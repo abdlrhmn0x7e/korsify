@@ -6,15 +6,20 @@ import Link from "next/link";
 import { Container } from "./ui/container";
 import { LocaleSwitcherSelect } from "./locale-switcher";
 import { Logo } from "./logo";
+import { useTranslations } from "next-intl";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { ProfileDropdown } from "./profile-dropdown";
+import { Button } from "./ui/button";
+import { IconArrowRight } from "@tabler/icons-react";
 
 export function Navbar() {
   const scrolled = useScroll(0);
-  // const t = useTranslations("navbar");
+  const t = useTranslations("navbar");
+  const user = useQuery(api.auth.getCurrentUser);
 
-  // const { data: session, isPending } = authClient.useSession();
-
-  // const isLoggedIn = !!session?.user;
-  // const isAdmin = session?.user.role === "admin";
+  const isLoggedIn = !!user;
+  const isAdmin = user?.role === "admin";
 
   return (
     <header
@@ -38,13 +43,11 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <LocaleSwitcherSelect />
-          {/* {isPending ? (
-            <Spinner />
-          ) : isLoggedIn ? (
+          {isLoggedIn ? (
             <ProfileDropdown
-              name={session.user.name}
-              email={session.user.email}
-              photoUrl={session.user.image ?? ""}
+              name={user.name}
+              email={user.email}
+              photoUrl={user.image ?? ""}
             />
           ) : (
             <Button>
@@ -56,7 +59,7 @@ export function Navbar() {
             <Button nativeButton={false} render={<Link href="/admin" />}>
               Dashboard
             </Button>
-          )} */}
+          )}
         </div>
       </Container>
     </header>
