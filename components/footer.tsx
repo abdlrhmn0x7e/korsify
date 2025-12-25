@@ -12,7 +12,7 @@ export function Footer() {
           aria-label="go home"
           className="mx-auto size-fit flex items-center justify-center gap-2"
         >
-          <Logo />
+          <Logo layout="vertical" />
         </Link>
 
         <span className="text-muted-foreground block text-center text-sm">

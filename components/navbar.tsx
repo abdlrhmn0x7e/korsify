@@ -39,7 +39,7 @@ export function Navbar() {
 
       <Container className="flex items-center justify-between py-4">
         <Link href="/">
-          <Logo />
+          <Logo variant="primary" withText />
         </Link>
 
         <div className="flex items-center gap-2">
