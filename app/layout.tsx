@@ -7,7 +7,6 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
-import { NextIntlClientProvider, useLocale } from "next-intl";
 import { Toaster } from "@/components/ui/sonner";
 
 const instrumentSans = Instrument_Sans({
@@ -41,21 +40,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = useLocale();
-
   return (
     <html
-      lang={locale}
-      dir={locale === "ar" ? "rtl" : "ltr"}
+      lang="en"
       className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoKufiArabic.variable}`}
     >
-      <body
-        className={`${locale === "ar" ? notoKufiArabic.variable : instrumentSerif.variable} antialiased`}
-      >
-        <NextIntlClientProvider>
-          <ConvexClientProvider>{children}</ConvexClientProvider>
-        </NextIntlClientProvider>
-
+      <body className={`${instrumentSerif.variable} antialiased`}>
+        <ConvexClientProvider>{children}</ConvexClientProvider>
         <Toaster richColors />
       </body>
     </html>

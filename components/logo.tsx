@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export function Logo({
@@ -21,7 +20,6 @@ export function Logo({
   layout?: "horizontal" | "vertical";
   withText?: boolean;
 }) {
-  const t = useTranslations("common");
   const getLogoSrc = () => {
     switch (variant) {
       case "primary":
@@ -55,9 +53,7 @@ export function Logo({
         className={cn(className, layout === "vertical" && "size-10")}
       />
       {withText && (
-        <span className="text-2xl font-serif font-medium mb-0.5">
-          {t("logo")}
-        </span>
+        <span className="text-2xl font-serif font-medium mb-0.5">Korsify</span>
       )}
     </Link>
   );

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Container } from "./ui/container";
 import { LocaleSwitcherSelect } from "./locale-switcher";
 import { Logo } from "./logo";
-import { useTranslations } from "next-intl";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ProfileDropdown } from "./profile-dropdown";
@@ -16,7 +15,6 @@ import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
   const scrolled = useScroll(0);
-  const t = useTranslations("navbar");
   const user = useQuery(api.auth.getCurrentUser);
 
   const isLoggedIn = !!user;
@@ -38,9 +36,7 @@ export function Navbar() {
       />
 
       <Container className="flex items-center justify-between py-4">
-        <Link href="/">
-          <Logo variant="primary" withText />
-        </Link>
+        <Logo variant="primary" withText />
 
         <div className="flex items-center gap-2">
           <LocaleSwitcherSelect />
@@ -59,7 +55,7 @@ export function Navbar() {
                 })
               }
             >
-              {t("logIn")}
+              Log In
               <IconArrowRight />
             </Button>
           )}
