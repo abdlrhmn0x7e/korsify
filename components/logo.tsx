@@ -1,6 +1,8 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 
 import { cn } from "@/lib/utils";
+import { useScopedI18n } from "@/locales/client";
 import Link from "next/link";
 
 export function Logo({
@@ -20,6 +22,8 @@ export function Logo({
   layout?: "horizontal" | "vertical";
   withText?: boolean;
 }) {
+  const t = useScopedI18n("landing.logo");
+
   const getLogoSrc = () => {
     switch (variant) {
       case "primary":
@@ -49,11 +53,13 @@ export function Logo({
     >
       <img
         src={getLogoSrc()}
-        alt="Korsify"
+        alt={t("alt")}
         className={cn(className, layout === "vertical" && "size-10")}
       />
       {withText && (
-        <span className="text-2xl font-serif font-medium mb-0.5">Korsify</span>
+        <span className="text-2xl font-serif font-medium mb-0.5">
+          {t("text")}
+        </span>
       )}
     </Link>
   );

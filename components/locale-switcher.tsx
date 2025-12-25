@@ -15,11 +15,11 @@ import { tryCatch } from "@/lib/try-catch";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { changeLanguage } from "@/actions/change-language";
-import { Locale, locales } from "@/i18n/config";
+import { Locale, locales } from "@/locales/config";
+import { useCurrentLocale } from "@/locales/client";
 
 type Props = {
   className?: string;
-  defaultLocale?: Locale;
 };
 
 const localeNames = {
@@ -27,12 +27,10 @@ const localeNames = {
   ar: "العربية",
 };
 
-export function LocaleSwitcherSelect({
-  className,
-  defaultLocale = "en",
-}: Props) {
+export function LocaleSwitcherSelect({ className }: Props) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const currentLocale = useCurrentLocale();
 
   function onChange(value: Locale) {
     startTransition(async () => {
@@ -50,7 +48,7 @@ export function LocaleSwitcherSelect({
   return (
     <Select
       onValueChange={(value) => onChange(value as Locale)}
-      value={defaultLocale}
+      value={currentLocale}
       disabled={isPending}
     >
       <SelectTrigger

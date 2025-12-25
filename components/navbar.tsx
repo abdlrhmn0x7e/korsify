@@ -10,12 +10,14 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ProfileDropdown } from "./profile-dropdown";
 import { Button } from "./ui/button";
-import { IconArrowRight } from "@tabler/icons-react";
+import { DirectedArrow } from "./directed-arrow";
 import { authClient } from "@/lib/auth-client";
+import { useScopedI18n } from "@/locales/client";
 
 export function Navbar() {
   const scrolled = useScroll(0);
   const user = useQuery(api.auth.getCurrentUser);
+  const t = useScopedI18n("landing.navbar");
 
   const isLoggedIn = !!user;
   const isAdmin = user?.role === "admin";
@@ -55,13 +57,13 @@ export function Navbar() {
                 })
               }
             >
-              Log In
-              <IconArrowRight />
+              {t("login")}
+              <DirectedArrow />
             </Button>
           )}
           {isAdmin && (
             <Button nativeButton={false} render={<Link href="/admin" />}>
-              Dashboard
+              {t("dashboard")}
             </Button>
           )}
         </div>

@@ -8,7 +8,13 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { IconInfoCircle, IconSend } from "@tabler/icons-react";
+import { setStaticParamsLocale } from "next-international/server";
+
+export function generateStaticParams() {
+  return getStaticParams();
+}
 
 const ASCII = `
                                                                                    ------
@@ -79,7 +85,16 @@ const ASCII = `
                                                                                                   ++++++++*
 `;
 
-export default function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+  const t = await getScopedI18n("landing");
+  const isArabic = locale === "ar";
+
   return (
     <Container className="h-screen w-screen flex flex-col items-center justify-center">
       <div className="absolute -z-10 inset-0 isolate overflow-hidden bg-background">
@@ -120,47 +135,52 @@ export default function Page() {
       </div>
 
       {/* Hero Content */}
-      <div className="flex flex-col items-center justify-center text-center pb-48 px-4 max-w-3xl mx-auto space-y-4">
+      <div
+        className={cn(
+          "flex flex-col items-center justify-center text-center pb-48 px-4 max-w-3xl mx-auto space-y-4",
+          isArabic && "max-w-4xl"
+        )}
+      >
         <Badge>
           <IconInfoCircle />
-          We&apos;re onboarding a limited number of teachers.
+          {t("badge")}
         </Badge>
 
         {/* Headline */}
-        <h1 className="leading-18">
-          Professional websites for{" "}
+        <h1 className={cn("leading-18", isArabic && "leading-20")}>
+          {t("headline.prefix")}{" "}
           <span className="capitalize px-1 text-primary-foreground bg-primary rounded-md">
-            Teachers
+            {t("headline.highlight")}
           </span>{" "}
-          selling online
+          {t("headline.suffix")}
         </h1>
 
         {/* Sub-headline */}
-        <p className="text-pretty">
-          Create your own branded site for videos, PDFs, and quizzes. Reach more
-          students and sell with confidence — without relying on Telegram or
-          WhatsApp.
-        </p>
+        <p className="text-pretty">{t("subheadline")}</p>
 
         {/* Who It's For */}
-        <p className="text-sm text-muted-foreground italic max-w-md">
-          Built for teachers who already sell online and want a more
-          professional, reliable setup.
+        <p
+          className={cn(
+            "text-sm text-muted-foreground italic max-w-md",
+            isArabic && "max-w-lg"
+          )}
+        >
+          {t("whoItsFor")}
         </p>
 
         {/* Call to Action */}
         <div className="flex flex-col items-center gap-3 max-w-2xl w-full mt-4">
           <InputGroup className="bg-background h-14 ps-4  w-full">
-            <InputGroupInput placeholder="Your phone number" />
+            <InputGroupInput placeholder={t("cta.placeholder")} />
             <InputGroupAddon align="inline-end">
               <Button size="lg" className="h-12 px-4">
-                Request Early Access
+                {t("cta.button")}
                 <IconSend />
               </Button>
             </InputGroupAddon>
           </InputGroup>
           <span className="text-sm text-muted-foreground  max-w-lg">
-            We&apos;ll contact you on your phone number.
+            {t("cta.hint")}
           </span>
         </div>
       </div>
