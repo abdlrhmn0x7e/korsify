@@ -10,8 +10,11 @@ const I18nMiddleware = createI18nMiddleware({
   urlMappingStrategy: "rewrite",
   resolveLocaleFromRequest: (request) => {
     const cookieLocale = request.cookies.get("Next-Locale")?.value;
-    if (cookieLocale && locales.includes(cookieLocale as typeof locales[number])) {
-      return cookieLocale as typeof locales[number];
+    if (
+      cookieLocale &&
+      locales.includes(cookieLocale as (typeof locales)[number])
+    ) {
+      return cookieLocale as (typeof locales)[number];
     }
     return defaultLocale;
   },
@@ -29,7 +32,6 @@ export async function proxy(req: NextRequest) {
   return I18nMiddleware(req);
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*).*)"],
+  matcher: ["/((?!api|static|.*\\..*|_next|favicon.ico|robots.txt).*)"],
 };
