@@ -13,8 +13,8 @@ const data: NavItem[] = [
         icon: <IconLayoutDashboardFilled />,
       },
       {
-        title: "Tokens",
-        url: "/admin/tokens",
+        title: "Access Tokens",
+        url: "/admin/access-tokens",
         icon: <Icon24Hours />,
       },
     ],

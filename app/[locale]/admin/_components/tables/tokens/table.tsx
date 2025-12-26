@@ -10,6 +10,14 @@ import { useMemo } from "react";
 
 import { IconPackage } from "@tabler/icons-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 import { Preloaded } from "convex/react";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
@@ -50,15 +58,15 @@ export function AccessTokensTableClient({
           ))
         ) : (
           <TableRow>
-            <TableCell
-              colSpan={accessTokensColumns.length}
-              className="text-center"
-            >
-              <div className="flex flex-col items-center justify-center gap-2 py-32">
-                <IconPackage size={64} />
-                <p className="text-lg font-medium">No Access Tokens Found.</p>
-                <p className="text-muted-foreground text-sm">Generate some</p>
-              </div>
+            <TableCell colSpan={accessTokensColumns.length}>
+              <Empty>
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <IconPackage />
+                  </EmptyMedia>
+                  <EmptyTitle>No Access Tokens Found.</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
             </TableCell>
           </TableRow>
         )}

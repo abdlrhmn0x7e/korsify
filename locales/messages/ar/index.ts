@@ -1,3 +1,3 @@
-import { landing } from "./landing";
+import { landing, notFound } from "./landing";
 
-export default { landing } as const;
+export default { landing, notFound } as const;

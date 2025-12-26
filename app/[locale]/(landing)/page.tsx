@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { Grid } from "@/components/ui/grid";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { TopGrid } from "@/components/top-grid";
 import { cn } from "@/lib/utils";
 import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { IconInfoCircle, IconSend } from "@tabler/icons-react";
@@ -97,42 +97,7 @@ export default async function Page({
 
   return (
     <Container className="h-screen w-screen flex flex-col items-center justify-center">
-      <div className="absolute -z-10 inset-0 isolate overflow-hidden bg-background">
-        {/* Grid */}
-        <div
-          className={cn(
-            "absolute inset-y-0 left-1/2 w-[1200px] -translate-x-1/2",
-            "mask-intersect mask-[linear-gradient(black,transparent_320px),linear-gradient(90deg,transparent,black_5%,black_95%,transparent)]"
-          )}
-        >
-          <Grid
-            cellSize={60}
-            patternOffset={[0.75, 0]}
-            className="text-neutral-200"
-          />
-        </div>
-
-        {/* Gradient */}
-        {[...Array(2)].map((_, idx) => (
-          <div
-            key={idx}
-            className={cn(
-              "absolute left-1/2 top-6 size-[80px] -translate-x-1/2 -translate-y-1/2 scale-x-[1.6]",
-              idx === 0 ? "mix-blend-overlay" : "opacity-10"
-            )}
-          >
-            {[...Array(idx === 0 ? 2 : 1)].map((_, idx) => (
-              <div
-                key={idx}
-                className={cn(
-                  "absolute -inset-16 mix-blend-overlay blur-[50px] saturate-[2]",
-                  "bg-[conic-gradient(from_90deg,#F00_5deg,#EAB308_63deg,#5CFF80_115deg,#1E00FF_170deg,#855AFC_220deg,#3A8BFD_286deg,#F00_360deg)]"
-                )}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+      <TopGrid />
 
       {/* Hero Content */}
       <div

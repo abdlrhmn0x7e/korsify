@@ -1,3 +1,10 @@
+export const notFound = {
+  title: "الصفحة غير موجودة",
+  description: "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+  goBack: "رجوع",
+  goHome: "الرئيسية",
+} as const;
+
 export const landing = {
   badge: "نستقبل عددًا محدودًا من المعلمين في الوقت الحالي.",
   headline: {
