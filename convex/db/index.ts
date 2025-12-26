@@ -1,7 +1,11 @@
-import * as admin from "./admin";
+import { tokensDAL, tokensTable } from "./tokens";
 
 const db = {
-  admin,
+  tokens: tokensDAL,
 };
 
-export default db;
+const tables = {
+  tokens: tokensTable,
+};
+
+export { tables, db };

@@ -20,7 +20,9 @@ import { TokensTableHeader } from "./header";
 export function TokensTableClient({
   preloadedTokensQuery,
 }: {
-  preloadedTokensQuery: Preloaded<typeof api.admin.tokens.get>;
+  preloadedTokensQuery: Preloaded<
+    typeof api.earlyAccess.admin.queries.getTokens
+  >;
 }) {
   const tokens = usePreloadedAuthQuery(preloadedTokensQuery);
   const tokensData = useMemo(() => tokens ?? [], [tokens]);

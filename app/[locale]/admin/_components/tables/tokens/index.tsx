@@ -6,7 +6,9 @@ import { TokensTableHeader } from "./header";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export async function TokensTable() {
-  const preloadedTokensQuery = await preloadAuthQuery(api.admin.tokens.get);
+  const preloadedTokensQuery = await preloadAuthQuery(
+    api.earlyAccess.admin.queries.getTokens
+  );
 
   return <TokensTableClient preloadedTokensQuery={preloadedTokensQuery} />;
 }

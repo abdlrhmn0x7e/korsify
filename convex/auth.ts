@@ -6,7 +6,7 @@ import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authConfig from "./auth.config";
-import authSchema from "./betterAuth/schema";
+import authSchema from "./components/betterAuth/schema";
 
 const siteUrl = process.env.SITE_URL!;
 const clientId = process.env.GOOGLE_CLIENT_ID!;
