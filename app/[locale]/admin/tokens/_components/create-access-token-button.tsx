@@ -7,14 +7,14 @@ import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
 
-export function CreateTokenButton() {
-  const { mutate: createToken, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.earlyAccess.admin.tokens.create),
+export function CreateAccessTokenButton() {
+  const { mutate: createAccessToken, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.earlyAccess.admin.accessTokens.create),
   });
 
   return (
-    <Button onClick={() => createToken({})} disabled={isPending}>
-      Create Token
+    <Button onClick={() => createAccessToken({})} disabled={isPending}>
+      Create Access Token
       {isPending ? <Spinner /> : <IconPlus />}
     </Button>
   );

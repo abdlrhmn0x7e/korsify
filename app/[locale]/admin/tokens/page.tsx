@@ -1,7 +1,10 @@
 import { requireAdmin } from "@/lib/auth-server";
-import { CreateTokenButton } from "./_components/create-token-button";
+import { CreateAccessTokenButton } from "./_components/create-access-token-button";
 import { Suspense } from "react";
-import { TokensTable, TokensTableSkeleton } from "../_components/tables/tokens";
+import {
+  AccessTokensTable,
+  AccessTokensTableSkeleton,
+} from "../_components/tables/tokens";
 import {
   Frame,
   FrameHeader,
@@ -9,7 +12,7 @@ import {
   FrameTitle,
 } from "@/components/ui/frame";
 
-export default async function TokensPage() {
+export default async function AccessTokensPage() {
   await requireAdmin();
 
   return (
@@ -17,15 +20,15 @@ export default async function TokensPage() {
       <Frame>
         <FrameHeader>
           <div className="flex items-center justify-between gap-2">
-            <FrameTitle>Tokens</FrameTitle>
+            <FrameTitle>Access Tokens</FrameTitle>
 
-            <CreateTokenButton />
+            <CreateAccessTokenButton />
           </div>
         </FrameHeader>
 
         <FramePanel>
-          <Suspense fallback={<TokensTableSkeleton />}>
-            <TokensTable />
+          <Suspense fallback={<AccessTokensTableSkeleton />}>
+            <AccessTokensTable />
           </Suspense>
         </FramePanel>
       </Frame>

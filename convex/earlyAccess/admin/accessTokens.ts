@@ -6,22 +6,22 @@ import { adminMutation, adminQuery } from "../../utils";
 export const get = adminQuery({
   args: {},
   handler: async (ctx) => {
-    return await db.tokens.queries.get(ctx);
+    return await db.accessTokens.queries.get(ctx);
   },
 });
 
 export const create = adminMutation({
   args: {},
   handler: async (ctx) => {
-    return await db.tokens.mutations.create(ctx);
+    return await db.accessTokens.mutations.create(ctx);
   },
 });
 
 export const remove = adminMutation({
   args: {
-    tokenId: v.id("tokens"),
+    accessTokenId: v.id("accessTokens"),
   },
   handler: async (ctx, args) => {
-    return await db.tokens.mutations.remove(ctx, args);
+    return await db.accessTokens.mutations.remove(ctx, args);
   },
 });

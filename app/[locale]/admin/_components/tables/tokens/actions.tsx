@@ -9,11 +9,11 @@ import { useMutation } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function TokensTableActions({
+export function AccessTokensTableActions({
   id,
   token,
 }: {
-  id: Id<"tokens">;
+  id: Id<"accessTokens">;
   token: string;
 }) {
   const [didCopy, setDidCopy] = useState(false);
@@ -35,11 +35,13 @@ export function TokensTableActions({
   }
 
   const [isPending, setIsPending] = useState(false);
-  const removeTokenMutation = useMutation(api.admin.tokens.remove);
+  const removeTokenMutation = useMutation(
+    api.earlyAccess.admin.accessTokens.remove
+  );
   async function removeToken() {
     setIsPending(true);
     await removeTokenMutation({
-      tokenId: id,
+      accessTokenId: id,
     });
     setIsPending(false);
   }

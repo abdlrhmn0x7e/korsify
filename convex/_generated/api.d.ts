@@ -9,11 +9,11 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as db_accessTokens_index from "../db/accessTokens/index.js";
+import type * as db_accessTokens_mutations from "../db/accessTokens/mutations.js";
+import type * as db_accessTokens_queries from "../db/accessTokens/queries.js";
 import type * as db_index from "../db/index.js";
-import type * as db_tokens_index from "../db/tokens/index.js";
-import type * as db_tokens_mutations from "../db/tokens/mutations.js";
-import type * as db_tokens_queries from "../db/tokens/queries.js";
-import type * as earlyAccess_admin_tokens from "../earlyAccess/admin/tokens.js";
+import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/accessTokens.js";
 import type * as http from "../http.js";
 import type * as utils from "../utils.js";
 
@@ -25,11 +25,11 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "db/accessTokens/index": typeof db_accessTokens_index;
+  "db/accessTokens/mutations": typeof db_accessTokens_mutations;
+  "db/accessTokens/queries": typeof db_accessTokens_queries;
   "db/index": typeof db_index;
-  "db/tokens/index": typeof db_tokens_index;
-  "db/tokens/mutations": typeof db_tokens_mutations;
-  "db/tokens/queries": typeof db_tokens_queries;
-  "earlyAccess/admin/tokens": typeof earlyAccess_admin_tokens;
+  "earlyAccess/admin/accessTokens": typeof earlyAccess_admin_accessTokens;
   http: typeof http;
   utils: typeof utils;
 }>;

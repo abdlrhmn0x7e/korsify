@@ -4,7 +4,7 @@ import { DataModel, Id } from "../../_generated/dataModel";
 export function create(ctx: GenericMutationCtx<DataModel>) {
   const token = crypto.randomUUID();
 
-  return ctx.db.insert("tokens", {
+  return ctx.db.insert("accessTokens", {
     token: token,
     user: null,
   });
@@ -13,8 +13,8 @@ export function create(ctx: GenericMutationCtx<DataModel>) {
 export function remove(
   ctx: GenericMutationCtx<DataModel>,
   data: {
-    tokenId: Id<"tokens">;
+    accessTokenId: Id<"accessTokens">;
   }
 ) {
-  return ctx.db.delete("tokens", data.tokenId);
+  return ctx.db.delete("accessTokens", data.accessTokenId);
 }

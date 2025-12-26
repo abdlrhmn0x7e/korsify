@@ -11,11 +11,11 @@ import {
 } from "@tabler/icons-react";
 import { type FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
-import { TokensTableActions } from "./actions";
+import { AccessTokensTableActions } from "./actions";
 import { Badge } from "@/components/ui/badge";
 
-export const tokensColumns: ColumnDef<
-  FunctionReturnType<typeof api.earlyAccess.admin.tokens.get>[number]
+export const accessTokensColumns: ColumnDef<
+  FunctionReturnType<typeof api.earlyAccess.admin.accessTokens.get>[number]
 >[] = [
   {
     accessorKey: "token",
@@ -70,7 +70,10 @@ export const tokensColumns: ColumnDef<
     header: "Actions",
     cell: ({ row }) => {
       return (
-        <TokensTableActions id={row.original._id} token={row.original.token} />
+        <AccessTokensTableActions
+          id={row.original._id}
+          token={row.original.token}
+        />
       );
     },
   },

@@ -1,22 +1,26 @@
 import { api } from "@/convex/_generated/api";
 import { preloadAuthQuery } from "@/lib/auth-server";
-import { TokensTableClient } from "./table";
+import { AccessTokensTableClient } from "./table";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { TokensTableHeader } from "./header";
+import { AccessTokensTableHeader } from "./header";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export async function TokensTable() {
-  const preloadedTokensQuery = await preloadAuthQuery(
-    api.earlyAccess.admin.tokens.get
+export async function AccessTokensTable() {
+  const preloadedAccessTokensQuery = await preloadAuthQuery(
+    api.earlyAccess.admin.accessTokens.get
   );
 
-  return <TokensTableClient preloadedTokensQuery={preloadedTokensQuery} />;
+  return (
+    <AccessTokensTableClient
+      preloadedAccessTokensQuery={preloadedAccessTokensQuery}
+    />
+  );
 }
 
-export function TokensTableSkeleton() {
+export function AccessTokensTableSkeleton() {
   return (
     <Table>
-      <TokensTableHeader />
+      <AccessTokensTableHeader />
 
       <TableBody>
         {Array.from({ length: 10 }).map((_, index) => (

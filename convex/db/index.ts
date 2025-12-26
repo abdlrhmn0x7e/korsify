@@ -1,11 +1,11 @@
-import { tokensDAL, tokensTable } from "./tokens";
+import { accessTokensDAL, accessTokensTable } from "./accessTokens";
 
 const db = {
-  tokens: tokensDAL,
+  accessTokens: accessTokensDAL,
 };
 
 const tables = {
-  tokens: tokensTable,
+  accessTokens: accessTokensTable,
 };
 
 export { tables, db };

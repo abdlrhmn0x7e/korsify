@@ -14,26 +14,28 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Preloaded } from "convex/react";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
-import { tokensColumns } from "./columns";
-import { TokensTableHeader } from "./header";
+import { accessTokensColumns } from "./columns";
+import { AccessTokensTableHeader } from "./header";
 
-export function TokensTableClient({
-  preloadedTokensQuery,
+export function AccessTokensTableClient({
+  preloadedAccessTokensQuery,
 }: {
-  preloadedTokensQuery: Preloaded<typeof api.earlyAccess.admin.tokens.get>;
+  preloadedAccessTokensQuery: Preloaded<
+    typeof api.earlyAccess.admin.accessTokens.get
+  >;
 }) {
-  const tokens = usePreloadedAuthQuery(preloadedTokensQuery);
-  const tokensData = useMemo(() => tokens ?? [], [tokens]);
+  const accessTokens = usePreloadedAuthQuery(preloadedAccessTokensQuery);
+  const accessTokensData = useMemo(() => accessTokens ?? [], [accessTokens]);
 
   const table = useReactTable({
-    data: tokensData,
-    columns: tokensColumns,
+    data: accessTokensData,
+    columns: accessTokensColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <Table>
-      <TokensTableHeader />
+      <AccessTokensTableHeader />
 
       <TableBody>
         {table.getRowModel().rows?.length ? (
@@ -48,10 +50,13 @@ export function TokensTableClient({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={tokensColumns.length} className="text-center">
+            <TableCell
+              colSpan={accessTokensColumns.length}
+              className="text-center"
+            >
               <div className="flex flex-col items-center justify-center gap-2 py-32">
                 <IconPackage size={64} />
-                <p className="text-lg font-medium">No Tokens Found.</p>
+                <p className="text-lg font-medium">No Access Tokens Found.</p>
                 <p className="text-muted-foreground text-sm">Generate some</p>
               </div>
             </TableCell>

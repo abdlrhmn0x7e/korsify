@@ -1,6 +1,6 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export function TokensTableHeader() {
+export function AccessTokensTableHeader() {
   return (
     <TableHeader>
       <TableRow className="sticky top-0 pb-1">
