@@ -17,7 +17,7 @@ export function TokensTableSkeleton() {
     <Card className="gap-1 py-2">
       <CardContent className="px-2">
         <div className="bg-background overflow-hidden rounded-md border">
-          <Table containerClassName="scroll-shadow">
+          <Table>
             <TokensTableHeader />
 
             <TableBody>

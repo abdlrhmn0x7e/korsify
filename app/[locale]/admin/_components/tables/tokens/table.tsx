@@ -32,7 +32,7 @@ export function TokensTableClient({
   });
 
   return (
-    <Table containerClassName="h-fit max-h-[75svh] overflow-y-auto">
+    <Table>
       <TokensTableHeader />
 
       <TableBody>

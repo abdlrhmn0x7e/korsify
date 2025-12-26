@@ -61,9 +61,7 @@ export function Navbar() {
             </Button>
           )}
           {isAdmin && (
-            <Button nativeButton={false} render={<Link href="/admin" />}>
-              {t("dashboard")}
-            </Button>
+            <Button render={<Link href="/admin" />}>{t("dashboard")}</Button>
           )}
         </div>
       </Container>
