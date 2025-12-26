@@ -6,6 +6,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 import { Input, type InputProps } from "@/components/ui/input";
 import { Textarea, type TextareaProps } from "@/components/ui/textarea";
+import { Button, buttonVariants } from "./button";
 
 function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -65,6 +66,25 @@ function InputGroupAddon({
           input.focus();
         }
       }}
+      {...props}
+    />
+  );
+}
+
+export function InputGroupButton({
+  className,
+  type = "button",
+  variant = "ghost",
+  size = "xs",
+  ...props
+}: Omit<React.ComponentProps<typeof Button>, "size"> &
+  VariantProps<typeof buttonVariants>) {
+  return (
+    <Button
+      type={type}
+      data-size={size}
+      variant={variant}
+      className={cn(buttonVariants({ size, variant }), className)}
       {...props}
     />
   );

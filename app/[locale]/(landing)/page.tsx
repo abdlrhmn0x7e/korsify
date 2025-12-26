@@ -165,10 +165,10 @@ export default async function Page({
 
         {/* Call to Action */}
         <div className="flex flex-col items-center gap-3 max-w-2xl w-full mt-4">
-          <InputGroup className="bg-background h-14 ps-4  w-full">
+          <InputGroup className="bg-background h-12 ps-4  w-full">
             <InputGroupInput placeholder={t("cta.placeholder")} />
             <InputGroupAddon align="inline-end">
-              <Button size="lg" className="h-12 px-4">
+              <Button size="xl">
                 {t("cta.button")}
                 <IconSend />
               </Button>
