@@ -24,3 +24,9 @@ export async function requireAdmin() {
     return notFound();
   }
 }
+
+export async function getCurrentUser() {
+  "use server";
+
+  return await fetchAuthQuery(api.auth.getCurrentUser);
+}

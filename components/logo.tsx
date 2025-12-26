@@ -3,65 +3,98 @@
 
 import { cn } from "@/lib/utils";
 import { useScopedI18n } from "@/locales/client";
+import { cva, type VariantProps } from "class-variance-authority";
 import Link from "next/link";
+
+const logoVariants = cva("", {
+  variants: {
+    variant: {
+      primary: "",
+      "primary-transparent": "",
+      black: "",
+      "black-transparent": "",
+      white: "",
+      "white-transparent": "",
+    },
+    size: {
+      xs: "h-4",
+      sm: "h-6",
+      default: "h-8",
+      lg: "h-10",
+      xl: "h-12",
+    },
+    layout: {
+      horizontal: "flex-row",
+      vertical: "flex-col",
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
+    size: "default",
+    layout: "horizontal",
+  },
+});
+
+const logoTextVariants = cva(
+  "font-serif font-medium mb-0.5 transition-opacity duration-200",
+  {
+    variants: {
+      size: {
+        xs: "text-sm",
+        sm: "text-base",
+        default: "text-xl",
+        lg: "text-2xl",
+        xl: "text-3xl",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  }
+);
+
+const logoSrcMap: Record<NonNullable<VariantProps<typeof logoVariants>["variant"]>, string> = {
+  primary: "/images/logo.svg",
+  "primary-transparent": "/images/logo-transparent.svg",
+  black: "/images/logo-black.svg",
+  "black-transparent": "/images/logo-black-transparent.svg",
+  white: "/images/logo-white.svg",
+  "white-transparent": "/images/logo-white-transparent.svg",
+};
+
+interface LogoProps extends VariantProps<typeof logoVariants> {
+  className?: string;
+  withText?: boolean;
+  textClassName?: string;
+}
 
 export function Logo({
   variant = "primary",
-  className = "h-8",
+  size = "default",
   layout = "horizontal",
+  className,
   withText = false,
-  textClassName = "",
-}: {
-  className?: string;
-  variant?:
-    | "primary"
-    | "primary-transparent"
-    | "black"
-    | "black-transparent"
-    | "white"
-    | "white-transparent";
-  layout?: "horizontal" | "vertical";
-  withText?: boolean;
-  textClassName?: string;
-}) {
+  textClassName,
+}: LogoProps) {
   const t = useScopedI18n("landing.logo");
-
-  const getLogoSrc = () => {
-    switch (variant) {
-      case "primary":
-        return "/images/logo.svg";
-      case "primary-transparent":
-        return "/images/logo-transparent.svg";
-      case "black":
-        return "/images/logo-black.svg";
-      case "black-transparent":
-        return "/images/logo-black-transparent.svg";
-      case "white":
-        return "/images/logo-white.svg";
-      case "white-transparent":
-        return "/images/logo-white-transparent.svg";
-      default:
-        return "/images/logo.svg";
-    }
-  };
 
   return (
     <Link
       href="/"
       className={cn(
         "flex items-center justify-center gap-2",
-        layout === "vertical" && "flex-col"
+        logoVariants({ layout }),
       )}
     >
       <img
-        src={getLogoSrc()}
+        src={logoSrcMap[variant!]}
         alt={t("alt")}
-        className={cn(className, layout === "vertical" && "size-10")}
+        className={cn(logoVariants({ size, className }))}
       />
       {withText && (
         <span
           className={cn(
-            "text-2xl font-serif font-medium mb-0.5 transition-opacity duration-200",
+            logoTextVariants({ size }),
             withText ? "opacity-100" : "opacity-0",
             textClassName
           )}
@@ -72,3 +105,5 @@ export function Logo({
     </Link>
   );
 }
+
+export { logoVariants };

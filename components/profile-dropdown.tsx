@@ -32,7 +32,7 @@ export function ProfileDropdown({
         <AvatarWithFallback src={photoUrl} className={className} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-46">
-        <DropdownMenuGroup className="p-1">
+        <DropdownMenuGroup className="-space-y-2 px-2">
           <p className="text-sm font-medium">{name}</p>
           <p className="mt-0 text-muted-foreground line-clamp-1 text-xs">
             {email}

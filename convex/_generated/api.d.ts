@@ -13,6 +13,7 @@ import type * as db_accessTokens_index from "../db/accessTokens/index.js";
 import type * as db_accessTokens_mutations from "../db/accessTokens/mutations.js";
 import type * as db_accessTokens_queries from "../db/accessTokens/queries.js";
 import type * as db_index from "../db/index.js";
+import type * as earlyAccess_accessTokens from "../earlyAccess/accessTokens.js";
 import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/accessTokens.js";
 import type * as http from "../http.js";
 import type * as utils from "../utils.js";
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   "db/accessTokens/mutations": typeof db_accessTokens_mutations;
   "db/accessTokens/queries": typeof db_accessTokens_queries;
   "db/index": typeof db_index;
+  "earlyAccess/accessTokens": typeof earlyAccess_accessTokens;
   "earlyAccess/admin/accessTokens": typeof earlyAccess_admin_accessTokens;
   http: typeof http;
   utils: typeof utils;

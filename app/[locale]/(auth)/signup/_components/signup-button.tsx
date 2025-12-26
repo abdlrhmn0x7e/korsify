@@ -1,0 +1,34 @@
+"use client";
+
+import { Google } from "@/components/brands/google";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
+import { useMutation } from "@tanstack/react-query";
+import { useCallback } from "react";
+
+export function SignupButton() {
+  const signupFn = useCallback(async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      requestSignUp: true,
+    });
+  }, []);
+
+  const { mutate: signup, isPending } = useMutation({
+    mutationFn: signupFn,
+  });
+
+  return (
+    <Button
+      size="xl"
+      className="w-full"
+      variant="outline"
+      onClick={() => signup()}
+      disabled={isPending}
+    >
+      {isPending ? <Spinner /> : <Google />}
+      Continue with Google
+    </Button>
+  );
+}
