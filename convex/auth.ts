@@ -1,14 +1,16 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
+import { betterAuth, type BetterAuthOptions } from "better-auth/minimal";
+import { admin } from "better-auth/plugins";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
-import { betterAuth, BetterAuthOptions } from "better-auth";
-import { admin } from "better-auth/plugins";
 import authConfig from "./auth.config";
 import authSchema from "./betterAuth/schema";
 
 const siteUrl = process.env.SITE_URL!;
+const clientId = process.env.GOOGLE_CLIENT_ID!;
+const clientSecret = process.env.GOOGLE_CLIENT_SECRET!;
 
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
@@ -26,6 +28,12 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
+    },
+    socialProviders: {
+      google: {
+        clientId,
+        clientSecret,
+      },
     },
     plugins: [convex({ authConfig }), admin()],
   } satisfies BetterAuthOptions;

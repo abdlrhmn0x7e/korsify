@@ -51,9 +51,8 @@ export function Navbar() {
           ) : (
             <Button
               onClick={() =>
-                authClient.signIn.email({
-                  email: "test@test.com",
-                  password: "test",
+                authClient.signIn.social({
+                  provider: "google",
                 })
               }
             >

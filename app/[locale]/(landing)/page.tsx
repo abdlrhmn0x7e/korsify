@@ -184,7 +184,12 @@ export default async function Page({
           </span>
         </div>
       </div>
-      <pre className="select-none -z-10 absolute top-1/2 -translate-y-1/2 right-1/5 whitespace-pre mt-12 text-[4px] text-primary overflow-x-auto">
+      <pre
+        className={cn(
+          "select-none -z-10 absolute top-1/2 -translate-y-1/2 right-1/5 whitespace-pre mt-12 text-[4px] text-primary overflow-x-auto",
+          isArabic && "right-auto left-1/5"
+        )}
+      >
         {ASCII}
       </pre>
     </Container>

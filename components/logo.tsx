@@ -10,6 +10,7 @@ export function Logo({
   className = "h-8",
   layout = "horizontal",
   withText = false,
+  textClassName = "",
 }: {
   className?: string;
   variant?:
@@ -21,6 +22,7 @@ export function Logo({
     | "white-transparent";
   layout?: "horizontal" | "vertical";
   withText?: boolean;
+  textClassName?: string;
 }) {
   const t = useScopedI18n("landing.logo");
 
@@ -57,7 +59,13 @@ export function Logo({
         className={cn(className, layout === "vertical" && "size-10")}
       />
       {withText && (
-        <span className="text-2xl font-serif font-medium mb-0.5">
+        <span
+          className={cn(
+            "text-2xl font-serif font-medium mb-0.5 transition-opacity duration-200",
+            withText ? "opacity-100" : "opacity-0",
+            textClassName
+          )}
+        >
           {t("text")}
         </span>
       )}
