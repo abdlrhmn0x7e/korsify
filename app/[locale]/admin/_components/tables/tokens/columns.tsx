@@ -2,11 +2,17 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 
-import { IconCalendar } from "@tabler/icons-react";
-import { type FunctionReturnType } from "convex/server";
 import { api } from "@/convex/_generated/api";
-import { TokensTableActions } from "./actions";
+import {
+  IconBrandOauth,
+  IconCalendar,
+  IconUser,
+  IconUserOff,
+} from "@tabler/icons-react";
+import { type FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
+import { TokensTableActions } from "./actions";
+import { Badge } from "@/components/ui/badge";
 
 export const tokensColumns: ColumnDef<
   FunctionReturnType<typeof api.admin.tokens.get>[number]
@@ -16,9 +22,10 @@ export const tokensColumns: ColumnDef<
     header: "Address",
     cell: ({ row }) => {
       return (
-        <span className="font-mono bg-primary text-primary-foreground p-1 rounded-sm font-semibold">
+        <Badge>
+          <IconBrandOauth />
           {row.original.token}
-        </span>
+        </Badge>
       );
     },
   },
@@ -29,13 +36,19 @@ export const tokensColumns: ColumnDef<
     cell: ({ row }) => {
       return row.original.user ? (
         <div className="flex flex-col gap-1">
-          <span className="font-mono">{row.original.user.id}</span>
+          <Badge variant="outline">
+            <IconUser />
+            {row.original.user.id}
+          </Badge>
           <span className="text-xs text-muted-foreground">
-            {format(row.original.user.usedAt, "dd MMM, HH:mm:ss")}
+            {format(row.original.user.usedAt, "dd MMM, hh:mm a")}
           </span>
         </div>
       ) : (
-        <span>No user yet.</span>
+        <Badge variant="outline">
+          <IconUserOff />
+          No user yet.
+        </Badge>
       );
     },
   },
@@ -47,7 +60,7 @@ export const tokensColumns: ColumnDef<
       return (
         <div className="flex items-center gap-2">
           <IconCalendar className="size-4" />
-          <span>{format(row.original._creationTime, "dd MMM, HH:mm:ss")}</span>
+          <span>{format(row.original._creationTime, "dd MMM, hh:mm a")}</span>
         </div>
       );
     },
