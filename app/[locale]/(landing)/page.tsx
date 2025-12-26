@@ -159,12 +159,7 @@ export default async function Page({
         <p className="text-pretty">{t("subheadline")}</p>
 
         {/* Who It's For */}
-        <p
-          className={cn(
-            "text-sm text-muted-foreground italic max-w-md",
-            isArabic && "max-w-lg"
-          )}
-        >
+        <p className={"text-sm text-muted-foreground italic max-w-md"}>
           {t("whoItsFor")}
         </p>
 

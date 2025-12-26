@@ -27,7 +27,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarLayout data={data} dir="ltr" lang="en">
+    <SidebarLayout
+      data={data}
+      dir="ltr"
+      lang="en"
+      style={
+        { "--font-serif": "var(--font-serif-latin)" } as React.CSSProperties
+      }
+    >
       {children}
     </SidebarLayout>
   );

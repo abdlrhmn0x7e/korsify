@@ -56,11 +56,14 @@ export default async function RootLayout({
       lang={locale}
       dir={isArabic ? "rtl" : "ltr"}
       className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoKufiArabic.variable}`}
-      style={{
-        "--font-serif": isArabic
-          ? "var(--font-arabic)"
-          : "var(--font-serif-latin)",
-      } as React.CSSProperties}
+      style={
+        {
+          "--font-sans": isArabic ? "var(--font-arabic)" : "var(--font-sans)",
+          "--font-serif": isArabic
+            ? "var(--font-arabic)"
+            : "var(--font-serif-latin)",
+        } as React.CSSProperties
+      }
     >
       <body className="antialiased">
         <ConvexClientProvider>

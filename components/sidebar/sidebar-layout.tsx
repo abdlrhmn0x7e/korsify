@@ -12,17 +12,24 @@ export default function SidebarLayout({
   children,
   dir,
   lang,
+  ...props
 }: {
   data: NavItem[];
   children: React.ReactNode;
   dir?: "ltr" | "rtl";
   lang?: string;
-}) {
+} & React.ComponentProps<typeof SidebarProvider>) {
   const [open, setOpen] = useState(true);
   const pathname = usePathname();
 
   return (
-    <SidebarProvider open={open} onOpenChange={setOpen} dir={dir} lang={lang}>
+    <SidebarProvider
+      open={open}
+      onOpenChange={setOpen}
+      dir={dir}
+      lang={lang}
+      {...props}
+    >
       <AppSidebar data={data} />
 
       <SidebarInset className="h-screen flex flex-col">
