@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import {
   AccessTokensTable,
   AccessTokensTableSkeleton,
-} from "../_components/tables/tokens";
+} from "../_components/tables/access-tokens";
 import {
   Frame,
   FrameHeader,

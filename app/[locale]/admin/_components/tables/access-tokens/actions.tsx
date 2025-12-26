@@ -52,8 +52,7 @@ export function AccessTokensTableActions({
         {didCopy ? <IconChecks /> : <IconCopy />}
       </Button>
       <Button
-        variant="outline"
-        className="hover:text-destructive"
+        variant="destructive-outline"
         disabled={isPending}
         onClick={removeToken}
       >
