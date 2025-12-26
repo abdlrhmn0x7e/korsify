@@ -9,7 +9,7 @@ import { useConvexMutation } from "@convex-dev/react-query";
 
 export function CreateTokenButton() {
   const { mutate: createToken, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.earlyAccess.admin.mutations.createToken),
+    mutationFn: useConvexMutation(api.earlyAccess.admin.tokens.create),
   });
 
   return (

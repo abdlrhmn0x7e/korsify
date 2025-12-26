@@ -15,7 +15,7 @@ import { TokensTableActions } from "./actions";
 import { Badge } from "@/components/ui/badge";
 
 export const tokensColumns: ColumnDef<
-  FunctionReturnType<typeof api.earlyAccess.admin.queries.getTokens>[number]
+  FunctionReturnType<typeof api.earlyAccess.admin.tokens.get>[number]
 >[] = [
   {
     accessorKey: "token",
