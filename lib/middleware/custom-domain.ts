@@ -1,22 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
 import type { ParsedRequest } from "../subdomain";
+import { RequestTransform } from "./types";
 
 const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
 
-export function CustomDomainMiddleware(
-  req: NextRequest,
-  parsed: ParsedRequest
-): NextResponse {
-  const { domain, path, searchParamsString } = parsed;
+export function CustomDomainTransform(
+  parsed: ParsedRequest,
+): RequestTransform | null {
+  const { domain, path, isCustomDomain, searchParamsString } = parsed;
 
-  const alreadyRewritten = path.startsWith("/storefront/");
-  if (alreadyRewritten) {
-    return NextResponse.next();
+  if (!isCustomDomain || path.startsWith("/storefront/")) {
+    return null;
   }
 
-  const rewritePath = `/storefront/_custom${path}${searchParamsString ? `?${searchParamsString}` : ""}`;
-  const response = NextResponse.rewrite(new URL(rewritePath, req.url));
-  response.headers.set(CUSTOM_DOMAIN_HEADER, domain);
-
-  return response;
+  return {
+    rewritePath: `/storefront/_custom${path}${searchParamsString ? `?${searchParamsString}` : ""}`,
+    headers: {
+      [CUSTOM_DOMAIN_HEADER]: domain,
+    },
+  };
 }

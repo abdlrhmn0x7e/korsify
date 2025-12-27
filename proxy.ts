@@ -1,29 +1,50 @@
-import { type NextRequest } from "next/server";
-import { parse, APP_HOSTNAMES } from "./lib/subdomain";
-import { StorefrontMiddleware } from "./lib/middleware/storefront";
-import { CustomDomainMiddleware } from "./lib/middleware/custom-domain";
-import { AppMiddleware } from "./lib/middleware/app";
+import { NextRequest, NextResponse } from "next/server";
+import { parse, ParsedRequest } from "./lib/subdomain";
+import { StorefrontTransform } from "./lib/middleware/storefront";
+import { CustomDomainTransform } from "./lib/middleware/custom-domain";
+import { AdminGuard } from "./lib/middleware/admin";
+import { I18nMiddleware } from "./lib/middleware/i18n";
+import { RequestTransform } from "./lib/middleware/types";
+
+function resolveTransform(parsed: ParsedRequest): RequestTransform | null {
+  return StorefrontTransform(parsed) ?? CustomDomainTransform(parsed);
+}
+
+function applyTransform(
+  req: NextRequest,
+  transform: RequestTransform | null,
+): NextRequest {
+  if (!transform) return req;
+  return new NextRequest(new URL(transform.rewritePath, req.url));
+}
+
+function applyHeaders(
+  response: NextResponse,
+  transform: RequestTransform | null,
+): void {
+  if (!transform?.headers) return;
+
+  for (const [key, value] of Object.entries(transform.headers)) {
+    response.headers.set(key, value);
+  }
+}
 
 export const config = {
-  matcher: [
-    "/((?!api/|_next/|static/|favicon.ico|robots.txt|sitemap.xml).*)",
-  ],
+  matcher: ["/((?!api/|_next/|static/|favicon.ico|robots.txt|sitemap.xml).*)"],
 };
 
 export async function proxy(req: NextRequest) {
   const parsed = parse(req);
 
-  if (parsed.subdomain) {
-    return StorefrontMiddleware(req, parsed);
-  }
+  const adminRedirect = await AdminGuard(req, parsed);
+  if (adminRedirect) return adminRedirect;
 
-  if (parsed.isCustomDomain) {
-    return CustomDomainMiddleware(req, parsed);
-  }
+  const transform = resolveTransform(parsed);
+  const trasnformedRequest = applyTransform(req, transform);
 
-  if (APP_HOSTNAMES.has(parsed.domain)) {
-    return AppMiddleware(req, parsed);
-  }
+  const response = I18nMiddleware(trasnformedRequest);
 
-  return AppMiddleware(req, parsed);
+  applyHeaders(response, transform);
+
+  return response;
 }

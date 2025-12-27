@@ -1,26 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
 import type { ParsedRequest } from "../subdomain";
+import { RequestTransform } from "./types";
 
 const STOREFRONT_HEADER = "x-storefront-subdomain";
 
-export function StorefrontMiddleware(
-  req: NextRequest,
-  parsed: ParsedRequest
-): NextResponse {
+export function StorefrontTransform(
+  parsed: ParsedRequest,
+): RequestTransform | null {
   const { subdomain, path, fullPath } = parsed;
 
-  if (!subdomain) {
-    return NextResponse.next();
+  if (!subdomain || path.startsWith("/storefront/")) {
+    return null;
   }
 
-  const alreadyRewritten = path.startsWith("/storefront/");
-  if (alreadyRewritten) {
-    return NextResponse.next();
-  }
-
-  const rewritePath = `/storefront/${subdomain}${fullPath}`;
-  const response = NextResponse.rewrite(new URL(rewritePath, req.url));
-  response.headers.set(STOREFRONT_HEADER, subdomain);
-
-  return response;
+  return {
+    rewritePath: `/storefront/${subdomain}${fullPath}`,
+    headers: {
+      [STOREFRONT_HEADER]: subdomain,
+    },
+  };
 }
