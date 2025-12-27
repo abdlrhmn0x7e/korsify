@@ -1,3 +1,4 @@
+import { auth } from "./auth";
 import { landing, notFound } from "./landing";
 
-export default { landing, notFound } as const;
+export default { auth, landing, notFound } as const;

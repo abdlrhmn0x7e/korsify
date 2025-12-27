@@ -26,7 +26,7 @@ export default function NotFound() {
 
         <div className="flex gap-3">
           <Button variant="outline" onClick={() => router.back()} size="xl">
-            <DirectedArrow className="size-4" />
+            <DirectedArrow className="size-4" inverse />
             {t("notFound.goBack")}
           </Button>
           <Button render={<Link href="/" />} size="xl">

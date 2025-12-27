@@ -4,11 +4,15 @@ import { useCurrentLocale } from "@/locales/client";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import type { ComponentProps } from "react";
 
-type Props = ComponentProps<typeof IconArrowRight>;
+type Props = ComponentProps<typeof IconArrowRight> & { inverse?: boolean };
 
-export function DirectedArrow(props: Props) {
+export function DirectedArrow({ inverse, ...props }: Props) {
   const locale = useCurrentLocale();
   const isRTL = locale === "ar";
 
-  return isRTL ? <IconArrowLeft {...props} /> : <IconArrowRight {...props} />;
+  return isRTL !== inverse ? (
+    <IconArrowLeft {...props} />
+  ) : (
+    <IconArrowRight {...props} />
+  );
 }

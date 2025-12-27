@@ -9,42 +9,45 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import { getCurrentUser } from "@/lib/auth-server";
+import { getScopedI18n } from "@/locales/server";
 import { IconHome } from "@tabler/icons-react";
 import { fetchMutation } from "convex/nextjs";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export default function SignUpRedirectPage(
+export default async function SignUpRedirectPage(
   props: PageProps<"/[locale]/signup/redirect">
 ) {
+  const t = await getScopedI18n("auth.redirect");
+
   return (
-    <Suspense fallback={<VerifyAccessTokenLoader />}>
-      <VerifyAccessToken {...props} />
+    <Suspense fallback={<VerifyAccessTokenLoader t={t} />}>
+      <VerifyAccessToken {...props} t={t} />
     </Suspense>
   );
 }
 
-function VerifyAccessTokenLoader() {
+type TranslationFn = Awaited<ReturnType<typeof getScopedI18n<"auth.redirect">>>;
+
+function VerifyAccessTokenLoader({ t }: { t: TranslationFn }) {
   return (
     <Empty className="w-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Spinner />
         </EmptyMedia>
-        <EmptyTitle>Verifying your access token</EmptyTitle>
-        <EmptyDescription>
-          Please wait while we verify your access token. Do not refresh the
-          page.
-        </EmptyDescription>
+        <EmptyTitle>{t("verifying.title")}</EmptyTitle>
+        <EmptyDescription>{t("verifying.description")}</EmptyDescription>
       </EmptyHeader>
     </Empty>
   );
 }
 
 async function VerifyAccessToken(
-  props: PageProps<"/[locale]/signup/redirect">
+  props: PageProps<"/[locale]/signup/redirect"> & { t: TranslationFn }
 ) {
+  const { t } = props;
   const [{ token }, user] = await Promise.all([
     props.searchParams,
     getCurrentUser(),
@@ -67,13 +70,13 @@ async function VerifyAccessToken(
       <div className="flex flex-col items-center justify-center text-center space-y-3 max-w-md">
         <div className="text-9xl font-bold text-primary"></div>
 
-        <h1>Something went wrong!</h1>
+        <h1>{t("error.title")}</h1>
 
-        <p className="text-muted-foreground">Please try again later.</p>
+        <p className="text-muted-foreground">{t("error.description")}</p>
 
         <Button render={<Link href="/" />} size="xl">
           <IconHome className="size-4" />
-          Go home
+          {t("error.goHome")}
         </Button>
       </div>
     );

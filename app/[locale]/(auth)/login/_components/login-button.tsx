@@ -4,14 +4,17 @@ import { Google } from "@/components/brands/google";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import { useScopedI18n } from "@/locales/client";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 export function LoginButton() {
+  const t = useScopedI18n("auth.login");
+
   const loginFn = useCallback(async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   }, []);
 
@@ -28,7 +31,7 @@ export function LoginButton() {
       disabled={isPending}
     >
       {isPending ? <Spinner /> : <Google />}
-      Log in with Google
+      {t("withGoogle")}
     </Button>
   );
 }

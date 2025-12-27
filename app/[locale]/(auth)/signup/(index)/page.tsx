@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { getCurrentUser, preloadAuthQuery } from "@/lib/auth-server";
+import { getScopedI18n } from "@/locales/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SignupButton } from "./_components/signup-button";
@@ -28,21 +29,23 @@ export default async function SignupPage({
     return notFound();
   }
 
+  const t = await getScopedI18n("auth.signup");
+
   return (
     <div className="space-y-4 min-w-96 text-center">
-      <h4>Create your Korsify account</h4>
+      <h4>{t("title")}</h4>
 
       <SignupButton token={token} />
 
       <span className="text-muted-foreground">
-        Already have an account?{" "}
+        {t("hasAccount")}{" "}
         <Button
           variant="link"
           render={<Link href="/login" />}
           size="sm"
           className="p-0"
         >
-          Log in
+          {t("login")}
         </Button>
       </span>
     </div>

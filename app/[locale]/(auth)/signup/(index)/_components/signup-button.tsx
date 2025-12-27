@@ -4,10 +4,13 @@ import { Google } from "@/components/brands/google";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import { useScopedI18n } from "@/locales/client";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 export function SignupButton({ token }: { token: string }) {
+  const t = useScopedI18n("auth.signup");
+
   const signupFn = useCallback(async () => {
     await authClient.signIn.social({
       provider: "google",
@@ -32,7 +35,7 @@ export function SignupButton({ token }: { token: string }) {
       disabled={isPending}
     >
       {isPending ? <Spinner /> : <Google />}
-      Continue with Google
+      {t("withGoogle")}
     </Button>
   );
 }
