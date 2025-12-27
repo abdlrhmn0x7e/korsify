@@ -5,6 +5,13 @@ export const notFound = {
   goHome: "Go home",
 } as const;
 
+export const globalError = {
+  title: "Something went wrong",
+  description: "An unexpected error occurred. Please try again.",
+  tryAgain: "Try again",
+  goHome: "Go home",
+} as const;
+
 export const landing = {
   badge: "We're onboarding a limited number of teachers.",
   headline: {

@@ -6,7 +6,7 @@ import type { ComponentProps } from "react";
 
 type Props = ComponentProps<typeof IconArrowRight> & { inverse?: boolean };
 
-export function DirectedArrow({ inverse, ...props }: Props) {
+export function DirectedArrow({ inverse = false, ...props }: Props) {
   const locale = useCurrentLocale();
   const isRTL = locale === "ar";
 

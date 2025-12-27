@@ -5,6 +5,13 @@ export const notFound = {
   goHome: "الرئيسية",
 } as const;
 
+export const globalError = {
+  title: "حدث خطأ ما",
+  description: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+  tryAgain: "حاول مجددًا",
+  goHome: "الرئيسية",
+} as const;
+
 export const landing = {
   badge: "نستقبل عددًا محدودًا من المعلمين في الوقت الحالي.",
   headline: {
