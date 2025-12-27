@@ -16,11 +16,16 @@ import type * as db_index from "../db/index.js";
 import type * as db_requests_index from "../db/requests/index.js";
 import type * as db_requests_mutations from "../db/requests/mutations.js";
 import type * as db_requests_queries from "../db/requests/queries.js";
+import type * as db_teachers_index from "../db/teachers/index.js";
+import type * as db_teachers_mutations from "../db/teachers/mutations.js";
+import type * as db_teachers_queries from "../db/teachers/queries.js";
 import type * as earlyAccess_accessTokens from "../earlyAccess/accessTokens.js";
 import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/accessTokens.js";
 import type * as earlyAccess_admin_requests from "../earlyAccess/admin/requests.js";
 import type * as earlyAccess_requests from "../earlyAccess/requests.js";
 import type * as http from "../http.js";
+import type * as teachers_mutations from "../teachers/mutations.js";
+import type * as teachers_queries from "../teachers/queries.js";
 import type * as utils from "../utils.js";
 
 import type {
@@ -38,11 +43,16 @@ declare const fullApi: ApiFromModules<{
   "db/requests/index": typeof db_requests_index;
   "db/requests/mutations": typeof db_requests_mutations;
   "db/requests/queries": typeof db_requests_queries;
+  "db/teachers/index": typeof db_teachers_index;
+  "db/teachers/mutations": typeof db_teachers_mutations;
+  "db/teachers/queries": typeof db_teachers_queries;
   "earlyAccess/accessTokens": typeof earlyAccess_accessTokens;
   "earlyAccess/admin/accessTokens": typeof earlyAccess_admin_accessTokens;
   "earlyAccess/admin/requests": typeof earlyAccess_admin_requests;
   "earlyAccess/requests": typeof earlyAccess_requests;
   http: typeof http;
+  "teachers/mutations": typeof teachers_mutations;
+  "teachers/queries": typeof teachers_queries;
   utils: typeof utils;
 }>;
 

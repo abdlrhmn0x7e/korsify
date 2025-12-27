@@ -36,12 +36,12 @@ bun dev
 
 #### Database & Backend
 
-- [ ] Create teachers table (userId, name, phone, email, subdomain, customDomain, branding, paymentInfo, status, createdAt)
-- [ ] Add indexes: by_userId, by_subdomain, by_customDomain
-- [ ] Create teachers DAL (queries + mutations)
-- [ ] Implement subdomain validation (uniqueness, reserved words, format rules)
-- [ ] Create teacher profile queries (getByUserId, getBySubdomain)
-- [ ] Create teacher mutations (create, update, updateBranding, updatePaymentInfo)
+- [x] Create teachers table (userId, name, phone, email, subdomain, customDomain, branding, paymentInfo, status, createdAt)
+- [x] Add indexes: by_userId, by_subdomain, by_customDomain
+- [x] Create teachers DAL (queries + mutations)
+- [x] Implement subdomain validation (uniqueness, reserved words, format rules)
+- [x] Create teacher profile queries (getByUserId, getBySubdomain)
+- [x] Create teacher mutations (create, update, updateBranding, updatePaymentInfo)
 
 #### Subdomain Routing
 
