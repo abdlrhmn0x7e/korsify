@@ -31,8 +31,11 @@ export const teachersTable = defineTable({
       instructions: v.optional(v.string()),
     })
   ),
-  status: v.union(v.literal("pending"), v.literal("active"), v.literal("suspended")),
-  createdAt: v.number(),
+  status: v.union(
+    v.literal("pending"),
+    v.literal("active"),
+    v.literal("suspended")
+  ),
   updatedAt: v.number(),
 })
   .index("by_userId", ["userId"])

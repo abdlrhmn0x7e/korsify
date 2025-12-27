@@ -15,7 +15,7 @@ export const ADMIN_HOSTNAMES = new Set([
   "admin.localhost",
 ]);
 
-const RESERVED_SUBDOMAINS = new Set([
+export const RESERVED_SUBDOMAINS = new Set([
   "www",
   "api",
   "app",
@@ -78,37 +78,21 @@ export interface ParsedRequest {
 export function parse(req: NextRequest): ParsedRequest {
   let domain = req.headers.get("host") || "";
   const path = req.nextUrl.pathname;
-  
+
   domain = domain.replace(/^www\./, "").toLowerCase();
-  
+
   const searchParams = req.nextUrl.searchParams;
   const searchParamsString = searchParams.toString();
   const fullPath = searchParamsString ? `${path}?${searchParamsString}` : path;
-  
-  const isLocalDev = domain === "localhost:3000" || domain === "localhost";
-  if (isLocalDev) {
-    const querySubdomain = searchParams.get("subdomain");
-    if (querySubdomain && !RESERVED_SUBDOMAINS.has(querySubdomain.toLowerCase())) {
-      return {
-        domain,
-        path,
-        fullPath,
-        subdomain: querySubdomain.toLowerCase(),
-        searchParams,
-        searchParamsString,
-        isCustomDomain: false,
-      };
-    }
-  }
-  
+
   const subdomain = extractSubdomain(domain);
-  
-  const isCustomDomain = !isLocalDev && 
-    !APP_HOSTNAMES.has(domain) && 
-    !ADMIN_HOSTNAMES.has(domain) && 
+
+  const isCustomDomain =
+    !APP_HOSTNAMES.has(domain) &&
+    !ADMIN_HOSTNAMES.has(domain) &&
     subdomain === null &&
     domain !== APP_DOMAIN;
-  
+
   return {
     domain,
     path,
@@ -123,7 +107,7 @@ export function parse(req: NextRequest): ParsedRequest {
 function extractSubdomain(hostname: string): string | null {
   const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "korsify.com";
   const hostWithoutPort = hostname.split(":")[0];
-  
+
   if (hostWithoutPort.endsWith(".localhost")) {
     const subdomain = hostWithoutPort.replace(".localhost", "");
     if (subdomain && !RESERVED_SUBDOMAINS.has(subdomain)) {
@@ -131,23 +115,23 @@ function extractSubdomain(hostname: string): string | null {
     }
     return null;
   }
-  
+
   const isAppDomainSubdomain = hostWithoutPort.endsWith(`.${appDomain}`);
   if (!isAppDomainSubdomain) {
     return null;
   }
-  
-  const subdomain = hostWithoutPort.slice(0, -(`.${appDomain}`.length));
-  
+
+  const subdomain = hostWithoutPort.slice(0, -`.${appDomain}`.length);
+
   const isInvalidSubdomain = !subdomain || subdomain.includes(".");
   if (isInvalidSubdomain) {
     return null;
   }
-  
+
   if (RESERVED_SUBDOMAINS.has(subdomain.toLowerCase())) {
     return null;
   }
-  
+
   return subdomain.toLowerCase();
 }
 

@@ -3,56 +3,9 @@ import { mutation } from "../_generated/server";
 import { db } from "../db";
 import { brandingValidator, paymentInfoValidator } from "../db/teachers/index";
 import { authComponent } from "../auth";
+import { RESERVED_SUBDOMAINS } from "../../lib/subdomain";
 import { ConvexError } from "convex/values";
 import { z } from "zod";
-
-const RESERVED_SUBDOMAINS = [
-  "www",
-  "api",
-  "admin",
-  "app",
-  "dashboard",
-  "help",
-  "support",
-  "blog",
-  "docs",
-  "mail",
-  "email",
-  "ftp",
-  "cdn",
-  "static",
-  "assets",
-  "images",
-  "img",
-  "js",
-  "css",
-  "login",
-  "signup",
-  "auth",
-  "oauth",
-  "account",
-  "settings",
-  "profile",
-  "billing",
-  "payment",
-  "checkout",
-  "store",
-  "shop",
-  "teacher",
-  "teachers",
-  "student",
-  "students",
-  "course",
-  "courses",
-  "lesson",
-  "lessons",
-  "test",
-  "staging",
-  "dev",
-  "development",
-  "prod",
-  "production",
-] as const;
 
 const subdomainSchema = z
   .string()
@@ -62,13 +15,7 @@ const subdomainSchema = z
     /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
     "Subdomain must start and end with a letter or number, and can only contain lowercase letters, numbers, and hyphens"
   )
-  .refine(
-    (val) =>
-      !RESERVED_SUBDOMAINS.includes(
-        val as (typeof RESERVED_SUBDOMAINS)[number]
-      ),
-    "This subdomain is reserved"
-  )
+  .refine((val) => !RESERVED_SUBDOMAINS.has(val), "This subdomain is reserved")
   .transform((val) => val.toLowerCase().trim());
 
 function validateSubdomain(subdomain: string): string {

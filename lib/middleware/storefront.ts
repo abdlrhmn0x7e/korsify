@@ -7,7 +7,7 @@ export function StorefrontMiddleware(
   req: NextRequest,
   parsed: ParsedRequest
 ): NextResponse {
-  const { subdomain, path, searchParamsString } = parsed;
+  const { subdomain, path, fullPath } = parsed;
 
   if (!subdomain) {
     return NextResponse.next();
@@ -18,7 +18,7 @@ export function StorefrontMiddleware(
     return NextResponse.next();
   }
 
-  const rewritePath = `/storefront/${subdomain}${path}${searchParamsString ? `?${searchParamsString}` : ""}`;
+  const rewritePath = `/storefront/${subdomain}${fullPath}`;
   const response = NextResponse.rewrite(new URL(rewritePath, req.url));
   response.headers.set(STOREFRONT_HEADER, subdomain);
 

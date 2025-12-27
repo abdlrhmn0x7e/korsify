@@ -19,6 +19,7 @@ import type * as db_requests_queries from "../db/requests/queries.js";
 import type * as db_teachers_index from "../db/teachers/index.js";
 import type * as db_teachers_mutations from "../db/teachers/mutations.js";
 import type * as db_teachers_queries from "../db/teachers/queries.js";
+import type * as db_teachers_validators from "../db/teachers/validators.js";
 import type * as earlyAccess_accessTokens from "../earlyAccess/accessTokens.js";
 import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/accessTokens.js";
 import type * as earlyAccess_admin_requests from "../earlyAccess/admin/requests.js";
@@ -46,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   "db/teachers/index": typeof db_teachers_index;
   "db/teachers/mutations": typeof db_teachers_mutations;
   "db/teachers/queries": typeof db_teachers_queries;
+  "db/teachers/validators": typeof db_teachers_validators;
   "earlyAccess/accessTokens": typeof earlyAccess_accessTokens;
   "earlyAccess/admin/accessTokens": typeof earlyAccess_admin_accessTokens;
   "earlyAccess/admin/requests": typeof earlyAccess_admin_requests;

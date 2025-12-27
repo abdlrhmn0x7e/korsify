@@ -37,7 +37,6 @@ export async function create(
     branding: data.branding,
     paymentInfo: data.paymentInfo,
     status: data.status ?? "pending",
-    createdAt: now,
     updatedAt: now,
   });
 }
