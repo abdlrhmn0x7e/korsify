@@ -1,11 +1,21 @@
 import { getCurrentUser } from "@/lib/auth-server";
-import { getScopedI18n } from "@/locales/server";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LoginButton } from "./_components/login-button";
 import { Button } from "@/components/ui/button";
+import { setStaticParamsLocale } from "next-international/server";
 
-export default async function LoginPage() {
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
+export default async function LoginPage({
+  params,
+}: PageProps<"/[locale]/login">) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const user = await getCurrentUser();
   if (user) {
     return notFound();

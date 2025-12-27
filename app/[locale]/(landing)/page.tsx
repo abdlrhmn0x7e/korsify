@@ -80,13 +80,10 @@ const ASCII = `
                                                                                                   ++++++++*
 `;
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function Page({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   setStaticParamsLocale(locale);
+
   const t = await getScopedI18n("landing");
   const isArabic = locale === "ar";
 

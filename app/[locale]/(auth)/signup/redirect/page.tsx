@@ -9,16 +9,23 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import { getCurrentUser } from "@/lib/auth-server";
-import { getScopedI18n } from "@/locales/server";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { IconHome } from "@tabler/icons-react";
 import { fetchMutation } from "convex/nextjs";
+import { setStaticParamsLocale } from "next-international/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
 export default async function SignUpRedirectPage(
   props: PageProps<"/[locale]/signup/redirect">
 ) {
+  const { locale } = await props.params;
+  setStaticParamsLocale(locale);
   const t = await getScopedI18n("auth.redirect");
 
   return (

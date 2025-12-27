@@ -1,14 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { getCurrentUser, preloadAuthQuery } from "@/lib/auth-server";
-import { getScopedI18n } from "@/locales/server";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SignupButton } from "./_components/signup-button";
+import { setStaticParamsLocale } from "next-international/server";
+
+export function generateStaticParams() {
+  return getStaticParams();
+}
 
 export default async function SignupPage({
+  params,
   searchParams,
 }: PageProps<"/[locale]/signup">) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const user = await getCurrentUser();
   if (user) {
     return notFound();

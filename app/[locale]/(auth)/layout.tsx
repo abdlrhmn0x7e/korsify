@@ -1,13 +1,20 @@
 import { Logo } from "@/components/logo";
 import { TopGrid } from "@/components/top-grid";
 import { Container } from "@/components/ui/container";
-import { getScopedI18n } from "@/locales/server";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
+import { setStaticParamsLocale } from "next-international/server";
+
+export function generateStaticParams() {
+  return getStaticParams();
+}
 
 export default async function AuthLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+  params,
+}: LayoutProps<"/[locale]">) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const t = await getScopedI18n("auth.layout");
 
   return (
