@@ -45,10 +45,10 @@ bun dev
 
 #### Subdomain Routing
 
-- [ ] Create Next.js middleware for subdomain detection
-- [ ] Set up route rewriting (subdomain → /storefront/subdomain/...)
-- [ ] Configure next.config.ts for wildcard subdomains in production
-- [ ] Handle localhost development (use query param or hosts file)
+- [x] Create Next.js middleware for subdomain detection
+- [x] Set up route rewriting (subdomain → /storefront/subdomain/...)
+- [x] Configure next.config.ts for wildcard subdomains in production
+- [x] Handle localhost development (use query param or hosts file)
 
 #### Teacher Onboarding Flow
 

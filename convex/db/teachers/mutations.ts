@@ -5,7 +5,7 @@ import {
   brandingValidator,
   paymentInfoValidator,
   teacherStatusValidator,
-} from "./index";
+} from "./validators";
 
 type Branding = Infer<typeof brandingValidator>;
 type PaymentInfo = Infer<typeof paymentInfoValidator>;
