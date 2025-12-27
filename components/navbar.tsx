@@ -41,20 +41,27 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <LocaleSwitcherSelect />
+          {isAdmin && (
+            <Button render={<Link href="/admin" />} variant="ghost">
+              {t("admin")}
+            </Button>
+          )}
           {isLoggedIn ? (
-            <ProfileDropdown
-              name={user.name}
-              email={user.email}
-              photoUrl={user.image ?? ""}
-            />
+            <>
+              <Button render={<Link href="/dashboard" />}>
+                {t("dashboard")}
+              </Button>
+              <ProfileDropdown
+                name={user.name}
+                email={user.email}
+                photoUrl={user.image ?? ""}
+              />
+            </>
           ) : (
             <Button render={<Link href="/login" />}>
               {t("login")}
               <DirectedArrow />
             </Button>
-          )}
-          {isAdmin && (
-            <Button render={<Link href="/admin" />}>{t("dashboard")}</Button>
           )}
         </div>
       </Container>

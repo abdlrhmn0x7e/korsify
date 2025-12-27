@@ -26,12 +26,14 @@ export const landing = {
   cta: {
     placeholder: "رقم هاتفك",
     button: "اطلب الوصول المبكر",
+    sent: "تم الإرسال",
     hint: "سنتواصل معك على رقم هاتفك.",
   },
   navbar: {
     login: "تسجيل الدخول",
     signup: "إنشاء حساب",
     dashboard: "لوحة التحكم",
+    admin: "لوحة التحكم الإدارية",
   },
   footer: {
     copyright: "© {year} كورسيفاي. جميع الحقوق محفوظة.",

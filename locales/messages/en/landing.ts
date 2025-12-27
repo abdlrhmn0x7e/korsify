@@ -26,12 +26,14 @@ export const landing = {
   cta: {
     placeholder: "Your phone number",
     button: "Request Early Access",
+    sent: "Sent",
     hint: "We'll contact you on your phone number.",
   },
   navbar: {
     login: "Log In",
     signup: "Sign Up",
     dashboard: "Dashboard",
+    admin: "Admin Panel",
   },
   footer: {
     copyright: "© {year} Korsify, All rights reserved.",

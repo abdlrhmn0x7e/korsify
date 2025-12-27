@@ -1,6 +1,10 @@
 import { NavItem } from "@/components/sidebar/app-sidebar";
 import SidebarLayout from "@/components/sidebar/sidebar-layout";
-import { Icon24Hours, IconLayoutDashboardFilled } from "@tabler/icons-react";
+import {
+  Icon24Hours,
+  IconLayoutDashboardFilled,
+  IconUserPlus,
+} from "@tabler/icons-react";
 
 const data: NavItem[] = [
   {
@@ -16,6 +20,11 @@ const data: NavItem[] = [
         title: "Access Tokens",
         url: "/admin/access-tokens",
         icon: <Icon24Hours />,
+      },
+      {
+        title: "Early Access Requests",
+        url: "/admin/requests",
+        icon: <IconUserPlus />,
       },
     ],
   },

@@ -35,15 +35,12 @@ export const accessTokensColumns: ColumnDef<
     header: "User",
     cell: ({ row }) => {
       return row.original.user ? (
-        <div className="flex flex-col gap-1">
-          <Badge variant="outline">
-            <IconUser />
-            {row.original.user.id}
-          </Badge>
-          <span className="text-xs text-muted-foreground">
-            {format(row.original.user.usedAt, "dd MMM, hh:mm a")}
-          </span>
-        </div>
+        <Badge variant="outline">
+          <IconUser />
+          {row.original.user.id.slice(0, 6)}...
+          {row.original.user.id.slice(-4)} -{" "}
+          {format(row.original.user.usedAt, "dd MMM, hh:mm a")}
+        </Badge>
       ) : (
         <Badge variant="outline">
           <IconUserOff />

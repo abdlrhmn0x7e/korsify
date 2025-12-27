@@ -20,28 +20,28 @@ import {
 import { Preloaded } from "convex/react";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
-import { accessTokensColumns } from "./columns";
-import { AccessTokensTableHeader } from "./header";
+import { requestsColumns } from "./columns";
+import { RequestsTableHeader } from "./header";
 
-export function AccessTokensTableClient({
-  preloadedAccessTokensQuery,
+export function RequestsTableClient({
+  preloadedRequestsQuery,
 }: {
-  preloadedAccessTokensQuery: Preloaded<
-    typeof api.earlyAccess.admin.accessTokens.get
+  preloadedRequestsQuery: Preloaded<
+    typeof api.earlyAccess.admin.requests.getAll
   >;
 }) {
-  const accessTokens = usePreloadedAuthQuery(preloadedAccessTokensQuery);
-  const accessTokensData = useMemo(() => accessTokens ?? [], [accessTokens]);
+  const requests = usePreloadedAuthQuery(preloadedRequestsQuery);
+  const requestsData = useMemo(() => requests ?? [], [requests]);
 
   const table = useReactTable({
-    data: accessTokensData,
-    columns: accessTokensColumns,
+    data: requestsData,
+    columns: requestsColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <Table>
-      <AccessTokensTableHeader />
+      <RequestsTableHeader />
 
       <TableBody>
         {table.getRowModel().rows?.length ? (
@@ -56,13 +56,13 @@ export function AccessTokensTableClient({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={accessTokensColumns.length}>
+            <TableCell colSpan={requestsColumns.length}>
               <Empty>
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
                     <IconPackage />
                   </EmptyMedia>
-                  <EmptyTitle>No Access Tokens Found.</EmptyTitle>
+                  <EmptyTitle>No Requests Found.</EmptyTitle>
                 </EmptyHeader>
               </Empty>
             </TableCell>
