@@ -12,7 +12,7 @@ export const accessTokensTable = defineTable({
       usedAt: v.number(),
     })
   ),
-});
+}).index("by_token", ["token"]);
 export const accessTokensDAL = {
   queries: accessTokensQueries,
   mutations: accessTokensMutations,

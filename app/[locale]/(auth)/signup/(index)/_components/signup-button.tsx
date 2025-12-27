@@ -7,13 +7,17 @@ import { authClient } from "@/lib/auth-client";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 
-export function SignupButton() {
+export function SignupButton({ token }: { token: string }) {
   const signupFn = useCallback(async () => {
     await authClient.signIn.social({
       provider: "google",
       requestSignUp: true,
+      callbackURL: `/signup/redirect?token=${token}`,
+      additionalData: {
+        token,
+      },
     });
-  }, []);
+  }, [token]);
 
   const { mutate: signup, isPending } = useMutation({
     mutationFn: signupFn,

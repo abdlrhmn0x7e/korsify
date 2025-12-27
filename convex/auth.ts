@@ -35,6 +35,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         clientSecret,
       },
     },
+
     plugins: [convex({ authConfig }), admin()],
   } satisfies BetterAuthOptions;
 };

@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { TopGrid } from "@/components/top-grid";
 import { useI18n } from "@/locales/client";
-import { IconArrowLeft, IconHome } from "@tabler/icons-react";
+import { IconHome } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { DirectedArrow } from "@/components/directed-arrow";
 
 export default function NotFound() {
   const t = useI18n();
@@ -25,7 +26,7 @@ export default function NotFound() {
 
         <div className="flex gap-3">
           <Button variant="outline" onClick={() => router.back()} size="xl">
-            <IconArrowLeft className="size-4" />
+            <DirectedArrow className="size-4" />
             {t("notFound.goBack")}
           </Button>
           <Button render={<Link href="/" />} size="xl">
