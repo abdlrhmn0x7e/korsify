@@ -96,13 +96,13 @@ export default async function Page({
   const isArabic = locale === "ar";
 
   return (
-    <Container className="h-screen w-screen flex flex-col items-center justify-center">
+    <Container className="py-16 h-screen flex flex-col items-center justify-center">
       <TopGrid />
 
       {/* Hero Content */}
       <div
         className={cn(
-          "flex flex-col items-center justify-center text-center pb-48 px-4 max-w-3xl mx-auto space-y-4",
+          "flex flex-col items-center justify-center text-center pb-24 md:pb-48 px-4 max-w-3xl mx-auto space-y-4",
           isArabic && "max-w-4xl"
         )}
       >
@@ -130,10 +130,16 @@ export default async function Page({
 
         {/* Call to Action */}
         <div className="flex flex-col items-center gap-3 max-w-2xl w-full mt-4">
-          <InputGroup className="bg-background h-12 ps-4  w-full">
-            <InputGroupInput placeholder={t("cta.placeholder")} />
-            <InputGroupAddon align="inline-end">
-              <Button size="xl">
+          <InputGroup className="bg-background w-full h-auto flex flex-col sm:flex-row sm:h-12 p-1.5 gap-2 sm:gap-0 sm:p-0 sm:ps-4 items-stretch sm:items-center">
+            <InputGroupInput
+              className="h-11 sm:h-auto px-2 sm:px-0"
+              placeholder={t("cta.placeholder")}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className="w-full sm:w-auto p-0 sm:pe-3 me-0 sm:-me-2"
+            >
+              <Button size="xl" className="w-full sm:w-auto">
                 {t("cta.button")}
                 <IconSend />
               </Button>

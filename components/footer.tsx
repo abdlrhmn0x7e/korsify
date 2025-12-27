@@ -8,7 +8,7 @@ export function Footer() {
   const year = new Date().getFullYear().toString();
 
   return (
-    <footer className="relative pt-16 pb-24 md:py-16 border-t">
+    <footer className="bg-background relative pt-16 pb-24 md:py-16 border-t">
       <div className="mx-auto max-w-5xl px-6 flex flex-col items-center justify-center gap-4">
         <Logo layout="vertical" />
 

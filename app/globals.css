@@ -151,30 +151,30 @@
   }
 
   h1 {
-    @apply text-zinc-800 scroll-m-20 pb-2 text-5xl font-extrabold tracking-tight text-balance font-serif;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 pb-2 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-balance font-serif;
   }
 
   h2 {
-    @apply text-zinc-800 scroll-m-20 pb-1 text-4xl font-semibold tracking-tight first:mt-0 font-serif;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 pb-1 text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight first:mt-0 font-serif;
   }
 
   h3 {
-    @apply text-zinc-800 scroll-m-20 text-3xl font-semibold tracking-tight;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight;
   }
 
   h4 {
-    @apply text-zinc-800 scroll-m-20 text-2xl font-medium tracking-tight;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 text-lg sm:text-xl md:text-2xl font-medium tracking-tight;
   }
 
   h5 {
-    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 text-base sm:text-lg md:text-xl font-semibold tracking-tight;
   }
 
   h6 {
-    @apply scroll-m-20 text-base font-semibold tracking-tight;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 text-sm sm:text-base font-semibold tracking-tight;
   }
 
   p {
-    @apply leading-7 [&:not(:first-child)]:mt-6;
+    @apply leading-7 [&:not(:first-child)]:mt-4 sm:[&:not(:first-child)]:mt-6;
   }
 }

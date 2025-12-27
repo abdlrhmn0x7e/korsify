@@ -11,7 +11,6 @@ import { api } from "@/convex/_generated/api";
 import { ProfileDropdown } from "./profile-dropdown";
 import { Button } from "./ui/button";
 import { DirectedArrow } from "./directed-arrow";
-import { authClient } from "@/lib/auth-client";
 import { useScopedI18n } from "@/locales/client";
 
 export function Navbar() {
@@ -49,13 +48,7 @@ export function Navbar() {
               photoUrl={user.image ?? ""}
             />
           ) : (
-            <Button
-              onClick={() =>
-                authClient.signIn.social({
-                  provider: "google",
-                })
-              }
-            >
+            <Button render={<Link href="/login" />}>
               {t("login")}
               <DirectedArrow />
             </Button>

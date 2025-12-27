@@ -23,6 +23,7 @@ export const landing = {
   },
   navbar: {
     login: "تسجيل الدخول",
+    signup: "إنشاء حساب",
     dashboard: "لوحة التحكم",
   },
   footer: {
