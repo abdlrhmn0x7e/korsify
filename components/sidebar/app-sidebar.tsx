@@ -38,8 +38,8 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="p-2 h-16 border-b">
+    <Sidebar collapsible="icon" variant="inset" {...props}>
+      <SidebarHeader className="px-3">
         <div
           className={cn(
             "h-full flex items-center justify-between",
