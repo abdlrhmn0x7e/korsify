@@ -6,7 +6,6 @@ import { IconCircleCheckFilled, IconSend } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import parsePhoneNumber from "libphonenumber-js";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import { api } from "@/convex/_generated/api";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { toastManager } from "@/components/ui/toast";
 
 export default function EarlyAccessForm() {
   const t = useScopedI18n("landing");
@@ -57,7 +57,10 @@ export default function EarlyAccessForm() {
       sendEarlyAccessRequest(values);
       setIsSuccess(true);
     } catch {
-      toast.error("Failed to send early access request. Please try again.");
+      toastManager.add({
+        title: "Failed to send early access request. Please try again.",
+        type: "error",
+      });
     }
   }
 

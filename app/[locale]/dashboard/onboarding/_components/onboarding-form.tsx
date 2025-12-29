@@ -8,7 +8,6 @@ import parsePhoneNumber from "libphonenumber-js";
 import { MotionConfig, motion } from "motion/react";
 import { useEffect, useEffectEvent, useLayoutEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { useLocalStorage, useStep } from "usehooks-ts";
 import { z } from "zod";
 
@@ -32,6 +31,7 @@ import {
   DEFAULT_STORAGE_DATA,
   ONBOARDING_STORAGE_KEY,
 } from "./types";
+import { toastManager } from "@/components/ui/toast";
 
 interface OnboardingFormProps {
   onSuccess: () => void;
@@ -131,8 +131,10 @@ export function OnboardingForm({ onSuccess }: OnboardingFormProps) {
       onSuccess();
     },
     onError: () => {
-      toast.error(tRoot("error.title"), {
+      toastManager.add({
+        title: tRoot("error.title"),
         description: tRoot("error.description"),
+        type: "error",
       });
     },
   });

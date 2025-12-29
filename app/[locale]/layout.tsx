@@ -7,10 +7,10 @@ import {
 } from "next/font/google";
 import "../globals.css";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
-import { Toaster } from "@/components/ui/sonner";
 import { getStaticParams } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
 import { I18nProviderClient } from "@/locales/client";
+import { AnchoredToastProvider, ToastProvider } from "@/components/ui/toast";
 
 const instrumentSans = Instrument_Sans({
   variable: "--font-sans",
@@ -67,10 +67,12 @@ export default async function RootLayout({
     >
       <body className="antialiased">
         <ConvexClientProvider>
-          <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
+          <I18nProviderClient locale={locale}>
+            <ToastProvider>
+              <AnchoredToastProvider>{children}</AnchoredToastProvider>
+            </ToastProvider>
+          </I18nProviderClient>
         </ConvexClientProvider>
-
-        <Toaster richColors />
       </body>
     </html>
   );

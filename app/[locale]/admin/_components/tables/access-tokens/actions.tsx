@@ -7,7 +7,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { IconChecks, IconCopy, IconTrash } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toastManager } from "@/components/ui/toast";
 
 export function AccessTokensTableActions({
   id,
@@ -24,8 +24,8 @@ export function AccessTokensTableActions({
 
     navigator.clipboard.writeText(url);
 
-    toast("Copied to clipboard.", {
-      duration,
+    toastManager.add({
+      title: "Signup URL copied to clipboard",
     });
     setDidCopy(true);
 
