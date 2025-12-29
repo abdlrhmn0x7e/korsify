@@ -40,8 +40,8 @@ const logoTextVariants = cva(
   {
     variants: {
       size: {
-        xs: "text-sm",
-        sm: "text-base",
+        xs: "text-base",
+        sm: "text-lg",
         default: "text-xl",
         lg: "text-2xl",
         xl: "text-3xl",
@@ -53,7 +53,10 @@ const logoTextVariants = cva(
   }
 );
 
-const logoSrcMap: Record<NonNullable<VariantProps<typeof logoVariants>["variant"]>, string> = {
+const logoSrcMap: Record<
+  NonNullable<VariantProps<typeof logoVariants>["variant"]>,
+  string
+> = {
   primary: "/images/logo.svg",
   "primary-transparent": "/images/logo-transparent.svg",
   black: "/images/logo-black.svg",
@@ -83,7 +86,7 @@ export function Logo({
       href="/"
       className={cn(
         "flex items-center justify-center gap-2",
-        logoVariants({ layout }),
+        logoVariants({ layout })
       )}
     >
       <img

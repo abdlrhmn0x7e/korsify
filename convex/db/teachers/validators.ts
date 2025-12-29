@@ -2,7 +2,9 @@ import { v } from "convex/values";
 
 export const brandingValidator = v.object({
   logoUrl: v.optional(v.string()),
+  logoStorageId: v.optional(v.string()),
   coverImageUrl: v.optional(v.string()),
+  coverStorageId: v.optional(v.string()),
   primaryColor: v.optional(v.string()),
 });
 

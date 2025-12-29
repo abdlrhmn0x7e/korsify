@@ -175,6 +175,6 @@
   }
 
   p {
-    @apply leading-7 [&:not(:first-child)]:mt-4 sm:[&:not(:first-child)]:mt-6;
+    @apply leading-7;
   }
 }

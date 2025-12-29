@@ -24,6 +24,81 @@ function validateSubdomain(subdomain: string): string {
   return result.data;
 }
 
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) {
+      throw new ConvexError("Unauthorized");
+    }
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+export const completeOnboarding = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    subdomain: v.string(),
+    phone: v.optional(v.string()),
+    branding: v.optional(
+      v.object({
+        logoStorageId: v.optional(v.string()),
+        coverStorageId: v.optional(v.string()),
+        primaryColor: v.optional(v.string()),
+      })
+    ),
+    paymentInfo: v.optional(
+      v.object({
+        vodafoneCash: v.optional(v.string()),
+        instaPay: v.optional(v.string()),
+        instructions: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const existingTeacher = await db.teachers.queries.getByUserId(
+      ctx,
+      user._id
+    );
+    if (existingTeacher) {
+      throw new ConvexError("Teacher profile already exists");
+    }
+
+    const normalizedSubdomain = validateSubdomain(args.subdomain);
+
+    const isAvailable = await db.teachers.queries.isSubdomainAvailable(
+      ctx,
+      normalizedSubdomain
+    );
+    if (!isAvailable) {
+      throw new ConvexError("Subdomain is already taken");
+    }
+
+    return await db.teachers.mutations.create(ctx, {
+      userId: user._id,
+      name: args.name,
+      email: args.email,
+      subdomain: normalizedSubdomain,
+      phone: args.phone,
+      branding: args.branding
+        ? {
+            logoStorageId: args.branding.logoStorageId,
+            coverStorageId: args.branding.coverStorageId,
+            primaryColor: args.branding.primaryColor,
+          }
+        : undefined,
+      paymentInfo: args.paymentInfo,
+      status: "pending",
+    });
+  },
+});
+
 export const create = mutation({
   args: {
     name: v.string(),
