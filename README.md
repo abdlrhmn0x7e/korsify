@@ -52,23 +52,21 @@ bun dev
 
 #### Teacher Onboarding Flow
 
-- [ ] Create onboarding page with multi-step wizard
-- [ ] Step 1: Profile form (name, phone, email)
-- [ ] Step 2: Subdomain picker with real-time availability check
-- [ ] Step 3: Branding upload (logo, cover image, primary color)
-- [ ] Step 4: Payment info form (Vodafone Cash, InstaPay, instructions)
-- [ ] Create onboarding completion mutation (creates teacher record)
-- [ ] Add redirect logic: after login → check if teacher exists → onboarding or dashboard
+- [x] Create onboarding page with multi-step wizard
+- [x] Step 1: Profile form (name, phone, email)
+- [x] Step 2: Subdomain picker with real-time availability check
+- [x] Step 3: Branding upload (logo, cover image, primary color)
+- [x] Step 4: Payment info form (Vodafone Cash, InstaPay, instructions)
+- [x] Create onboarding completion mutation (creates teacher record)
+- [x] Add redirect logic: after login → check if teacher exists → onboarding or dashboard
 
 #### Teacher Dashboard Shell
 
-- [ ] Create teacher dashboard layout with sidebar
-- [ ] Add sidebar navigation (Home, Courses, Students, Payments, Storefront, Settings)
-- [ ] Create TeacherContext provider (loads teacher data, provides to children)
-- [ ] Build dashboard home page (placeholder for now)
+- [x] Create teacher dashboard layout with sidebar
+- [x] Add sidebar navigation (Home, Courses, Students, Payments, Storefront, Settings)
+- [x] Build dashboard home page (placeholder for now)
 - [ ] Create settings page with branding form
 - [ ] Create settings page with payment info form
-- [ ] Add image upload component using Convex file storage
 
 ---
 

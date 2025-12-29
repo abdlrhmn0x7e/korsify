@@ -5,15 +5,24 @@ import { preloadAuthQuery } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { TopGrid } from "@/components/top-grid";
-import { getScopedI18n } from "@/locales/server";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
+import { setStaticParamsLocale } from "next-international/server";
 
-export default async function OnboardingPage() {
-  const t = await getScopedI18n("onboarding");
-  const preloadedTeacherQuery = await preloadAuthQuery(
-    api.teachers.queries.getTeacher
-  );
+export function generateStaticParams() {
+  return getStaticParams();
+}
 
-  if (preloadedTeacherQuery) {
+export default async function OnboardingPage(
+  props: PageProps<"/[locale]/dashboard/onboarding">
+) {
+  const { locale } = await props.params;
+  setStaticParamsLocale(locale);
+  const [t, teacher] = await Promise.all([
+    getScopedI18n("onboarding"),
+    preloadAuthQuery(api.teachers.queries.getTeacher),
+  ]);
+
+  if (teacher) {
     return redirect("/dashboard");
   }
 
