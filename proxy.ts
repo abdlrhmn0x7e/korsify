@@ -30,7 +30,9 @@ function applyHeaders(
 }
 
 export const config = {
-  matcher: ["/((?!api/|_next/|static/|favicon.ico|robots.txt|sitemap.xml).*)"],
+  matcher: [
+    "/((?!api/|_next/|images/|static/|favicon.ico|robots.txt|sitemap.xml).*)",
+  ],
 };
 
 export async function proxy(req: NextRequest) {
