@@ -13,7 +13,11 @@ export function CreateAccessTokenButton() {
   });
 
   return (
-    <Button onClick={() => createAccessToken({})} disabled={isPending}>
+    <Button
+      onClick={() => createAccessToken({})}
+      disabled={isPending}
+      variant="ghost"
+    >
       Create Access Token
       {isPending ? <Spinner /> : <IconPlus />}
     </Button>

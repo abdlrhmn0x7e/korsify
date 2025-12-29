@@ -10,25 +10,19 @@ import {
   FramePanel,
   FrameTitle,
 } from "@/components/ui/frame";
+import { PageHeader } from "@/components/page-header";
+import { IconUserPlus } from "@tabler/icons-react";
 
 export default async function RequestsPage() {
   await requireAdmin();
 
   return (
-    <section className="space-y-6">
-      <Frame>
-        <FrameHeader>
-          <div className="flex items-center justify-between gap-2">
-            <FrameTitle>Early Access Requests</FrameTitle>
-          </div>
-        </FrameHeader>
+    <section>
+      <PageHeader title="Early Access Requests" Icon={IconUserPlus} />
 
-        <FramePanel>
-          <Suspense fallback={<RequestsTableSkeleton />}>
-            <RequestsTable />
-          </Suspense>
-        </FramePanel>
-      </Frame>
+      <Suspense fallback={<RequestsTableSkeleton />}>
+        <RequestsTable />
+      </Suspense>
     </section>
   );
 }

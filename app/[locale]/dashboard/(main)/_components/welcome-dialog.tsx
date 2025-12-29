@@ -178,7 +178,7 @@ export function WelcomeDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="max-w-xl p-0 gap-0 overflow-hidden"
+        className="max-w-2xl p-0 gap-0 overflow-hidden"
         showCloseButton={false}
       >
         <Carousel opts={{ watchDrag: false, duration: 0 }}>

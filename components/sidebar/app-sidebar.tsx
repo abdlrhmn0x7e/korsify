@@ -38,15 +38,15 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" variant="inset" {...props}>
-      <SidebarHeader className="px-3">
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="px-3 pt-2 pb-0">
         <div
           className={cn(
             "h-full flex items-center justify-between",
             open ? "justify-between" : "justify-center"
           )}
         >
-          <Logo withText={open} textClassName="text-xl" />
+          <Logo withText={open} size="sm" />
           <SidebarTrigger
             className={cn(
               "transition-opacity duration-200",

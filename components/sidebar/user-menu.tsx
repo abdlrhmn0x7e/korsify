@@ -42,7 +42,7 @@ export function NavUser() {
               <SidebarMenuButton
                 variant="outline"
                 size="lg"
-                className="border bg-accent data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className="bg-transparent data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               />
             }
           >

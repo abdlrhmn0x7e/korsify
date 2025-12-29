@@ -5,33 +5,21 @@ import {
   AccessTokensTable,
   AccessTokensTableSkeleton,
 } from "../_components/tables/access-tokens";
-import {
-  Frame,
-  FrameHeader,
-  FramePanel,
-  FrameTitle,
-} from "@/components/ui/frame";
+import { PageHeader } from "@/components/page-header";
+import { Icon24Hours } from "@tabler/icons-react";
 
 export default async function AccessTokensPage() {
   await requireAdmin();
 
   return (
-    <section className="space-y-6">
-      <Frame>
-        <FrameHeader>
-          <div className="flex items-center justify-between gap-2">
-            <FrameTitle>Access Tokens</FrameTitle>
+    <section>
+      <PageHeader title="Access Tokens" Icon={Icon24Hours}>
+        <CreateAccessTokenButton />
+      </PageHeader>
 
-            <CreateAccessTokenButton />
-          </div>
-        </FrameHeader>
-
-        <FramePanel>
-          <Suspense fallback={<AccessTokensTableSkeleton />}>
-            <AccessTokensTable />
-          </Suspense>
-        </FramePanel>
-      </Frame>
+      <Suspense fallback={<AccessTokensTableSkeleton />}>
+        <AccessTokensTable />
+      </Suspense>
     </section>
   );
 }
