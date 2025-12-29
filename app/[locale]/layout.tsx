@@ -65,7 +65,7 @@ export default async function RootLayout({
         } as React.CSSProperties
       }
     >
-      <body className="antialiased">
+      <body className="antialiased dark">
         <ConvexClientProvider>
           <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
         </ConvexClientProvider>

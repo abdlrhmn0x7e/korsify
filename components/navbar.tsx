@@ -25,13 +25,13 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-10 mx-px  transition-all duration-300",
-        scrolled && "bg-white/90 backdrop-blur-sm"
+        scrolled && "bg-background/90 backdrop-blur-sm"
       )}
     >
       {/* Bottom border when scrolled */}
       <div
         className={cn(
-          "absolute inset-x-0 bottom-0 h-px bg-neutral-200 opacity-0 transition-opacity duration-300 mask-[linear-gradient(90deg,transparent,black,transparent)]",
+          "absolute inset-x-0 bottom-0 h-px bg-border opacity-0 transition-opacity duration-300 mask-[linear-gradient(90deg,transparent,black,transparent)]",
           scrolled && "opacity-100"
         )}
       />

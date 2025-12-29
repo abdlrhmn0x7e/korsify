@@ -28,6 +28,10 @@ export const landing = {
     button: "اطلب الوصول المبكر",
     sent: "تم الإرسال",
     hint: "سنتواصل معك على رقم هاتفك.",
+    errors: {
+      required: "رقم الهاتف مطلوب",
+      invalidPhone: "يرجى إدخال رقم هاتف صحيح",
+    },
   },
   navbar: {
     login: "تسجيل الدخول",

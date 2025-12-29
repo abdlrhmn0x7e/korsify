@@ -3,11 +3,11 @@ import { Grid } from "./ui/grid";
 
 export function TopGrid() {
   return (
-    <div className="absolute -z-10 inset-0 isolate overflow-hidden bg-background">
+    <div className="absolute -z-10 inset-0 isolate overflow-hidden bg-background dark:opacity-50">
       {/* Grid */}
       <div
         className={cn(
-          "absolute inset-y-0 left-1/2 w-[1200px] -translate-x-1/2",
+          "absolute inset-y-0 left-1/2 w-300 -translate-x-1/2",
           "mask-intersect mask-[linear-gradient(black,transparent_320px),linear-gradient(90deg,transparent,black_5%,black_95%,transparent)]"
         )}
       >

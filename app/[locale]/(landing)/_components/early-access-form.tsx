@@ -23,21 +23,24 @@ import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
-const formSchema = z.object({
-  phoneNumber: z
-    .string()
-    .min(1, "Phone number is required")
-    .transform((val) =>
-      String(parsePhoneNumber(val, { defaultCountry: "EG" })?.number)
-    )
-    .refine(
-      (val) => parsePhoneNumber(val, { defaultCountry: "EG" })?.isValid(),
-      "Phone number must be a valid Egyptian phone number"
-    ),
-});
-
 export default function EarlyAccessForm() {
   const t = useScopedI18n("landing");
+
+  const formSchema = z.object({
+    phoneNumber: z
+      .string()
+      .min(1, { message: t("cta.errors.required") })
+      .transform((val) =>
+        String(parsePhoneNumber(val, { defaultCountry: "EG" })?.number)
+      )
+      .refine(
+        (val) => parsePhoneNumber(val, { defaultCountry: "EG" })?.isValid(),
+        {
+          message: t("cta.errors.invalidPhone"),
+        }
+      ),
+  });
+
   const [isSuccess, setIsSuccess] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,9 +52,9 @@ export default function EarlyAccessForm() {
     mutationFn: useConvexMutation(api.earlyAccess.requests.create),
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await sendEarlyAccessRequest(values);
+      sendEarlyAccessRequest(values);
       setIsSuccess(true);
     } catch {
       toast.error("Failed to send early access request. Please try again.");

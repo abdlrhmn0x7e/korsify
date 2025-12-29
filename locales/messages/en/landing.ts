@@ -28,6 +28,10 @@ export const landing = {
     button: "Request Early Access",
     sent: "Sent",
     hint: "We'll contact you on your phone number.",
+    errors: {
+      required: "Phone number is required",
+      invalidPhone: "Please enter a valid phone number",
+    },
   },
   navbar: {
     login: "Log In",

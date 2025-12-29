@@ -53,7 +53,7 @@ export function LocaleSwitcherSelect({ className }: Props) {
     >
       <SelectTrigger
         className={cn(
-          "border-none shadow-none hover:bg-slate-100 transition-colors cursor-pointer",
+          "bg-transparent dark:bg-transparent dark:hover:bg-accent border-none shadow-none hover:bg-slate-100 transition-colors cursor-pointer",
           className
         )}
       >
