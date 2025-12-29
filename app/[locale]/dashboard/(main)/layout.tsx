@@ -1,6 +1,5 @@
 import { getStaticParams, getScopedI18n } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
-import { DashboardLayoutClient } from "./_components/dashboard-layout-client";
 import {
   IconBook,
   IconCreditCard,
@@ -9,6 +8,8 @@ import {
   IconBuildingStore,
   IconUsers,
 } from "@tabler/icons-react";
+import SidebarLayout from "@/components/sidebar/sidebar-layout";
+import { WelcomeDialog } from "./_components/welcome-dialog";
 
 export function generateStaticParams() {
   return getStaticParams();
@@ -66,12 +67,13 @@ export default async function DashboardMainLayout({
   ];
 
   return (
-    <DashboardLayoutClient
-      navItems={navItems}
+    <SidebarLayout
+      data={navItems}
       dir={locale === "ar" ? "rtl" : "ltr"}
       lang={locale}
     >
       {children}
-    </DashboardLayoutClient>
+      <WelcomeDialog />
+    </SidebarLayout>
   );
 }

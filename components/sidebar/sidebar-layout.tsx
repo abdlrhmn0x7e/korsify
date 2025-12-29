@@ -32,11 +32,11 @@ export default function SidebarLayout({
     >
       <AppSidebar data={data} />
 
-      <SidebarInset className="flex flex-col border">
+      <SidebarInset className="flex flex-col border md:peer-data-[variant=inset]:shadow-2xs">
         <header className="bg-background sticky top-0 flex h-9 shrink-0 items-center gap-2 border-b px-4 m-2 border rounded-md">
           <PathBreadcrumb path={pathname} />
         </header>
-        <main className="p-2 flex-1">{children}</main>
+        <main className="p-4 flex-1">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

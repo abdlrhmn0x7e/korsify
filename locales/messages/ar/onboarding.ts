@@ -47,7 +47,8 @@ export const onboarding = {
       logo: "الشعار",
       logoDescription: "ارفع شعار متجرك (الحجم الموصى به: 200×200 بكسل)",
       coverImage: "صورة الغلاف",
-      coverImageDescription: "ارفع صورة غلاف لمتجرك (الحجم الموصى به: 1200×400 بكسل)",
+      coverImageDescription:
+        "ارفع صورة غلاف لمتجرك (الحجم الموصى به: 1200×400 بكسل)",
       primaryColor: "اللون الأساسي",
       primaryColorDescription: "اختر اللون الأساسي لعلامتك التجارية",
       upload: "رفع",
@@ -98,4 +99,5 @@ export const onboarding = {
     description: "لم نتمكن من إكمال الإعداد. يرجى المحاولة مرة أخرى.",
     tryAgain: "حاول مرة أخرى",
   },
+  terms: "باستمرارك، توافق على شروط خدمة كورسيفاي وسياسة الخصوصية",
 } as const;

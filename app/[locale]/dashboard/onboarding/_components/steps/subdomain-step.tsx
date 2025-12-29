@@ -1,22 +1,39 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { useScopedI18n } from "@/locales/client";
 import { convexQuery } from "@convex-dev/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { IconCheck, IconLoader2, IconX } from "@tabler/icons-react";
-import { useDebounce } from "@/hooks/use-debounce";
-import type { OnboardingFormValues } from "../../../_components/onboarding-dialog";
+import {
+  IconAlertCircle,
+  IconCheck,
+  IconLoader2,
+  IconX,
+} from "@tabler/icons-react";
+import { useDebounceValue } from "usehooks-ts";
+import type { OnboardingFormValues } from "../types";
 
 export function SubdomainStep() {
   const t = useScopedI18n("onboarding.steps.subdomain");
-  const { register, watch, formState: { errors } } = useFormContext<OnboardingFormValues>();
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext<OnboardingFormValues>();
 
   const subdomainValue = watch("subdomain");
-  const debouncedSubdomain = useDebounce(subdomainValue?.toLowerCase().trim() || "", 300);
+  const [debouncedSubdomain] = useDebounceValue(
+    subdomainValue?.toLowerCase().trim() || "",
+    300
+  );
 
   const { data: isAvailable, isPending: isCheckingAvailability } = useQuery({
     ...convexQuery(api.teachers.queries.isSubdomainAvailable, {
@@ -69,7 +86,12 @@ export function SubdomainStep() {
           </FieldDescription>
         )}
 
-        {errors.subdomain && <FieldError errors={[errors.subdomain]} />}
+        {errors.subdomain && (
+          <span className="text-destructive text-sm flex items-center gap-1">
+            <IconAlertCircle className="size-4" />
+            <FieldError errors={[errors.subdomain]} />
+          </span>
+        )}
       </Field>
     </div>
   );

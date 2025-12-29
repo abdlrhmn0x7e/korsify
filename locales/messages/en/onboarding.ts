@@ -36,7 +36,8 @@ export const onboarding = {
         required: "Subdomain is required",
         minLength: "Subdomain must be at least 3 characters",
         maxLength: "Subdomain must be at most 63 characters",
-        format: "Subdomain can only contain lowercase letters, numbers, and hyphens",
+        format:
+          "Subdomain can only contain lowercase letters, numbers, and hyphens",
         reserved: "This subdomain is reserved",
         unavailable: "This subdomain is already taken",
       },
@@ -47,7 +48,8 @@ export const onboarding = {
       logo: "Logo",
       logoDescription: "Upload your store logo (recommended: 200x200px)",
       coverImage: "Cover Image",
-      coverImageDescription: "Upload a cover image for your store (recommended: 1200x400px)",
+      coverImageDescription:
+        "Upload a cover image for your store (recommended: 1200x400px)",
       primaryColor: "Primary Color",
       primaryColorDescription: "Choose your brand's primary color",
       upload: "Upload",
@@ -64,8 +66,10 @@ export const onboarding = {
       instaPay: "InstaPay Username",
       instaPayPlaceholder: "Enter your InstaPay username",
       instructions: "Payment Instructions",
-      instructionsPlaceholder: "Enter any additional payment instructions for students",
-      instructionsDescription: "These instructions will be shown to students when they make a payment",
+      instructionsPlaceholder:
+        "Enter any additional payment instructions for students",
+      instructionsDescription:
+        "These instructions will be shown to students when they make a payment",
       complete: "Complete Setup",
       back: "Back",
       errors: {
@@ -83,14 +87,16 @@ export const onboarding = {
     },
     success: {
       title: "Welcome to Korsify!",
-      description: "Your account has been set up successfully. You can now start creating courses.",
+      description:
+        "Your account has been set up successfully. You can now start creating courses.",
       action: "Go to Dashboard",
     },
   },
   completing: "Setting up your account...",
   success: {
     title: "Welcome to Korsify!",
-    description: "Your account has been set up successfully. You can now start creating courses.",
+    description:
+      "Your account has been set up successfully. You can now start creating courses.",
     goToDashboard: "Go to Dashboard",
   },
   error: {
@@ -98,4 +104,6 @@ export const onboarding = {
     description: "We couldn't complete your setup. Please try again.",
     tryAgain: "Try Again",
   },
+  terms:
+    "By continuing, you agree to Korsify's Terms of Service and Privacy Policy",
 } as const;
