@@ -157,13 +157,7 @@ export function WelcomeDialog() {
     false,
     { initializeWithValue: false }
   );
-  const [open, setOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (hasSeenWelcome === false) {
-      setOpen(true);
-    }
-  }, [hasSeenWelcome]);
+  const [open, setOpen] = React.useState(!hasSeenWelcome);
 
   const handleComplete = () => {
     setHasSeenWelcome(true);
@@ -177,7 +171,7 @@ export function WelcomeDialog() {
     }
   };
 
-  if (hasSeenWelcome === undefined) {
+  if (hasSeenWelcome) {
     return null;
   }
 

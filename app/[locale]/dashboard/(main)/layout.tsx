@@ -30,36 +30,36 @@ export default async function DashboardMainLayout({
   const navItems = [
     {
       title: t("title"),
-      url: `/${locale}/dashboard`,
+      url: `/dashboard`,
       items: [
         {
           title: t("home"),
-          url: `/${locale}/dashboard`,
+          url: `/dashboard`,
           icon: <IconLayoutDashboardFilled />,
         },
         {
           title: t("courses"),
-          url: `/${locale}/dashboard/courses`,
+          url: `/dashboard/courses`,
           icon: <IconBook />,
         },
         {
           title: t("students"),
-          url: `/${locale}/dashboard/students`,
+          url: `/dashboard/students`,
           icon: <IconUsers />,
         },
         {
           title: t("payments"),
-          url: `/${locale}/dashboard/payments`,
+          url: `/dashboard/payments`,
           icon: <IconCreditCard />,
         },
         {
           title: t("storefront"),
-          url: `/${locale}/dashboard/storefront`,
+          url: `/dashboard/storefront`,
           icon: <IconBuildingStore />,
         },
         {
           title: t("settings"),
-          url: `/${locale}/dashboard/settings`,
+          url: `/dashboard/settings`,
           icon: <IconSettings />,
         },
       ],
@@ -67,11 +67,7 @@ export default async function DashboardMainLayout({
   ];
 
   return (
-    <SidebarLayout
-      data={navItems}
-      dir={locale === "ar" ? "rtl" : "ltr"}
-      lang={locale}
-    >
+    <SidebarLayout data={navItems}>
       {children}
       <WelcomeDialog />
     </SidebarLayout>

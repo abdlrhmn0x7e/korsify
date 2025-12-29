@@ -36,13 +36,13 @@ const logoVariants = cva("", {
 });
 
 const logoTextVariants = cva(
-  "font-serif font-medium mb-0.5 transition-opacity duration-200",
+  "font-sans mb-0.5 transition-opacity duration-200",
   {
     variants: {
       size: {
-        xs: "text-base",
-        sm: "text-lg",
-        default: "text-xl",
+        xs: "text-sm",
+        sm: "text-base",
+        default: "text-lg",
         lg: "text-2xl",
         xl: "text-3xl",
       },
