@@ -5,6 +5,8 @@ import {
 } from "convex-helpers/server/customFunctions";
 import { mutation, query } from "./_generated/server";
 import { authComponent } from "./auth";
+import { ConvexError } from "convex/values";
+import { db } from "./db";
 
 export const adminQuery = customQuery(
   query,
@@ -12,11 +14,11 @@ export const adminQuery = customQuery(
     const user = await authComponent.safeGetAuthUser(ctx);
 
     if (user?.role !== "admin") {
-      throw new Error("Unauthorized");
+      throw new ConvexError("Unauthorized");
     }
 
     return { user }; // Injected into the function's ctx
-  })
+  }),
 );
 
 export const adminMutation = customMutation(
@@ -25,9 +27,47 @@ export const adminMutation = customMutation(
     const user = await authComponent.safeGetAuthUser(ctx);
 
     if (user?.role !== "admin") {
-      throw new Error("Unauthorized");
+      throw new ConvexError("Unauthorized");
     }
 
     return { user }; // Injected into the function's ctx
-  })
+  }),
+);
+
+export const teacherQuery = customQuery(
+  query,
+  customCtx(async (ctx) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+
+    if (!user) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const teacher = await db.teachers.queries.getByUserId(ctx, user._id);
+
+    if (!teacher) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    return { teacherId: teacher._id };
+  }),
+);
+
+export const teacherMutation = customMutation(
+  mutation,
+  customCtx(async (ctx) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+
+    if (!user) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const teacher = await db.teachers.queries.getByUserId(ctx, user._id);
+
+    if (!teacher) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    return { teacherId: teacher._id };
+  }),
 );

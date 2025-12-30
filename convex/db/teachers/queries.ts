@@ -14,7 +14,7 @@ export function getByUserId(ctx: GenericQueryCtx<DataModel>, userId: string) {
 
 export function getBySubdomain(
   ctx: GenericQueryCtx<DataModel>,
-  subdomain: string
+  subdomain: string,
 ) {
   return ctx.db
     .query("teachers")
@@ -24,7 +24,7 @@ export function getBySubdomain(
 
 export function getByCustomDomain(
   ctx: GenericQueryCtx<DataModel>,
-  customDomain: string
+  customDomain: string,
 ) {
   return ctx.db
     .query("teachers")
@@ -34,7 +34,7 @@ export function getByCustomDomain(
 
 export async function isSubdomainAvailable(
   ctx: GenericQueryCtx<DataModel>,
-  subdomain: string
+  subdomain: string,
 ): Promise<boolean> {
   const existing = await getBySubdomain(ctx, subdomain);
   return existing === null;
@@ -42,7 +42,7 @@ export async function isSubdomainAvailable(
 
 export async function isCustomDomainAvailable(
   ctx: GenericQueryCtx<DataModel>,
-  customDomain: string
+  customDomain: string,
 ): Promise<boolean> {
   const existing = await getByCustomDomain(ctx, customDomain);
   return existing === null;
