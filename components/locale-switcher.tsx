@@ -20,6 +20,7 @@ import { toastManager } from "./ui/toast";
 
 type Props = {
   className?: string;
+  showLocale?: boolean;
 };
 
 const localeNames = {
@@ -27,7 +28,7 @@ const localeNames = {
   ar: "العربية",
 };
 
-export function LocaleSwitcherSelect({ className }: Props) {
+export function LocaleSwitcherSelect({ className, showLocale = false }: Props) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const currentLocale = useCurrentLocale();
@@ -56,11 +57,16 @@ export function LocaleSwitcherSelect({ className }: Props) {
     >
       <SelectTrigger
         className={cn(
-          "bg-transparent dark:bg-transparent dark:hover:bg-accent border-none shadow-none hover:bg-slate-100 transition-colors cursor-pointer",
+          "bg-transparent not-data-disabled:not-focus-visible:not-aria-invalid:not-data-pressed:before:shadow-none dark:bg-transparent dark:hover:bg-accent border-none shadow-none hover:bg-slate-100 transition-colors cursor-pointer",
           className
         )}
       >
         <IconWorld />
+        {showLocale && (
+          <span className="text-xs">
+            {localeNames[currentLocale as "en" | "ar"]}
+          </span>
+        )}
       </SelectTrigger>
 
       <SelectContent>
