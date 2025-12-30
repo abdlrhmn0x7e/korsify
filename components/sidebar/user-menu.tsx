@@ -1,6 +1,6 @@
 "use client";
 
-import { IconSelector, IconLogout } from "@tabler/icons-react";
+import { IconLogout, IconDots } from "@tabler/icons-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
+import { buttonVariants } from "../ui/button";
 
 export function NavUser() {
   const { data, isPending } = authClient.useSession();
@@ -41,23 +42,27 @@ export function NavUser() {
             render={
               <SidebarMenuButton
                 variant="outline"
-                size="lg"
-                className="bg-transparent data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className={buttonVariants({
+                  variant: "outline",
+                  className: "h-9 px-1 justify-start",
+                })}
               />
             }
           >
-            <Avatar className="size-8">
+            <Avatar className="size-6 rounded-sm after:rounded-sm">
               <AvatarImage
                 src={data.user.image ?? undefined}
                 alt={data.user.name}
+                className={"rounded-sm"}
               />
               <AvatarFallback>{data.user.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{data.user.name}</span>
-              <span className="truncate text-xs">{data.user.email}</span>
+            <div className="flex items-center justify-between w-full pe-2">
+              <span className="truncate font-medium text-xs">
+                {data.user.name}
+              </span>
+              <IconDots className="size-2 text-muted-foreground" />
             </div>
-            <IconSelector className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"

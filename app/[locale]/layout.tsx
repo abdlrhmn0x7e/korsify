@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import {
-  Instrument_Sans,
   Instrument_Serif,
   Geist_Mono,
+  Inter,
   Noto_Kufi_Arabic,
 } from "next/font/google";
 import "../globals.css";
@@ -12,10 +12,6 @@ import { setStaticParamsLocale } from "next-international/server";
 import { I18nProviderClient } from "@/locales/client";
 import { AnchoredToastProvider, ToastProvider } from "@/components/ui/toast";
 
-const instrumentSans = Instrument_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
 const instrumentSerif = Instrument_Serif({
   variable: "--font-serif-latin",
   subsets: ["latin"],
@@ -29,6 +25,11 @@ const notoKufiArabic = Noto_Kufi_Arabic({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -55,7 +56,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={isArabic ? "rtl" : "ltr"}
-      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoKufiArabic.variable}`}
+      className={`${inter.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoKufiArabic.variable}`}
       style={
         {
           "--font-sans": isArabic ? "var(--font-arabic)" : "var(--font-sans)",

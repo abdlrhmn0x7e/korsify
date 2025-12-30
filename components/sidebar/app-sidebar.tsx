@@ -31,27 +31,29 @@ export type NavItem = {
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   data: NavItem[];
+  secondary?: (NavItem & { icon: React.ReactNode })[];
 }
 
-export function AppSidebar({ data, ...props }: AppSidebarProps) {
+export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
   const { open } = useSidebar();
   const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="px-3 pt-2 pb-0">
+      <SidebarHeader className="h-12 border-b p-0">
         <div
           className={cn(
-            "h-full flex items-center justify-between",
-            open ? "justify-between" : "justify-center"
+            "h-full flex items-center justify-between bg-background py-2 px-4",
+            open ? "justify-between" : "justify-center p-0"
           )}
         >
           <Logo withText={open} size="sm" />
           <SidebarTrigger
             className={cn(
               "transition-opacity duration-200",
-              open ? "flex opacity-100" : "hidden opacity-0"
+              open ? "flex opacity-50" : "hidden opacity-0"
             )}
+            size="icon-sm"
           />
         </div>
       </SidebarHeader>
@@ -81,7 +83,17 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
       </SidebarContent>
       <SidebarRail />
 
-      <SidebarFooter className="p-2">
+      <SidebarFooter className="px-4 pt-4 pb-3 border-t">
+        <SidebarMenu>
+          {secondary?.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton render={<Link href={item.url} />} size="sm">
+                {item.icon}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
         <NavUser />
       </SidebarFooter>
     </Sidebar>

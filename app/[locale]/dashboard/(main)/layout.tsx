@@ -57,17 +57,20 @@ export default async function DashboardMainLayout({
           url: `/dashboard/storefront`,
           icon: <IconBuildingStore />,
         },
-        {
-          title: t("settings"),
-          url: `/dashboard/settings`,
-          icon: <IconSettings />,
-        },
       ],
     },
   ];
 
+  const secondary = [
+    {
+      title: t("settings"),
+      url: `/dashboard/settings`,
+      icon: <IconSettings />,
+    },
+  ];
+
   return (
-    <SidebarLayout data={navItems}>
+    <SidebarLayout data={navItems} secondary={secondary}>
       {children}
       <WelcomeDialog />
     </SidebarLayout>

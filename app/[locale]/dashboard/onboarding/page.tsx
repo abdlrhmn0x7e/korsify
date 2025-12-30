@@ -22,7 +22,7 @@ export default async function OnboardingPage(
     preloadAuthQuery(api.teachers.queries.getTeacher),
   ]);
 
-  if (teacher) {
+  if (Boolean(teacher._valueJSON)) {
     return redirect("/dashboard");
   }
 
