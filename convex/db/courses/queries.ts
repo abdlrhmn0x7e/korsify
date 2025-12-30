@@ -55,3 +55,16 @@ export async function isSlugAvailable(
   const existing = await getBySlug(ctx, slug);
   return existing === null;
 }
+
+export async function getPublishedByTeacherId(
+  ctx: GenericQueryCtx<DataModel>,
+  teacherId: Id<"teachers">,
+) {
+  const courses = await ctx.db
+    .query("courses")
+    .withIndex("by_teacherId_status", (q) =>
+      q.eq("teacherId", teacherId).eq("status", "published"),
+    )
+    .collect();
+  return attachThumbnailURL(ctx, courses);
+}

@@ -133,6 +133,7 @@ export const remove = teacherMutation({
       throw new ConvexError("course doesn't exist");
     }
 
+    // Sections and lessons are automatically deleted via triggers
     return db.courses.mutations.remove(ctx, args.courseId);
   },
 });

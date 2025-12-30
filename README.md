@@ -74,14 +74,18 @@ bun dev
 
 #### Database & Backend
 
-- [ ] Create courses table (teacherId, title, description, price, thumbnailUrl, status, order, timestamps)
-- [ ] Add indexes: by_teacherId, by_teacherId_status
-- [ ] Create courses DAL
-- [ ] Create lessons table (courseId, teacherId, title, description, video object, pdfUrl, order, isFree, createdAt)
-- [ ] Add indexes: by_courseId, by_teacherId
-- [ ] Create lessons DAL
-- [ ] Create course mutations (create, update, delete, reorder, publish, unpublish, archive)
-- [ ] Create lesson mutations (create, update, delete, reorder)
+- [x] Create courses table (teacherId, title, description, price, thumbnailUrl, status, order, timestamps)
+- [x] Add indexes: by_teacherId, by_teacherId_status
+- [x] Create courses DAL
+- [x] Create sections table (courseId, teacherId, title, order, status, timestamps)
+- [x] Add indexes: by_courseId_order, by_teacherId
+- [x] Create sections DAL
+- [x] Create section mutations (create, update, delete, reorder, publish, draft)
+- [x] Create lessons table (courseId, sectionId, teacherId, title, description, video object, pdfUrl, order, isFree, createdAt)
+- [x] Add indexes: by_courseId_order, by_sectionId_order, by_teacherId
+- [x] Create lessons DAL
+- [x] Create course mutations (create, update, delete, reorder, publish, unpublish, archive)
+- [x] Create lesson mutations (create, update, delete, reorder)
 
 #### Bunny.net Integration
 

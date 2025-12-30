@@ -3,10 +3,22 @@ import {
   customCtx,
   customMutation,
 } from "convex-helpers/server/customFunctions";
-import { mutation, query } from "./_generated/server";
+import {
+  mutation as rawMutation,
+  internalMutation as rawInternalMutation,
+  query,
+} from "./_generated/server";
 import { authComponent } from "./auth";
 import { ConvexError } from "convex/values";
 import { db } from "./db";
+import { triggers } from "./triggers";
+
+// Wrap mutations with triggers for cascading deletes
+const mutation = customMutation(rawMutation, customCtx(triggers.wrapDB));
+export const internalMutation = customMutation(
+  rawInternalMutation,
+  customCtx(triggers.wrapDB),
+);
 
 export const adminQuery = customQuery(
   query,
