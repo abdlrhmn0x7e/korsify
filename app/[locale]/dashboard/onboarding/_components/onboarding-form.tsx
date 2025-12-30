@@ -8,7 +8,12 @@ import parsePhoneNumber from "libphonenumber-js";
 import { MotionConfig, motion } from "motion/react";
 import { useEffect, useEffectEvent, useLayoutEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useLocalStorage, useStep } from "usehooks-ts";
+import {
+  useEventCallback,
+  useEventListener,
+  useLocalStorage,
+  useStep,
+} from "usehooks-ts";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -50,7 +55,7 @@ export function OnboardingForm({ onSuccess }: OnboardingFormProps) {
   const [storedData, setStoredData, removeStoredData] =
     useLocalStorage<OnboardingStorageData>(
       ONBOARDING_STORAGE_KEY,
-      DEFAULT_STORAGE_DATA
+      DEFAULT_STORAGE_DATA,
     );
 
   const [currentStep, stepHelpers] = useStep(TOTAL_STEPS);
@@ -79,11 +84,13 @@ export function OnboardingForm({ onSuccess }: OnboardingFormProps) {
         .string()
         .min(1, { message: tProfile("errors.phoneRequired") })
         .transform((val) =>
-          String(parsePhoneNumber(val, { defaultCountry: "EG" })?.number ?? val)
+          String(
+            parsePhoneNumber(val, { defaultCountry: "EG" })?.number ?? val,
+          ),
         )
         .refine(
           (val) => parsePhoneNumber(val, { defaultCountry: "EG" })?.isValid(),
-          { message: tProfile("errors.phoneInvalid") }
+          { message: tProfile("errors.phoneInvalid") },
         ),
       subdomain: z
         .string()
@@ -138,6 +145,13 @@ export function OnboardingForm({ onSuccess }: OnboardingFormProps) {
       });
     },
   });
+
+  const handleKeydown = useEventCallback((e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleNext();
+    }
+  });
+  useEventListener("keydown", handleKeydown);
 
   const steps: Step[] = [
     {

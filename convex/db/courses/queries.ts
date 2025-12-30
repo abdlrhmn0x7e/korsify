@@ -2,43 +2,49 @@ import { GenericQueryCtx } from "convex/server";
 import { DataModel, Id } from "../../_generated/dataModel";
 import { Infer } from "convex/values";
 import { courseStatusValidator } from "./validators";
+import { attachThumbnailURL } from "./utils";
 
-export function getAll(ctx: GenericQueryCtx<DataModel>) {
-  return ctx.db.query("courses").collect();
+export async function getAll(ctx: GenericQueryCtx<DataModel>) {
+  const courses = await ctx.db.query("courses").collect();
+  return attachThumbnailURL(ctx, courses);
 }
 
-export function getById(
+export async function getById(
   ctx: GenericQueryCtx<DataModel>,
   courseId: Id<"courses">,
 ) {
-  return ctx.db.get(courseId);
+  const course = await ctx.db.get(courseId);
+  return attachThumbnailURL(ctx, course);
 }
 
-export function getBySlug(ctx: GenericQueryCtx<DataModel>, slug: string) {
-  return ctx.db
+export async function getBySlug(ctx: GenericQueryCtx<DataModel>, slug: string) {
+  const course = await ctx.db
     .query("courses")
     .withIndex("by_slug", (q) => q.eq("slug", slug))
     .first();
+  return attachThumbnailURL(ctx, course);
 }
 
-export function getByTeacherId(
+export async function getByTeacherId(
   ctx: GenericQueryCtx<DataModel>,
   teacherId: Id<"teachers">,
   status?: Infer<typeof courseStatusValidator>,
 ) {
   if (status) {
-    return ctx.db
+    const courses = await ctx.db
       .query("courses")
       .withIndex("by_teacherId_status", (q) =>
         q.eq("teacherId", teacherId).eq("status", status),
       )
       .collect();
+    return attachThumbnailURL(ctx, courses);
   }
 
-  return ctx.db
+  const courses = await ctx.db
     .query("courses")
     .withIndex("by_teacherId_status", (q) => q.eq("teacherId", teacherId))
     .collect();
+  return attachThumbnailURL(ctx, courses);
 }
 
 export async function isSlugAvailable(

@@ -15,6 +15,7 @@ import type * as db_accessTokens_queries from "../db/accessTokens/queries.js";
 import type * as db_courses_index from "../db/courses/index.js";
 import type * as db_courses_mutations from "../db/courses/mutations.js";
 import type * as db_courses_queries from "../db/courses/queries.js";
+import type * as db_courses_utils from "../db/courses/utils.js";
 import type * as db_courses_validators from "../db/courses/validators.js";
 import type * as db_index from "../db/index.js";
 import type * as db_requests_index from "../db/requests/index.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   "db/courses/index": typeof db_courses_index;
   "db/courses/mutations": typeof db_courses_mutations;
   "db/courses/queries": typeof db_courses_queries;
+  "db/courses/utils": typeof db_courses_utils;
   "db/courses/validators": typeof db_courses_validators;
   "db/index": typeof db_index;
   "db/requests/index": typeof db_requests_index;

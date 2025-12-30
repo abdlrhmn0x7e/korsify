@@ -13,7 +13,7 @@ export function generateStaticParams() {
 }
 
 export default async function OnboardingPage(
-  props: PageProps<"/[locale]/dashboard/onboarding">
+  props: PageProps<"/[locale]/dashboard/onboarding">,
 ) {
   const { locale } = await props.params;
   setStaticParamsLocale(locale);
@@ -22,9 +22,9 @@ export default async function OnboardingPage(
     fetchAuthQuery(api.teachers.queries.getTeacher),
   ]);
 
-  if (Boolean(teacher)) {
-    return redirect("/dashboard");
-  }
+  // if (Boolean(teacher)) {
+  // return redirect("/dashboard");
+  // }
 
   return (
     <main className="h-screen">
