@@ -122,8 +122,19 @@ function DialogDescription({
   );
 }
 
+function DialogBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="dialog-body"
+      className={cn("flex flex-col gap-4", className)}
+      {...props}
+    />
+  );
+}
+
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,

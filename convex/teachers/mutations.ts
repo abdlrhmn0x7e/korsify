@@ -24,17 +24,6 @@ function validateSubdomain(subdomain: string): string {
   return result.data;
 }
 
-export const generateUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const user = await authComponent.safeGetAuthUser(ctx);
-    if (!user) {
-      throw new ConvexError("Unauthorized");
-    }
-    return await ctx.storage.generateUploadUrl();
-  },
-});
-
 export const completeOnboarding = mutation({
   args: {
     name: v.string(),

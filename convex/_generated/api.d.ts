@@ -25,6 +25,7 @@ import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/acces
 import type * as earlyAccess_admin_requests from "../earlyAccess/admin/requests.js";
 import type * as earlyAccess_requests from "../earlyAccess/requests.js";
 import type * as http from "../http.js";
+import type * as storage_mutations from "../storage/mutations.js";
 import type * as teachers_mutations from "../teachers/mutations.js";
 import type * as teachers_queries from "../teachers/queries.js";
 import type * as utils from "../utils.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   "earlyAccess/admin/requests": typeof earlyAccess_admin_requests;
   "earlyAccess/requests": typeof earlyAccess_requests;
   http: typeof http;
+  "storage/mutations": typeof storage_mutations;
   "teachers/mutations": typeof teachers_mutations;
   "teachers/queries": typeof teachers_queries;
   utils: typeof utils;
