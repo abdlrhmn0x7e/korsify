@@ -38,7 +38,11 @@ export default function SidebarLayout({
       lang={lang}
       {...props}
     >
-      <AppSidebar data={data} secondary={secondary} />
+      <AppSidebar
+        data={data}
+        secondary={secondary}
+        side={dir === "rtl" ? "right" : "left"}
+      />
 
       <SidebarInset className="flex flex-col md:peer-data-[variant=inset]:shadow-2xs">
         <header className="bg-background sticky top-0 flex h-12 shrink-0 items-center justify-between gap-2 border-b px-2">
@@ -46,7 +50,7 @@ export default function SidebarLayout({
             <SidebarTrigger
               className={cn(
                 "transition-opacity duration-200",
-                !open ? "flex opacity-50" : "hidden opacity-0"
+                !open ? "flex opacity-50" : "hidden opacity-0",
               )}
               size="icon-sm"
             />

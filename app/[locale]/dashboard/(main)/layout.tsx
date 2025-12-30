@@ -27,6 +27,8 @@ export default async function DashboardMainLayout({
 
   const t = await getScopedI18n("dashboard.sidebar");
 
+  const dir = locale === "ar" ? "rtl" : "ltr";
+
   const navItems = [
     {
       title: t("title"),
@@ -69,8 +71,10 @@ export default async function DashboardMainLayout({
     },
   ];
 
+  console.log("DIR", dir);
+
   return (
-    <SidebarLayout data={navItems} secondary={secondary}>
+    <SidebarLayout data={navItems} secondary={secondary} dir={dir}>
       {children}
       <WelcomeDialog />
     </SidebarLayout>
