@@ -7,16 +7,18 @@ import { authClient } from "@/lib/auth-client";
 import { useScopedI18n } from "@/locales/client";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { useReadLocalStorage } from "usehooks-ts";
 
 export function LoginButton() {
   const t = useScopedI18n("auth.login");
+  const onboarded = useReadLocalStorage<boolean>("korsify-welcome-seen");
 
   const loginFn = useCallback(async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: onboarded ? "/dashboard" : "/dashboard/onboarding",
     });
-  }, []);
+  }, [onboarded]);
 
   const { mutate: login, isPending } = useMutation({
     mutationFn: loginFn,

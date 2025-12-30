@@ -15,7 +15,7 @@ const phaseVariants: Variants = {
   exit: { opacity: 0, y: -40, filter: "blur(10px)" },
 };
 
-const phaseTransition = { duration: 0.4, ease: "easeOut" } as const;
+const phaseTransition = { duration: 0.3, ease: "easeOut" } as const;
 
 export function Onboarding() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export function Onboarding() {
 
   useLayoutEffect(() => {
     if (phase !== "welcome") return;
-    const timeout = setTimeout(() => setPhase("form"), 2000);
+    const timeout = setTimeout(() => setPhase("form"), 1500);
     return () => clearTimeout(timeout);
   }, [phase]);
 
