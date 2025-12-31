@@ -1,5 +1,6 @@
 import "./env";
 import { NextConfig } from "next";
+import { env } from "./env";
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -14,6 +15,15 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: env.NEXT_PUBLIC_CONVEX_URL.replace(/^https?:\/\//, ""),
+      },
+    ],
   },
 };
 

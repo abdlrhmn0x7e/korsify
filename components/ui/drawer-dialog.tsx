@@ -32,8 +32,8 @@ interface DrawerDialogProps {
 }
 
 interface DrawerDialogTriggerProps {
-  children: React.ReactNode;
-  asChild?: boolean;
+  children?: React.ReactNode;
+  render?: React.ReactElement;
   className?: string;
 }
 
@@ -69,14 +69,23 @@ interface DrawerDialogFooterProps {
 
 export function DrawerDialogTrigger({
   children,
+  render,
   ...props
 }: DrawerDialogTriggerProps) {
   const isMobile = useIsMobile();
   if (isMobile) {
-    return <DrawerTrigger {...props}>{children}</DrawerTrigger>;
+    return (
+      <DrawerTrigger asChild={!!render} {...props}>
+        {render ?? children}
+      </DrawerTrigger>
+    );
   }
 
-  return <DialogTrigger {...props}>{children}</DialogTrigger>;
+  return (
+    <DialogTrigger render={render} {...props}>
+      {children}
+    </DialogTrigger>
+  );
 }
 
 export function DrawerDialogContent({

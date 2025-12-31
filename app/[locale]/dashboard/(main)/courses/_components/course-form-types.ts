@@ -1,5 +1,5 @@
 import type { FieldPath } from "react-hook-form";
-import type { JSONContent } from "@tiptap/react";
+import { JSONContent } from "@tiptap/react";
 import { z } from "zod";
 
 /**
@@ -14,55 +14,40 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 }
 
-export interface CourseFormValues {
-  // Step 1: Basics
-  title: string;
-  thumbnailStorageId: string;
+export const courseFormSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  thumbnailStorageId: z.string().min(1, "Thumbnail is required"),
+  thumbnailPreviewUrl: z.url().optional(),
 
-  // Step 2: Description
-  description: JSONContent;
+  description: z.custom<JSONContent>(),
 
-  // Step 3: Publish Settings
-  slug: string;
-  price: number;
-  overridePrice: number | null;
-  metaTitle?: string;
-  metaDescription?: string;
-}
+  slug: z
+    .string()
+    .regex(
+      /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
+      "Slug must start and end with a letter or number, and can only contain lowercase letters, numbers, and hyphens"
+    ),
+  isSlugAvailable: z.boolean(),
+  price: z.coerce.number<number>().min(0, "Price must be a positive number"),
+  overridePrice: z.coerce.number<number>().nullable(),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+});
+
+export type CourseFormValues = z.infer<typeof courseFormSchema>;
 
 export const DEFAULT_FORM_VALUES: CourseFormValues = {
   title: "",
   thumbnailStorageId: "",
+  thumbnailPreviewUrl: "",
   description: { type: "doc", content: [] },
   slug: "",
+  isSlugAvailable: true,
   price: 0,
   overridePrice: null,
   metaTitle: "",
   metaDescription: "",
 };
-
-export const courseFormSchema = z.object({
-  // Step 1: Basics
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  thumbnailStorageId: z.string().min(1, "Thumbnail is required"),
-
-  // Step 2: Description
-  description: z.any(),
-
-  // Step 3: Publish Settings
-  slug: z
-    .string()
-    .min(3, "Slug must be at least 3 characters")
-    .max(63, "Slug must be at most 63 characters")
-    .regex(
-      /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
-      "Slug must start and end with a letter or number, and can only contain lowercase letters, numbers, and hyphens"
-    ),
-  price: z.number().min(0, "Price must be a positive number"),
-  overridePrice: z.number().nullable(),
-  metaTitle: z.string().optional(),
-  metaDescription: z.string().optional(),
-});
 
 export interface Step {
   id: string;
@@ -77,4 +62,3 @@ export const STEP_IDS = {
   DESCRIPTION: "description",
   PUBLISH: "publish",
 } as const;
-

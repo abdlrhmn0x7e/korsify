@@ -91,10 +91,22 @@ export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
   const activeStep = STEPS[currentStep - 1];
 
   async function handleNext() {
-    if (!stepHelpers.canGoToNextStep) return;
-
     const isValid = await form.trigger(activeStep?.fields);
     if (!isValid) return;
+
+    if (!stepHelpers.canGoToNextStep) {
+      const isSlugAvailable = form.getValues("isSlugAvailable");
+      if (!isSlugAvailable) {
+        toastManager.add({
+          title: "Slug unavailable",
+          description: "Please choose a different URL for your course.",
+          type: "error",
+        });
+        return;
+      }
+      await form.handleSubmit(onSubmit)();
+      return;
+    }
 
     stepHelpers.goToNextStep();
   }
@@ -106,6 +118,7 @@ export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
 
   function handleClose() {
     setOpen(false);
+
     // Reset form and step after dialog closes
     setTimeout(() => {
       form.reset(DEFAULT_FORM_VALUES);
@@ -220,12 +233,10 @@ export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
                       </Button>
 
                       <Button
-                        type={stepHelpers.canGoToNextStep ? "button" : "submit"}
-                        onClick={
-                          stepHelpers.canGoToNextStep ? handleNext : undefined
-                        }
+                        type="button"
+                        onClick={handleNext}
                         disabled={isPending}
-                        className="min-w-[120px]"
+                        className="min-w-30"
                       >
                         {isPending ? (
                           <Spinner />

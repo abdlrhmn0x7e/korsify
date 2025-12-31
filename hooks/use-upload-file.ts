@@ -4,20 +4,21 @@ import { useCallback, useRef } from "react";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface UploadResult {
   storageId: string;
+  url: string | null;
 }
 
 interface UseUploadFileOptions {
-  onSuccess?: (storageId: string) => void;
+  onSuccess?: (result: UploadResult) => void;
   onError?: (error: Error) => void;
   onSettled?: () => void;
 }
 
 interface UseUploadFileReturn {
   upload: (file: File) => Promise<string | null>;
-  uploadFile: (file: File) => void;
   isUploading: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -39,6 +40,7 @@ export function useUploadFile(
   const generateUploadUrlFn = useConvexMutation(
     api.storage.mutations.generateUploadUrl
   );
+  const getStorageUrlFn = useConvexMutation(api.storage.mutations.getUrl);
 
   const mutation = useMutation({
     mutationFn: async (file: File): Promise<UploadResult> => {
@@ -54,11 +56,13 @@ export function useUploadFile(
       if (!result.ok) {
         throw new Error(`Upload failed: ${JSON.stringify(json)}`);
       }
+      const storageId = json.storageId as Id<"_storage">;
+      const url = await getStorageUrlFn({ storageId });
 
-      return { storageId: json.storageId as string };
+      return { storageId, url };
     },
     onSuccess: (data) => {
-      onSuccess?.(data.storageId);
+      onSuccess?.(data);
     },
     onError: (err) => {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -77,13 +81,6 @@ export function useUploadFile(
       } catch {
         return null;
       }
-    },
-    [mutation]
-  );
-
-  const uploadFile = useCallback(
-    (file: File) => {
-      mutation.mutate(file);
     },
     [mutation]
   );
@@ -110,7 +107,6 @@ export function useUploadFile(
 
   return {
     upload,
-    uploadFile,
     isUploading: mutation.isPending,
     isError: mutation.isError,
     isSuccess: mutation.isSuccess,

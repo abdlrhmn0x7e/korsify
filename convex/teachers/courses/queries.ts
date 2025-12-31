@@ -20,14 +20,14 @@ export const getAllWithLessonCount = teacherQuery({
     const courses = await db.courses.queries.getByTeacherId(
       ctx,
       ctx.teacherId,
-      args.status,
+      args.status
     );
 
     const coursesWithLessonCount = await Promise.all(
       courses.map(async (course) => ({
         ...course,
         lessonCount: await db.lessons.queries.countByCourseId(ctx, course._id),
-      })),
+      }))
     );
 
     return coursesWithLessonCount;
@@ -70,6 +70,7 @@ export const isSlugAvailable = teacherQuery({
   },
   handler: async (ctx, args) => {
     const course = await db.courses.queries.getBySlug(ctx, args.slug);
+    console.log("course", course);
     return course === null;
   },
 });

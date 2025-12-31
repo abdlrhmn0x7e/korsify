@@ -18,8 +18,6 @@ import {
   IconLink,
   IconList,
   IconListNumbers,
-  IconMaximize,
-  IconMinimize,
   IconPhotoPlus,
   IconStrikethrough,
   IconUnderline,
@@ -47,44 +45,14 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useUploadFiles } from "@/hooks/use-upload-files";
-
-function MaybeTooltip({
-  label,
-  children,
-  disableTooltips,
-}: {
-  label: string;
-  children: React.ReactElement;
-  disableTooltips?: boolean;
-}) {
-  if (disableTooltips) return <>{children}</>;
-
-  return (
-    <Tooltip>
-      <TooltipTrigger render={children} />
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
-  );
-}
 
 export function EditorMenuBar({
   editor,
-  onExpand,
   className,
-  expanded,
-  disableTooltips,
 }: {
   editor: Editor;
-  onExpand: () => void;
   className?: string;
-  expanded?: boolean;
-  disableTooltips?: boolean;
 }) {
   const editorState = useEditorState({
     editor,
@@ -120,28 +88,24 @@ export function EditorMenuBar({
         className
       )}
     >
-      <MaybeTooltip label="Undo" disableTooltips={disableTooltips}>
-        <Button
-          variant="ghost"
-          size="icon"
-          type="button"
-          disabled={!editorState.canUndo}
-          onClick={() => editor.chain().focus().undo().run()}
-        >
-          <IconArrowBackUp />
-        </Button>
-      </MaybeTooltip>
-      <MaybeTooltip label="Redo" disableTooltips={disableTooltips}>
-        <Button
-          variant="ghost"
-          size="icon"
-          type="button"
-          disabled={!editorState.canRedo}
-          onClick={() => editor.chain().focus().redo().run()}
-        >
-          <IconArrowForwardUp />
-        </Button>
-      </MaybeTooltip>
+      <Button
+        variant="ghost"
+        size="icon"
+        type="button"
+        disabled={!editorState.canUndo}
+        onClick={() => editor.chain().focus().undo().run()}
+      >
+        <IconArrowBackUp />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        type="button"
+        disabled={!editorState.canRedo}
+        onClick={() => editor.chain().focus().redo().run()}
+      >
+        <IconArrowForwardUp />
+      </Button>
 
       <Separator
         orientation="vertical"
@@ -149,15 +113,13 @@ export function EditorMenuBar({
       />
 
       <DropdownMenu>
-        <MaybeTooltip label="Headings" disableTooltips={disableTooltips}>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="ghost" size="icon" type="button">
-                <IconHeading />
-              </Button>
-            }
-          />
-        </MaybeTooltip>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="ghost" size="icon" type="button">
+              <IconHeading />
+            </Button>
+          }
+        />
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             variant={editorState.isHeading1 ? "destructive" : "default"}
@@ -190,15 +152,13 @@ export function EditorMenuBar({
       </DropdownMenu>
 
       <DropdownMenu>
-        <MaybeTooltip label="Lists" disableTooltips={disableTooltips}>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="ghost" size="icon" type="button">
-                <IconList />
-              </Button>
-            }
-          />
-        </MaybeTooltip>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="ghost" size="icon" type="button">
+              <IconList />
+            </Button>
+          }
+        />
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -222,57 +182,47 @@ export function EditorMenuBar({
         className="mx-2 data-[orientation=vertical]:h-4"
       />
 
-      <MaybeTooltip label="Bold" disableTooltips={disableTooltips}>
-        <Button
-          variant={editorState.isBold ? "default" : "ghost"}
-          size="icon"
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        >
-          <IconBold />
-        </Button>
-      </MaybeTooltip>
-      <MaybeTooltip label="Italic" disableTooltips={disableTooltips}>
-        <Button
-          variant={editorState.isItalic ? "default" : "ghost"}
-          size="icon"
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        >
-          <IconItalic />
-        </Button>
-      </MaybeTooltip>
+      <Button
+        variant={editorState.isBold ? "default" : "ghost"}
+        size="icon"
+        type="button"
+        onClick={() => editor.chain().focus().toggleBold().run()}
+      >
+        <IconBold />
+      </Button>
+      <Button
+        variant={editorState.isItalic ? "default" : "ghost"}
+        size="icon"
+        type="button"
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+      >
+        <IconItalic />
+      </Button>
 
-      <MaybeTooltip label="Underline" disableTooltips={disableTooltips}>
-        <Button
-          variant={editorState.isUnderline ? "default" : "ghost"}
-          size="icon"
-          type="button"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-        >
-          <IconUnderline />
-        </Button>
-      </MaybeTooltip>
-      <MaybeTooltip label="Strikethrough" disableTooltips={disableTooltips}>
-        <Button
-          variant={editorState.isStrikethrough ? "default" : "ghost"}
-          size="icon"
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-        >
-          <IconStrikethrough />
-        </Button>
-      </MaybeTooltip>
-      <MaybeTooltip label="Highlight" disableTooltips={disableTooltips}>
-        <Button
-          variant={editorState.isHighlight ? "default" : "ghost"}
-          size="icon"
-          type="button"
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
-        >
-          <IconHighlight />
-        </Button>
-      </MaybeTooltip>
+      <Button
+        variant={editorState.isUnderline ? "default" : "ghost"}
+        size="icon"
+        type="button"
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+      >
+        <IconUnderline />
+      </Button>
+      <Button
+        variant={editorState.isStrikethrough ? "default" : "ghost"}
+        size="icon"
+        type="button"
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+      >
+        <IconStrikethrough />
+      </Button>
+      <Button
+        variant={editorState.isHighlight ? "default" : "ghost"}
+        size="icon"
+        type="button"
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
+      >
+        <IconHighlight />
+      </Button>
 
       <Separator
         orientation="vertical"
@@ -280,15 +230,13 @@ export function EditorMenuBar({
       />
 
       <DropdownMenu>
-        <MaybeTooltip label="Alignment" disableTooltips={disableTooltips}>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="ghost" size="icon" type="button">
-                <IconAlignJustified />
-              </Button>
-            }
-          />
-        </MaybeTooltip>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="ghost" size="icon" type="button">
+              <IconAlignJustified />
+            </Button>
+          }
+        />
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
@@ -324,7 +272,6 @@ export function EditorMenuBar({
       <LinkDrawerDialog
         isLink={editorState.isLink}
         onLink={(url) => editor.chain().focus().setLink({ href: url }).run()}
-        disableTooltips={disableTooltips}
       />
 
       <Separator
@@ -332,26 +279,15 @@ export function EditorMenuBar({
         className="mx-2 data-[orientation=vertical]:h-4"
       />
 
-      <ImageButton editor={editor} disableTooltips={disableTooltips} />
-
-      <MaybeTooltip
-        label={expanded ? "Minimize" : "Expand"}
-        disableTooltips={disableTooltips}
-      >
-        <Button variant="ghost" type="button" onClick={onExpand}>
-          {expanded ? <IconMinimize /> : <IconMaximize />}
-        </Button>
-      </MaybeTooltip>
+      <ImageButton editor={editor} />
     </div>
   );
 }
 
 function ImageButton({
   editor,
-  disableTooltips,
 }: {
   editor: Editor;
-  disableTooltips?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -395,16 +331,7 @@ function ImageButton({
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen}>
-      {disableTooltips ? (
-        <DrawerDialogTrigger>{triggerButton}</DrawerDialogTrigger>
-      ) : (
-        <Tooltip>
-          <DrawerDialogTrigger>
-            <TooltipTrigger render={triggerButton} />
-          </DrawerDialogTrigger>
-          <TooltipContent>Add image</TooltipContent>
-        </Tooltip>
-      )}
+      <DrawerDialogTrigger render={triggerButton} />
       <DrawerDialogContent>
         <DrawerDialogHeader>
           <DrawerDialogTitle>Add Image</DrawerDialogTitle>
@@ -428,9 +355,7 @@ function ImageButton({
             disabled={isPending}
           >
             {isPending ? (
-              <>
-                Uploading {uploadingFile?.file.name ?? "..."}
-              </>
+              <>Uploading {uploadingFile?.file.name ?? "..."}</>
             ) : (
               <>
                 <IconPhotoPlus className="mr-2" />
@@ -457,11 +382,9 @@ function ImageButton({
 function LinkDrawerDialog({
   isLink,
   onLink,
-  disableTooltips,
 }: {
   isLink: boolean;
   onLink: (url: string) => void;
-  disableTooltips?: boolean;
 }) {
   const [url, setUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
@@ -488,16 +411,7 @@ function LinkDrawerDialog({
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen}>
-      {disableTooltips ? (
-        <DrawerDialogTrigger>{triggerButton}</DrawerDialogTrigger>
-      ) : (
-        <Tooltip>
-          <DrawerDialogTrigger>
-            <TooltipTrigger render={triggerButton} />
-          </DrawerDialogTrigger>
-          <TooltipContent>Link</TooltipContent>
-        </Tooltip>
-      )}
+      <DrawerDialogTrigger render={triggerButton} />
       <DrawerDialogContent>
         <DrawerDialogHeader>
           <DrawerDialogTitle>Add Link</DrawerDialogTitle>
