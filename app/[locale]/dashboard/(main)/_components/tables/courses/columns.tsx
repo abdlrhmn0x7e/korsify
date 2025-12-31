@@ -3,11 +3,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { api } from "@/convex/_generated/api";
-import { IconCalendar, IconCheck, IconPencil } from "@tabler/icons-react";
+import { IconCalendar } from "@tabler/icons-react";
 import { type FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { CoursesTableActions } from "./actions";
+import { CoursesTableActions, CourseStatusBadge } from "./actions";
 import { formatPrice } from "@/lib/format-price";
 
 export const coursesColumns: ColumnDef<
@@ -49,12 +48,11 @@ export const coursesColumns: ColumnDef<
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status;
       return (
-        <Badge variant={status === "published" ? "success" : "secondary"}>
-          {status === "published" ? <IconCheck /> : <IconPencil />}
-          {status.charAt(0).toUpperCase() + status.slice(1)}
-        </Badge>
+        <CourseStatusBadge
+          status={row.original.status}
+          courseId={row.original._id}
+        />
       );
     },
   },
@@ -76,7 +74,12 @@ export const coursesColumns: ColumnDef<
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      return <CoursesTableActions id={row.original._id} />;
+      return (
+        <CoursesTableActions
+          courseId={row.original._id}
+          status={row.original.status}
+        />
+      );
     },
   },
 ];

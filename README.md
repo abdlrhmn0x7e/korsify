@@ -89,26 +89,25 @@ bun dev
 
 #### Mux Video Integration
 
-- [ ] Set up Mux account and get API credentials
-- [ ] Create Mux API client (server-side action)
-- [ ] Add video field to lessons table (muxAssetId, muxPlaybackId, status, duration)
-- [ ] Implement direct upload URL generation (Mux direct uploads)
-- [ ] Create Convex action for getting upload credentials
-- [ ] Set up Mux webhook endpoint in convex/http.ts
-- [ ] Handle webhook: video.asset.ready → update lesson with playback ID
-- [ ] Handle webhook: video.asset.errored → update lesson status with error
-- [ ] Handle webhook: video.upload.asset_created → link upload to asset
+- [x] Set up Mux account and get API credentials
+- [x] Create Mux API client (server-side action)
+- [x] Add video field to lessons table (muxAssetId, muxPlaybackId, status, duration)
+- [x] Implement direct upload URL generation (Mux direct uploads)
+- [x] Create Convex action for getting upload credentials
+- [x] Set up Mux webhook endpoint in convex/http.ts
+- [x] Handle webhook: video.asset.ready → update lesson with playback ID
+- [x] Handle webhook: video.asset.errored → update lesson status with error
+- [x] Handle webhook: video.upload.asset_created → link upload to asset
 
 #### Course Management UI
 
 - [x] Build course list page with table view
 - [x] Add create course button
-- [ ] Build course form (title, slug, description, price, thumbnail upload)
+- [x] Build course form (title, slug, description, price, thumbnail upload)
 - [ ] Build course edit page
 - [x] Add course status badge (draft/published)
 - [ ] Add publish/unpublish toggle UI
 - [ ] Add delete course with confirmation dialog
-- [ ] Add course reordering (drag-drop or arrows)
 
 #### Lesson Management UI
 

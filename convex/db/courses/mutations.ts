@@ -81,7 +81,7 @@ export async function updateStatus(
 
   return ctx.db.patch("courses", courseId, {
     status,
-    publishedAt: status === "published" ? now : undefined,
+    publishedAt: status === "published" ? now : null,
     updatedAt: now,
   });
 }

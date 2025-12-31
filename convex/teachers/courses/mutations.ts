@@ -3,6 +3,7 @@ import { teacherMutation } from "../../utils";
 import {
   coursePricingValidator,
   courseSeoValidator,
+  courseStatusValidator,
 } from "../../db/courses/validators";
 import { db } from "../../db";
 import z from "zod";
@@ -92,9 +93,10 @@ export const update = teacherMutation({
   },
 });
 
-export const publish = teacherMutation({
+export const updateStatus = teacherMutation({
   args: {
     courseId: v.id("courses"),
+    status: courseStatusValidator,
   },
   handler: async (ctx, args) => {
     const course = await db.courses.queries.getById(ctx, args.courseId);
@@ -103,22 +105,7 @@ export const publish = teacherMutation({
       throw new ConvexError("course doesn't exist");
     }
 
-    return db.courses.mutations.updateStatus(ctx, args.courseId, "published");
-  },
-});
-
-export const draft = teacherMutation({
-  args: {
-    courseId: v.id("courses"),
-  },
-  handler: async (ctx, args) => {
-    const course = await db.courses.queries.getById(ctx, args.courseId);
-
-    if (!course || course.teacherId != ctx.teacherId) {
-      throw new ConvexError("course doesn't exist");
-    }
-
-    return db.courses.mutations.updateStatus(ctx, args.courseId, "draft");
+    return db.courses.mutations.updateStatus(ctx, args.courseId, args.status);
   },
 });
 

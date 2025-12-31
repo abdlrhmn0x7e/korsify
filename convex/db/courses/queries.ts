@@ -1,7 +1,5 @@
 import { GenericQueryCtx } from "convex/server";
 import { DataModel, Id } from "../../_generated/dataModel";
-import { Infer } from "convex/values";
-import { courseStatusValidator } from "./validators";
 import { attachThumbnailURL } from "./utils";
 
 export async function getAll(ctx: GenericQueryCtx<DataModel>) {
@@ -28,22 +26,13 @@ export async function getBySlug(ctx: GenericQueryCtx<DataModel>, slug: string) {
 export async function getByTeacherId(
   ctx: GenericQueryCtx<DataModel>,
   teacherId: Id<"teachers">,
-  status?: Infer<typeof courseStatusValidator>,
 ) {
-  if (status) {
-    const courses = await ctx.db
-      .query("courses")
-      .withIndex("by_teacherId_status", (q) =>
-        q.eq("teacherId", teacherId).eq("status", status),
-      )
-      .collect();
-    return attachThumbnailURL(ctx, courses);
-  }
-
   const courses = await ctx.db
     .query("courses")
-    .withIndex("by_teacherId_status", (q) => q.eq("teacherId", teacherId))
+    .withIndex("by_teacherId", (q) => q.eq("teacherId", teacherId))
+    .order("desc")
     .collect();
+
   return attachThumbnailURL(ctx, courses);
 }
 
@@ -54,17 +43,4 @@ export async function isSlugAvailable(
   // should I make this scoped to teacher courses?
   const existing = await getBySlug(ctx, slug);
   return existing === null;
-}
-
-export async function getPublishedByTeacherId(
-  ctx: GenericQueryCtx<DataModel>,
-  teacherId: Id<"teachers">,
-) {
-  const courses = await ctx.db
-    .query("courses")
-    .withIndex("by_teacherId_status", (q) =>
-      q.eq("teacherId", teacherId).eq("status", "published"),
-    )
-    .collect();
-  return attachThumbnailURL(ctx, courses);
 }

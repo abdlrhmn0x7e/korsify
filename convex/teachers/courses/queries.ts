@@ -4,11 +4,9 @@ import { teacherQuery } from "../../utils";
 import { courseStatusValidator } from "../../db/courses/validators";
 
 export const getAll = teacherQuery({
-  args: {
-    status: v.optional(courseStatusValidator),
-  },
-  handler: async (ctx, args) => {
-    return db.courses.queries.getByTeacherId(ctx, ctx.teacherId, args.status);
+  args: {},
+  handler: async (ctx) => {
+    return db.courses.queries.getByTeacherId(ctx, ctx.teacherId);
   },
 });
 
@@ -16,18 +14,14 @@ export const getAllWithLessonCount = teacherQuery({
   args: {
     status: v.optional(courseStatusValidator),
   },
-  handler: async (ctx, args) => {
-    const courses = await db.courses.queries.getByTeacherId(
-      ctx,
-      ctx.teacherId,
-      args.status
-    );
+  handler: async (ctx) => {
+    const courses = await db.courses.queries.getByTeacherId(ctx, ctx.teacherId);
 
     const coursesWithLessonCount = await Promise.all(
       courses.map(async (course) => ({
         ...course,
         lessonCount: await db.lessons.queries.countByCourseId(ctx, course._id),
-      }))
+      })),
     );
 
     return coursesWithLessonCount;
