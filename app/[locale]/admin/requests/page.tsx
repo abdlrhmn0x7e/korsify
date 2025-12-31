@@ -4,25 +4,20 @@ import {
   RequestsTable,
   RequestsTableSkeleton,
 } from "../_components/tables/requests";
-import {
-  Frame,
-  FrameHeader,
-  FramePanel,
-  FrameTitle,
-} from "@/components/ui/frame";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { IconUserPlus } from "@tabler/icons-react";
+import { PageLayout } from "@/components/dashboard/page-layout";
 
 export default async function RequestsPage() {
   await requireAdmin();
 
   return (
-    <section>
+    <PageLayout>
       <PageHeader title="Early Access Requests" Icon={IconUserPlus} />
 
       <Suspense fallback={<RequestsTableSkeleton />}>
         <RequestsTable />
       </Suspense>
-    </section>
+    </PageLayout>
   );
 }

@@ -11,7 +11,7 @@ import { NavItem } from "./app-sidebar";
 import { cn } from "@/lib/utils";
 import { PathBreadcrumb } from "./path-breadcrumb";
 import { usePathname } from "next/navigation";
-import { LocaleSwitcherSelect } from "../locale-switcher";
+import { LocaleSwitcherSelect } from "@/components/locale-switcher";
 
 export default function SidebarLayout({
   data,
@@ -50,7 +50,7 @@ export default function SidebarLayout({
             <SidebarTrigger
               className={cn(
                 "transition-opacity duration-200",
-                !open ? "flex opacity-50" : "hidden opacity-0",
+                !open ? "flex opacity-50" : "hidden opacity-0"
               )}
               size="icon-sm"
             />

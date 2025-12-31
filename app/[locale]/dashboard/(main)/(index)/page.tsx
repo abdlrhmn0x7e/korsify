@@ -1,6 +1,6 @@
 import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { IconLayoutDashboard } from "@tabler/icons-react";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";

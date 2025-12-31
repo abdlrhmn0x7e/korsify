@@ -12,6 +12,7 @@ import { IconPackage } from "@tabler/icons-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
   Empty,
+  EmptyContent,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
@@ -22,6 +23,8 @@ import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import { accessTokensColumns } from "./columns";
 import { AccessTokensTableHeader } from "./header";
+import { cn } from "@/lib/utils";
+import { CreateAccessTokenButton } from "../../../access-tokens/_components/create-access-token-button";
 
 export function AccessTokensTableClient({
   preloadedAccessTokensQuery,
@@ -40,7 +43,7 @@ export function AccessTokensTableClient({
   });
 
   return (
-    <Table>
+    <Table className={cn(accessTokensData.length === 0 && "h-full")}>
       <AccessTokensTableHeader />
 
       <TableBody>
@@ -64,6 +67,9 @@ export function AccessTokensTableClient({
                   </EmptyMedia>
                   <EmptyTitle>No Access Tokens Found.</EmptyTitle>
                 </EmptyHeader>
+                <EmptyContent>
+                  <CreateAccessTokenButton variant="default" />
+                </EmptyContent>
               </Empty>
             </TableCell>
           </TableRow>

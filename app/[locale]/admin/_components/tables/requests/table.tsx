@@ -22,6 +22,7 @@ import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import { requestsColumns } from "./columns";
 import { RequestsTableHeader } from "./header";
+import { cn } from "@/lib/utils";
 
 export function RequestsTableClient({
   preloadedRequestsQuery,
@@ -40,7 +41,7 @@ export function RequestsTableClient({
   });
 
   return (
-    <Table>
+    <Table className={cn(requestsData.length === 0 && "h-full")}>
       <RequestsTableHeader />
 
       <TableBody>

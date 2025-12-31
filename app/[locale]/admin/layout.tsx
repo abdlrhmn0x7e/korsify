@@ -1,5 +1,5 @@
-import { NavItem } from "@/components/sidebar/app-sidebar";
-import SidebarLayout from "@/components/sidebar/sidebar-layout";
+import { NavItem } from "@/components/dashboard/sidebar/app-sidebar";
+import SidebarLayout from "@/components/dashboard/sidebar/sidebar-layout";
 import {
   Icon24Hours,
   IconLayoutDashboardFilled,

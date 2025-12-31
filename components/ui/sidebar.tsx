@@ -271,7 +271,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <IconLayoutSidebar className="size-4.5" />
+      <IconLayoutSidebar className="size-4" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

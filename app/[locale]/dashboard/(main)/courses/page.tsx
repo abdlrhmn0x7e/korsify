@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { IconBook } from "@tabler/icons-react";
 import { Suspense } from "react";
 import {
@@ -9,6 +9,7 @@ import { AddCourseButton } from "./_components/add-course-button";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
+import { PageLayout } from "@/components/dashboard/page-layout";
 
 export default async function CoursesPage() {
   const [teacher] = await Promise.all([
@@ -17,7 +18,7 @@ export default async function CoursesPage() {
   if (!teacher) return redirect("/dashboard/onboarding");
 
   return (
-    <section>
+    <PageLayout>
       <PageHeader title="Manage Your Courses" Icon={IconBook}>
         <AddCourseButton />
       </PageHeader>
@@ -25,6 +26,6 @@ export default async function CoursesPage() {
       <Suspense fallback={<CoursesTableSkeleton />}>
         <CoursesTable />
       </Suspense>
-    </section>
+    </PageLayout>
   );
 }

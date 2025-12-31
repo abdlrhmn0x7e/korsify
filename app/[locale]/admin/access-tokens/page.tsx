@@ -5,14 +5,15 @@ import {
   AccessTokensTable,
   AccessTokensTableSkeleton,
 } from "../_components/tables/access-tokens";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { Icon24Hours } from "@tabler/icons-react";
+import { PageLayout } from "@/components/dashboard/page-layout";
 
 export default async function AccessTokensPage() {
   await requireAdmin();
 
   return (
-    <section>
+    <PageLayout>
       <PageHeader title="Access Tokens" Icon={Icon24Hours}>
         <CreateAccessTokenButton />
       </PageHeader>
@@ -20,6 +21,6 @@ export default async function AccessTokensPage() {
       <Suspense fallback={<AccessTokensTableSkeleton />}>
         <AccessTokensTable />
       </Suspense>
-    </section>
+    </PageLayout>
   );
 }

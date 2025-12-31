@@ -12,6 +12,7 @@ import { IconBook } from "@tabler/icons-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
   Empty,
+  EmptyContent,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
@@ -22,6 +23,8 @@ import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import { coursesColumns } from "./columns";
 import { CoursesTableHeader } from "./header";
+import { AddCourseButton } from "../../../courses/_components/add-course-button";
+import { cn } from "@/lib/utils";
 
 export function CoursesTableClient({
   preloadedCoursesQuery,
@@ -38,7 +41,7 @@ export function CoursesTableClient({
   });
 
   return (
-    <Table>
+    <Table className={cn(coursesData.length === 0 && "h-full")}>
       <CoursesTableHeader />
 
       <TableBody>
@@ -55,13 +58,16 @@ export function CoursesTableClient({
         ) : (
           <TableRow>
             <TableCell colSpan={coursesColumns.length}>
-              <Empty>
+              <Empty className="mb-12">
                 <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <IconBook />
+                  <EmptyMedia variant="icon" className="size-12">
+                    <IconBook className="size-6" />
                   </EmptyMedia>
                   <EmptyTitle>No Courses Found.</EmptyTitle>
                 </EmptyHeader>
+                <EmptyContent>
+                  <AddCourseButton />
+                </EmptyContent>
               </Empty>
             </TableCell>
           </TableRow>

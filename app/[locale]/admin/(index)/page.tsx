@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/dashboard/page-header";
 import { requireAdmin } from "@/lib/auth-server";
 import { IconLayoutDashboardFilled } from "@tabler/icons-react";
 

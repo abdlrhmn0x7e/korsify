@@ -17,7 +17,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Logo } from "../logo";
+import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -53,7 +53,7 @@ export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
               "transition-opacity duration-200",
               open ? "flex opacity-50" : "hidden opacity-0"
             )}
-            size="icon-sm"
+            size="icon-xs"
           />
         </div>
       </SidebarHeader>

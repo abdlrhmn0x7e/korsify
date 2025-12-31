@@ -8,7 +8,7 @@ import {
   IconBuildingStore,
   IconUsers,
 } from "@tabler/icons-react";
-import SidebarLayout from "@/components/sidebar/sidebar-layout";
+import SidebarLayout from "@/components/dashboard/sidebar/sidebar-layout";
 import { WelcomeDialog } from "./_components/welcome-dialog";
 
 export function generateStaticParams() {
