@@ -21,7 +21,20 @@ import {
   IconShareOff,
   IconTrash,
 } from "@tabler/icons-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { useMutation } from "@tanstack/react-query";
+import { useDialog } from "@/hooks/use-dialog";
 
 export function CoursesTableActions({
   courseId,
@@ -33,7 +46,6 @@ export function CoursesTableActions({
   const updateStatusMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.updateStatus),
   });
-
   function handleUpdateStatus() {
     updateStatusMutation.mutate({
       courseId,
@@ -41,39 +53,73 @@ export function CoursesTableActions({
     });
   }
 
+  const { props, dismiss } = useDialog();
+  const removeCourseMutation = useMutation({
+    mutationFn: useConvexMutation(api.teachers.courses.mutations.remove),
+    onSettled: dismiss,
+  });
+  function handleRemoveCourse() {
+    removeCourseMutation.mutate({
+      courseId,
+    });
+  }
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className={buttonVariants({ variant: "ghost", size: "icon" })}
-      >
-        <IconDots className="size-4" />
-        <span className="sr-only">Open menu</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <IconEye className="size-4" />
-          View
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          disabled={updateStatusMutation.isPending}
-          onClick={handleUpdateStatus}
+    <AlertDialog {...props}>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={buttonVariants({ variant: "ghost", size: "icon" })}
         >
-          {updateStatusMutation.isPending ? (
-            <Spinner />
-          ) : status === "draft" ? (
-            <IconShare />
-          ) : (
-            <IconShareOff />
-          )}
-          <span>{status === "draft" ? "Publish" : "Draft"}</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
-          <IconTrash className="size-4" />
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <IconDots className="size-4" />
+          <span className="sr-only">Open menu</span>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <IconEye className="size-4" />
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={updateStatusMutation.isPending}
+            onClick={handleUpdateStatus}
+          >
+            {updateStatusMutation.isPending ? (
+              <Spinner />
+            ) : status === "draft" ? (
+              <IconShare />
+            ) : (
+              <IconShareOff />
+            )}
+            <span>{status === "draft" ? "Publish" : "Draft"}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <AlertDialogTrigger
+            render={<DropdownMenuItem variant="destructive" />}
+            nativeButton={false}
+          >
+            <IconTrash /> Delete
+          </AlertDialogTrigger>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            course and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleRemoveCourse}
+            disabled={removeCourseMutation.isPending}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
