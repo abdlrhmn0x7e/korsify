@@ -6,6 +6,7 @@ import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
 import { PageLayout } from "@/components/dashboard/page-layout";
+import { CourseDrawer } from "../_components/drawers/course-drawer";
 
 export default async function CoursesPage() {
   const [teacher] = await Promise.all([
@@ -20,6 +21,8 @@ export default async function CoursesPage() {
       </PageHeader>
 
       <CoursesTable />
+
+      <CourseDrawer />
     </PageLayout>
   );
 }

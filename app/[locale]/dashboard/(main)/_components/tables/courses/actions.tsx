@@ -37,6 +37,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/use-dialog";
 import { EditCourseDialog } from "../../../courses/_components/edit-course-dialog";
+import { useCourseSearchParams } from "../../../_hooks/use-course-search-params";
 
 type CourseWithThumbnail = Doc<"courses"> & { thumbnailUrl: string | null };
 
@@ -45,6 +46,7 @@ interface CoursesTableActionsProps {
 }
 
 export function CoursesTableActions({ course }: CoursesTableActionsProps) {
+  const [, setParams] = useCourseSearchParams();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const updateStatusMutation = useMutation({
@@ -79,7 +81,15 @@ export function CoursesTableActions({ course }: CoursesTableActionsProps) {
             <span className="sr-only">Open menu</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+
+                setParams({
+                  slug: course.slug,
+                });
+              }}
+            >
               <IconEye className="size-4" />
               View
             </DropdownMenuItem>
