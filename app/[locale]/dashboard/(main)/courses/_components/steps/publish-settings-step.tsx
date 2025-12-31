@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { type CourseFormValues } from "../course-form-types";
+import { type CourseFormValues, useCourseFormContext } from "../course-form-types";
 import {
   InputGroup,
   InputGroupAddon,
@@ -28,6 +28,7 @@ import {
 
 export function PublishSettingsStep() {
   const { watch, control, setValue } = useFormContext<CourseFormValues>();
+  const { courseId, originalSlug } = useCourseFormContext();
 
   const title = watch("title");
   const slugValue = watch("slug");
@@ -35,18 +36,27 @@ export function PublishSettingsStep() {
 
   const [debouncedSlug] = useDebounceValue(slugValue, 300);
 
+  // Skip availability check if slug hasn't changed from original (edit mode)
+  const isOriginalSlug = originalSlug && debouncedSlug === originalSlug;
+
   const { data: isAvailable, isPending: isCheckingAvailability } = useQuery({
     ...convexQuery(api.teachers.courses.queries.isSlugAvailable, {
       slug: debouncedSlug,
+      excludeCourseId: courseId,
     }),
-    enabled: debouncedSlug.length >= 3,
+    enabled: debouncedSlug.length >= 3 && !isOriginalSlug,
   });
 
   useEffect(() => {
     if (debouncedSlug.length >= 3 && slugValue === debouncedSlug) {
-      setValue("isSlugAvailable", isAvailable ?? true);
+      // If it's the original slug, it's always available
+      if (isOriginalSlug) {
+        setValue("isSlugAvailable", true);
+      } else {
+        setValue("isSlugAvailable", isAvailable ?? true);
+      }
     }
-  }, [isAvailable, debouncedSlug, slugValue, setValue]);
+  }, [isAvailable, debouncedSlug, slugValue, setValue, isOriginalSlug]);
 
   const showAvailabilityStatus =
     debouncedSlug.length >= 3 && slugValue === debouncedSlug;
@@ -88,7 +98,12 @@ export function PublishSettingsStep() {
 
             {showAvailabilityStatus && (
               <div className="text-sm">
-                {isCheckingAvailability ? (
+                {isOriginalSlug ? (
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <IconCheck className="size-4" />
+                    Current URL
+                  </span>
+                ) : isCheckingAvailability ? (
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <IconLoader2 className="size-4 animate-spin" />
                     Checking availability...

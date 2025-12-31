@@ -78,12 +78,15 @@ export const update = teacherMutation({
 
     const normalizedSlug = args.slug ? validateSlug(args.slug) : undefined;
 
-    const isSlugAvailable = normalizedSlug
-      ? await db.courses.queries.isSlugAvailable(ctx, normalizedSlug)
-      : true;
-
-    if (!isSlugAvailable) {
-      throw new ConvexError("slug is already taken");
+    // When updating, check if the new slug is available, excluding the current course
+    if (normalizedSlug && normalizedSlug !== course.slug) {
+      const isSlugAvailable = await db.courses.queries.isSlugAvailable(
+        ctx,
+        normalizedSlug,
+      );
+      if (!isSlugAvailable) {
+        throw new ConvexError("slug is already taken");
+      }
     }
 
     return db.courses.mutations.update(ctx, courseId, {

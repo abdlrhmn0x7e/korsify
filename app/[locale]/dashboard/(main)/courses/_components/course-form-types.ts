@@ -1,6 +1,8 @@
 import type { FieldPath } from "react-hook-form";
 import { JSONContent } from "@tiptap/react";
 import { z } from "zod";
+import { createContext, useContext } from "react";
+import { Id } from "@/convex/_generated/dataModel";
 
 /**
  * Simple slugify function to convert a string to a URL-friendly slug
@@ -12,6 +14,23 @@ export function slugify(text: string): string {
     .replace(/[^\w\s-]/g, "") // Remove special characters
     .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+}
+
+/**
+ * Context for providing course edit information to form steps
+ */
+interface CourseFormContextValue {
+  mode: "create" | "edit";
+  courseId?: Id<"courses">;
+  originalSlug?: string;
+}
+
+export const CourseFormContext = createContext<CourseFormContextValue>({
+  mode: "create",
+});
+
+export function useCourseFormContext() {
+  return useContext(CourseFormContext);
 }
 
 export const courseFormSchema = z.object({

@@ -61,10 +61,14 @@ export const getById = teacherQuery({
 export const isSlugAvailable = teacherQuery({
   args: {
     slug: v.string(),
+    excludeCourseId: v.optional(v.id("courses")),
   },
   handler: async (ctx, args) => {
     const course = await db.courses.queries.getBySlug(ctx, args.slug);
-    console.log("course", course);
-    return course === null;
+    // If no course found with this slug, it's available
+    if (course === null) return true;
+    // If editing and the found course is the one being edited, slug is available
+    if (args.excludeCourseId && course._id === args.excludeCourseId) return true;
+    return false;
   },
 });

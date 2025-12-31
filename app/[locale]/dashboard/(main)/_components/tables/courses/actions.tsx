@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,21 +36,24 @@ import {
 
 import { useMutation } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/use-dialog";
+import { EditCourseDialog } from "../../../courses/_components/edit-course-dialog";
 
-export function CoursesTableActions({
-  courseId,
-  status,
-}: {
-  courseId: Id<"courses">;
-  status: Doc<"courses">["status"];
-}) {
+type CourseWithThumbnail = Doc<"courses"> & { thumbnailUrl: string | null };
+
+interface CoursesTableActionsProps {
+  course: CourseWithThumbnail;
+}
+
+export function CoursesTableActions({ course }: CoursesTableActionsProps) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const updateStatusMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.updateStatus),
   });
   function handleUpdateStatus() {
     updateStatusMutation.mutate({
-      courseId,
-      status: status === "draft" ? "published" : "draft",
+      courseId: course._id,
+      status: course.status === "draft" ? "published" : "draft",
     });
   }
 
@@ -60,71 +64,79 @@ export function CoursesTableActions({
   });
   function handleRemoveCourse() {
     removeCourseMutation.mutate({
-      courseId,
+      courseId: course._id,
     });
   }
 
   return (
-    <AlertDialog {...props}>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          className={buttonVariants({ variant: "ghost", size: "icon" })}
-        >
-          <IconDots className="size-4" />
-          <span className="sr-only">Open menu</span>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <IconEye className="size-4" />
-            View
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled={updateStatusMutation.isPending}
-            onClick={handleUpdateStatus}
+    <>
+      <AlertDialog {...props}>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={buttonVariants({ variant: "ghost", size: "icon" })}
           >
-            {updateStatusMutation.isPending ? (
-              <Spinner />
-            ) : status === "draft" ? (
-              <IconShare />
-            ) : (
-              <IconShareOff />
-            )}
-            <span>{status === "draft" ? "Publish" : "Draft"}</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <IconPencil />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <AlertDialogTrigger
-            render={<DropdownMenuItem variant="destructive" />}
-            nativeButton={false}
-          >
-            <IconTrash /> Delete
-          </AlertDialogTrigger>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <IconDots className="size-4" />
+            <span className="sr-only">Open menu</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <IconEye className="size-4" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={updateStatusMutation.isPending}
+              onClick={handleUpdateStatus}
+            >
+              {updateStatusMutation.isPending ? (
+                <Spinner />
+              ) : course.status === "draft" ? (
+                <IconShare />
+              ) : (
+                <IconShareOff />
+              )}
+              <span>{course.status === "draft" ? "Publish" : "Draft"}</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
+              <IconPencil />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <AlertDialogTrigger
+              render={<DropdownMenuItem variant="destructive" />}
+              nativeButton={false}
+            >
+              <IconTrash /> Delete
+            </AlertDialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            course and remove your data from our servers.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleRemoveCourse}
-            disabled={removeCourseMutation.isPending}
-          >
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              course and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRemoveCourse}
+              disabled={removeCourseMutation.isPending}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <EditCourseDialog
+        course={course}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+      />
+    </>
   );
 }
 

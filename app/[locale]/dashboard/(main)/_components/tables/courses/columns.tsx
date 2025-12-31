@@ -74,12 +74,7 @@ export const coursesColumns: ColumnDef<
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      return (
-        <CoursesTableActions
-          courseId={row.original._id}
-          status={row.original.status}
-        />
-      );
+      return <CoursesTableActions course={row.original} />;
     },
   },
 ];

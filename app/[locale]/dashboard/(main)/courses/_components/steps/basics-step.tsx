@@ -18,10 +18,11 @@ import { Spinner } from "@/components/ui/spinner";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { cn } from "@/lib/utils";
 
-import { slugify, type CourseFormValues } from "../course-form-types";
+import { slugify, useCourseFormContext, type CourseFormValues } from "../course-form-types";
 
 export function BasicsStep() {
   const { control, setValue, watch } = useFormContext<CourseFormValues>();
+  const { mode } = useCourseFormContext();
 
   const thumbnailStorageId = watch("thumbnailStorageId");
   const thumbnailPreviewUrl = watch("thumbnailPreviewUrl");
@@ -72,7 +73,10 @@ export function BasicsStep() {
               {...field}
               onChange={(e) => {
                 field.onChange(e.target.value);
-                setValue("slug", slugify(e.target.value));
+                // Only auto-generate slug in create mode
+                if (mode === "create") {
+                  setValue("slug", slugify(e.target.value));
+                }
               }}
               id={field.name}
               aria-invalid={fieldState.invalid}
