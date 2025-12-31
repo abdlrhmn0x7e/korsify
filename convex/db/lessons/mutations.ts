@@ -10,6 +10,7 @@ export type CreateLessonData = {
   title: string;
   description: JSONContent | null;
   pdfStorageId: Id<"_storage"> | null;
+  videoId: Id<"muxAssets">;
 
   order: number;
   isFree: boolean;
@@ -29,6 +30,7 @@ export async function create(
     title: data.title,
     description: data.description,
     pdfStorageId: data.pdfStorageId,
+    videoId: data.videoId,
 
     order: data.order,
     isFree: data.isFree,
@@ -102,25 +104,4 @@ export async function removeAllByCourseId(
     .collect();
 
   await Promise.all(lessons.map((lesson) => ctx.db.delete(lesson._id)));
-}
-
-export async function linkVideo(
-  ctx: GenericMutationCtx<DataModel>,
-  lessonId: Id<"lessons">,
-  videoId: Id<"muxAssets">
-) {
-  return ctx.db.patch(lessonId, {
-    videoId,
-    updatedAt: Date.now(),
-  });
-}
-
-export async function unlinkVideo(
-  ctx: GenericMutationCtx<DataModel>,
-  lessonId: Id<"lessons">
-) {
-  return ctx.db.patch(lessonId, {
-    videoId: undefined,
-    updatedAt: Date.now(),
-  });
 }

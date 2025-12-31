@@ -1,6 +1,6 @@
 "use node";
 
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { action } from "../_generated/server";
 import { api } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
@@ -23,15 +23,19 @@ type CreateDirectUploadResult = {
 };
 
 export const createDirectUpload = action({
-  args: {
-    teacherId: v.id("teachers"),
-  },
+  args: {},
   returns: v.object({
     uploadUrl: v.string(),
     uploadId: v.string(),
     muxAssetId: v.id("muxAssets"),
   }),
-  handler: async (ctx, args): Promise<CreateDirectUploadResult> => {
+  handler: async (ctx): Promise<CreateDirectUploadResult> => {
+    const teacher = await ctx.runQuery(api.teachers.queries.getTeacher, {});
+
+    if (!teacher) {
+      throw new ConvexError("Teacher not found");
+    }
+
     const mux = getMuxClient();
 
     const upload = await mux.video.uploads.create({
@@ -45,7 +49,7 @@ export const createDirectUpload = action({
     const muxAssetId: Id<"muxAssets"> = await ctx.runMutation(
       api.mux.internal.createAsset,
       {
-        teacherId: args.teacherId,
+        teacherId: teacher._id,
         uploadId: upload.id,
       }
     );

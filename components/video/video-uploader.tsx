@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { useAction, useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useCallback } from "react";
 import { Id } from "@/convex/_generated/dataModel";
+import { useUploadVideo } from "@/components/video/use-upload-video";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -15,146 +14,62 @@ import {
 import { cn } from "@/lib/utils";
 
 interface VideoUploaderProps {
-  lessonId: Id<"lessons">;
-  teacherId: Id<"teachers">;
-  onUploadComplete?: () => void;
+  initialVideoId?: Id<"muxAssets">;
+  onVideoReady: (muxAssetId: Id<"muxAssets">) => void;
   onUploadError?: (error: Error) => void;
   className?: string;
 }
 
-type UploadState = "idle" | "uploading" | "processing" | "ready" | "error";
-
 export function VideoUploader({
-  lessonId,
-  teacherId,
-  onUploadComplete,
+  initialVideoId,
+  onVideoReady,
   onUploadError,
   className,
 }: VideoUploaderProps) {
-  const [uploadState, setUploadState] = useState<UploadState>("idle");
-  const [progress, setProgress] = useState(0);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const createDirectUpload = useAction(api.mux.actions.createDirectUpload);
-  const linkVideoToLesson = useMutation(
-    api.teachers.mux.mutations.linkVideoToLesson
-  );
-  const video = useQuery(api.teachers.mux.queries.getVideoForLesson, {
-    lessonId,
+  const {
+    status,
+    progress,
+    video,
+    error,
+    inputRef,
+    handleChange,
+    openFilePicker,
+    upload,
+  } = useUploadVideo({
+    initialVideoId,
+    onVideoReady,
+    onError: onUploadError,
   });
-
-  const currentState: UploadState =
-    uploadState === "uploading"
-      ? "uploading"
-      : video?.status === "processing"
-        ? "processing"
-        : video?.status === "ready"
-          ? "ready"
-          : video?.status === "errored"
-            ? "error"
-            : "idle";
-
-  const handleFileSelect = useCallback(
-    async (file: File) => {
-      if (!file.type.startsWith("video/")) {
-        setErrorMessage("Please select a video file");
-        return;
-      }
-
-      setUploadState("uploading");
-      setProgress(0);
-      setErrorMessage(null);
-
-      try {
-        const { uploadUrl, muxAssetId } = await createDirectUpload({
-          teacherId,
-        });
-
-        await linkVideoToLesson({
-          lessonId,
-          muxAssetId,
-        });
-
-        const xhr = new XMLHttpRequest();
-
-        xhr.upload.addEventListener("progress", (event) => {
-          if (event.lengthComputable) {
-            const percent = Math.round((event.loaded / event.total) * 100);
-            setProgress(percent);
-          }
-        });
-
-        await new Promise<void>((resolve, reject) => {
-          xhr.open("PUT", uploadUrl);
-
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve();
-            } else {
-              reject(new Error(`Upload failed with status ${xhr.status}`));
-            }
-          };
-
-          xhr.onerror = () => reject(new Error("Upload failed"));
-          xhr.send(file);
-        });
-
-        setUploadState("processing");
-        onUploadComplete?.();
-      } catch (error) {
-        setUploadState("error");
-        const err = error instanceof Error ? error : new Error("Upload failed");
-        setErrorMessage(err.message);
-        onUploadError?.(err);
-      }
-    },
-    [
-      teacherId,
-      lessonId,
-      createDirectUpload,
-      linkVideoToLesson,
-      onUploadComplete,
-      onUploadError,
-    ]
-  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       const file = e.dataTransfer.files[0];
-      if (file) handleFileSelect(file);
+      if (file) upload(file);
     },
-    [handleFileSelect]
+    [upload]
   );
 
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault();
   }
 
-  function handleClick() {
-    fileInputRef.current?.click();
-  }
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) handleFileSelect(file);
-  }
+  const isDisabled = status === "uploading" || status === "processing";
 
   return (
     <div className={cn("w-full", className)}>
       <input
-        ref={fileInputRef}
+        ref={inputRef}
         type="file"
         accept="video/*"
         className="hidden"
-        onChange={handleInputChange}
-        disabled={currentState === "uploading" || currentState === "processing"}
+        onChange={handleChange}
+        disabled={isDisabled}
       />
 
-      {currentState === "idle" && (
+      {status === "idle" && (
         <div
-          onClick={handleClick}
+          onClick={openFilePicker}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 transition-colors hover:border-primary/50 hover:bg-muted/50"
@@ -171,7 +86,7 @@ export function VideoUploader({
         </div>
       )}
 
-      {currentState === "uploading" && (
+      {status === "uploading" && (
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-6">
           <div className="flex items-center gap-3">
             <Spinner className="size-5" />
@@ -189,7 +104,7 @@ export function VideoUploader({
         </div>
       )}
 
-      {currentState === "processing" && (
+      {status === "processing" && (
         <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-6">
           <Spinner className="size-5" />
           <div>
@@ -201,7 +116,7 @@ export function VideoUploader({
         </div>
       )}
 
-      {currentState === "ready" && video && (
+      {status === "ready" && video && (
         <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-6">
           <div className="flex size-10 items-center justify-center rounded-full bg-green-500/20">
             <IconCheck className="size-5 text-green-600" />
@@ -219,7 +134,7 @@ export function VideoUploader({
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleClick}
+            onClick={openFilePicker}
             className="text-muted-foreground hover:text-foreground"
           >
             <IconVideo className="size-4" />
@@ -228,7 +143,7 @@ export function VideoUploader({
         </div>
       )}
 
-      {currentState === "error" && (
+      {status === "errored" && (
         <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-6">
           <div className="flex size-10 items-center justify-center rounded-full bg-destructive/20">
             <IconAlertCircle className="size-5 text-destructive" />
@@ -237,13 +152,13 @@ export function VideoUploader({
             <p className="text-sm font-medium text-destructive">
               Upload failed
             </p>
-            {(errorMessage || video?.errorMessage) && (
+            {(error?.message || video?.errorMessage) && (
               <p className="text-xs text-destructive/80">
-                {errorMessage || video?.errorMessage}
+                {error?.message || video?.errorMessage}
               </p>
             )}
           </div>
-          <Button variant="outline" size="sm" onClick={handleClick}>
+          <Button variant="outline" size="sm" onClick={openFilePicker}>
             <IconUpload className="size-4" />
             Try again
           </Button>
