@@ -2,6 +2,9 @@ import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
 import { PageHeader } from "@/components/page-header";
 import { IconLayoutDashboard } from "@tabler/icons-react";
+import { fetchAuthQuery } from "@/lib/auth-server";
+import { api } from "@/convex/_generated/api";
+import { redirect } from "next/navigation";
 
 export function generateStaticParams() {
   return getStaticParams();
@@ -13,7 +16,12 @@ export default async function DashboardPage({
   const { locale } = await params;
   setStaticParamsLocale(locale);
 
-  const t = await getScopedI18n("dashboard.home");
+  const [t, teacher] = await Promise.all([
+    getScopedI18n("dashboard.home"),
+    fetchAuthQuery(api.teachers.queries.getTeacher),
+  ]);
+
+  if (!teacher) return redirect("/dashboard/onboarding");
 
   return (
     <div className="space-y-4">

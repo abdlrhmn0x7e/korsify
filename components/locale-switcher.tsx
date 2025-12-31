@@ -13,7 +13,7 @@ import { IconWorld } from "@tabler/icons-react";
 import { tryCatch } from "@/lib/try-catch";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { changeLanguage } from "@/actions/change-language";
+import { changeLanguage } from "@/lib/actions/change-language";
 import { Locale, locales } from "@/locales/config";
 import { useCurrentLocale } from "@/locales/client";
 import { toastManager } from "./ui/toast";

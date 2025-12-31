@@ -71,8 +71,6 @@ export default async function DashboardMainLayout({
     },
   ];
 
-  console.log("DIR", dir);
-
   return (
     <SidebarLayout data={navItems} secondary={secondary} dir={dir}>
       {children}
