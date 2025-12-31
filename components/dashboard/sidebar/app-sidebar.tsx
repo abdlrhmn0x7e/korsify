@@ -67,7 +67,7 @@ export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
                 {item.items?.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
-                      className="h-9"
+                      className="h-8"
                       render={<Link href={item.url} />}
                       isActive={pathname === item.url}
                     >
@@ -93,8 +93,8 @@ export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+          <NavUser />
         </SidebarMenu>
-        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

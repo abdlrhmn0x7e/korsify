@@ -66,7 +66,7 @@ export function CoursesTableClient({
                   <EmptyTitle>No Courses Found.</EmptyTitle>
                 </EmptyHeader>
                 <EmptyContent>
-                  <AddCourseButton />
+                  <AddCourseButton variant="default" />
                 </EmptyContent>
               </Empty>
             </TableCell>

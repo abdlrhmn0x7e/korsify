@@ -4,6 +4,7 @@ import { RequestsTableClient } from "./table";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { RequestsTableHeader } from "./header";
 import { Spinner } from "@/components/ui/spinner";
+import { WholePageSpinner } from "@/components/whole-page-spinner";
 
 export async function RequestsTable() {
   const preloadedRequestsQuery = await preloadAuthQuery(
@@ -23,10 +24,7 @@ export function RequestsTableSkeleton() {
       <TableBody>
         <TableRow>
           <TableCell colSpan={2}>
-            <div className="h-full flex flex-col items-center justify-center">
-              <Spinner className="size-6" />
-              <span className="text-lg">Loading Data</span>
-            </div>
+            <WholePageSpinner />
           </TableCell>
         </TableRow>
       </TableBody>

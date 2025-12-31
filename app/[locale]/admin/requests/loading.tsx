@@ -1,17 +1,14 @@
-import { requireAdmin } from "@/lib/auth-server";
-import { RequestsTable } from "../_components/tables/requests";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { IconUserPlus } from "@tabler/icons-react";
 import { PageLayout } from "@/components/dashboard/page-layout";
+import { RequestsTableSkeleton } from "../_components/tables/requests";
 
-export default async function RequestsPage() {
-  await requireAdmin();
-
+export default function RequestsPageLoading() {
   return (
     <PageLayout>
       <PageHeader title="Early Access Requests" Icon={IconUserPlus} />
 
-      <RequestsTable />
+      <RequestsTableSkeleton />
     </PageLayout>
   );
 }

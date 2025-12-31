@@ -3,7 +3,7 @@ import { preloadAuthQuery } from "@/lib/auth-server";
 import { AccessTokensTableClient } from "./table";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { AccessTokensTableHeader } from "./header";
-import { Skeleton } from "@/components/ui/skeleton";
+import { WholePageSpinner } from "@/components/whole-page-spinner";
 
 export async function AccessTokensTable() {
   const preloadedAccessTokensQuery = await preloadAuthQuery(
@@ -19,26 +19,15 @@ export async function AccessTokensTable() {
 
 export function AccessTokensTableSkeleton() {
   return (
-    <Table>
+    <Table className="h-full">
       <AccessTokensTableHeader />
 
       <TableBody>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <TableRow key={index}>
-            <TableCell>
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-            <TableCell>
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-            <TableCell>
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-            <TableCell>
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-          </TableRow>
-        ))}
+        <TableRow>
+          <TableCell colSpan={4}>
+            <WholePageSpinner />
+          </TableCell>
+        </TableRow>
       </TableBody>
     </Table>
   );

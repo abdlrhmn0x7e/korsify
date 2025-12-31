@@ -1,10 +1,6 @@
 import { PageHeader } from "@/components/dashboard/page-header";
 import { IconBook } from "@tabler/icons-react";
-import { Suspense } from "react";
-import {
-  CoursesTable,
-  CoursesTableSkeleton,
-} from "../_components/tables/courses";
+import { CoursesTable } from "../_components/tables/courses";
 import { AddCourseButton } from "./_components/add-course-button";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
@@ -23,9 +19,7 @@ export default async function CoursesPage() {
         <AddCourseButton />
       </PageHeader>
 
-      <Suspense fallback={<CoursesTableSkeleton />}>
-        <CoursesTable />
-      </Suspense>
+      <CoursesTable />
     </PageLayout>
   );
 }
