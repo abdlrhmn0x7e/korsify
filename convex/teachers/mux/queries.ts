@@ -2,10 +2,6 @@ import { ConvexError, v } from "convex/values";
 import { teacherQuery } from "../../utils";
 import { db } from "../../db";
 
-/**
- * Gets video information for a lesson.
- * Returns the muxAsset with its current status.
- */
 export const getVideoForLesson = teacherQuery({
   args: {
     lessonId: v.id("lessons"),
@@ -21,16 +17,10 @@ export const getVideoForLesson = teacherQuery({
       return null;
     }
 
-    const muxAsset = await db.muxAssets.queries.getById(ctx, lesson.videoId);
-
-    return muxAsset;
+    return db.muxAssets.queries.getById(ctx, lesson.videoId);
   },
 });
 
-/**
- * Gets all videos for the current teacher.
- * Useful for video library management.
- */
 export const getAllVideos = teacherQuery({
   args: {},
   handler: async (ctx) => {
@@ -38,9 +28,6 @@ export const getAllVideos = teacherQuery({
   },
 });
 
-/**
- * Gets video by ID (with ownership check).
- */
 export const getVideo = teacherQuery({
   args: {
     muxAssetId: v.id("muxAssets"),
@@ -56,11 +43,6 @@ export const getVideo = teacherQuery({
   },
 });
 
-/**
- * Gets the playback ID for a lesson's video.
- * Returns null if video doesn't exist or isn't ready.
- * Client should use this playbackId with getSignedPlaybackToken action.
- */
 export const getPlaybackIdForLesson = teacherQuery({
   args: {
     lessonId: v.id("lessons"),
