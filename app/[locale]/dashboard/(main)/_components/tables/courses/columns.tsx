@@ -3,11 +3,12 @@
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { api } from "@/convex/_generated/api";
-import { IconCalendar } from "@tabler/icons-react";
+import { IconCalendar, IconCheck, IconPencil } from "@tabler/icons-react";
 import { type FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { CoursesTableActions } from "./actions";
+import { formatPrice } from "@/lib/format-price";
 
 export const coursesColumns: ColumnDef<
   FunctionReturnType<typeof api.teachers.courses.queries.getAll>[number]
@@ -16,17 +17,7 @@ export const coursesColumns: ColumnDef<
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <div className="rounded-sm overflow-hidden max-w-32 object-contain">
-            <img
-              src={row.original.thumbnailUrl ?? ""}
-              alt={row.original.title}
-            />
-          </div>
-          <span className="font-bold">{row.original.title}</span>
-        </div>
-      );
+      return <span className="font-normal">{row.original.title}</span>;
     },
   },
 
@@ -36,18 +27,18 @@ export const coursesColumns: ColumnDef<
     cell: ({ row }) => {
       const pricing = row.original.pricing;
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {pricing.overridePrice ? (
             <>
-              <span className="font-bold text-primary">
-                EGP {pricing.overridePrice}
+              <span className="font-medium">
+                {formatPrice(pricing.overridePrice)}
               </span>
-              <span className="text-sm text-muted-foreground line-through">
-                EGP {pricing.price}
+              <span className="text-xs text-muted-foreground line-through">
+                {formatPrice(pricing.price)}
               </span>
             </>
           ) : (
-            <span className="font-bold">EGP {pricing.price}</span>
+            <span className="font-medium">EGP {pricing.price}</span>
           )}
         </div>
       );
@@ -61,7 +52,8 @@ export const coursesColumns: ColumnDef<
       const status = row.original.status;
       return (
         <Badge variant={status === "published" ? "success" : "secondary"}>
-          {status}
+          {status === "published" ? <IconCheck /> : <IconPencil />}
+          {status.charAt(0).toUpperCase() + status.slice(1)}
         </Badge>
       );
     },
@@ -72,15 +64,16 @@ export const coursesColumns: ColumnDef<
     header: "Created At",
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <IconCalendar className="size-4" />
-          <span>{format(row.original._creationTime, "dd MMM")}</span>
+          <span>{format(row.original._creationTime, "dd MMM yyyy")}</span>
         </div>
       );
     },
   },
 
   {
+    id: "actions",
     header: "Actions",
     cell: ({ row }) => {
       return <CoursesTableActions id={row.original._id} />;
