@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/dashboard/page-header";
 import { IconBook } from "@tabler/icons-react";
 import { CoursesTable } from "../_components/tables/courses";
-import { AddCourseButton } from "./_components/add-course-button";
+import { AddCourseDialog } from "./_components/add-course-dialog";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
@@ -16,7 +16,7 @@ export default async function CoursesPage() {
   return (
     <PageLayout>
       <PageHeader title="Manage Your Courses" Icon={IconBook}>
-        <AddCourseButton />
+        <AddCourseDialog />
       </PageHeader>
 
       <CoursesTable />

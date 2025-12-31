@@ -63,3 +63,13 @@ export const getById = teacherQuery({
     return course;
   },
 });
+
+export const isSlugAvailable = teacherQuery({
+  args: {
+    slug: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const course = await db.courses.queries.getBySlug(ctx, args.slug);
+    return course === null;
+  },
+});

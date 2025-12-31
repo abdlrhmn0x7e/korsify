@@ -173,8 +173,4 @@
   h6 {
     @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 text-sm sm:text-base font-semibold tracking-tight;
   }
-
-  p {
-    @apply leading-7;
-  }
 }

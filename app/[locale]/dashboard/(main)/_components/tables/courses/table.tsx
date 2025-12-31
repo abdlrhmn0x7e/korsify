@@ -23,7 +23,7 @@ import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import { coursesColumns } from "./columns";
 import { CoursesTableHeader } from "./header";
-import { AddCourseButton } from "../../../courses/_components/add-course-button";
+import { AddCourseDialog } from "../../../courses/_components/add-course-dialog";
 import { cn } from "@/lib/utils";
 
 export function CoursesTableClient({
@@ -66,7 +66,7 @@ export function CoursesTableClient({
                   <EmptyTitle>No Courses Found.</EmptyTitle>
                 </EmptyHeader>
                 <EmptyContent>
-                  <AddCourseButton variant="default" />
+                  <AddCourseDialog variant="default" />
                 </EmptyContent>
               </Empty>
             </TableCell>
