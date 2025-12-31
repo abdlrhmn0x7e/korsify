@@ -101,7 +101,6 @@ const muxAssetValidator = v.union(
     duration: v.optional(v.number()),
     aspectRatio: v.optional(v.string()),
     errorMessage: v.optional(v.string()),
-    createdAt: v.number(),
     updatedAt: v.number(),
   }),
   v.null()

@@ -22,7 +22,6 @@ export async function create(
     teacherId: data.teacherId,
     uploadId: data.uploadId,
     status: "waiting_upload",
-    createdAt: now,
     updatedAt: now,
   });
 }

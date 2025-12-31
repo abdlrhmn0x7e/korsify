@@ -28,7 +28,6 @@ export const muxAssetsTable = defineTable({
   // Error info
   errorMessage: v.optional(v.string()),
 
-  createdAt: v.number(),
   updatedAt: v.number(),
 })
   .index("by_uploadId", ["uploadId"])
