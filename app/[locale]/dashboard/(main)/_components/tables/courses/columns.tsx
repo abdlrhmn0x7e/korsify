@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { IconCalendar } from "@tabler/icons-react";
 import { type FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
-import { CoursesTableActions, CourseStatusBadge } from "./actions";
+import { CoursesTableActions, CourseStatusButton } from "./actions";
 import { formatPrice } from "@/lib/format-price";
 
 export const coursesColumns: ColumnDef<
@@ -49,7 +49,7 @@ export const coursesColumns: ColumnDef<
     header: "Status",
     cell: ({ row }) => {
       return (
-        <CourseStatusBadge
+        <CourseStatusButton
           status={row.original.status}
           courseId={row.original._id}
         />

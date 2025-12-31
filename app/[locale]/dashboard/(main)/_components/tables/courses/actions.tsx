@@ -38,6 +38,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useDialog } from "@/hooks/use-dialog";
 import { EditCourseDialog } from "../../../courses/_components/edit-course-dialog";
 import { useCourseSearchParams } from "../../../_hooks/use-course-search-params";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
 
 type CourseWithThumbnail = Doc<"courses"> & { thumbnailUrl: string | null };
 
@@ -150,7 +152,9 @@ export function CoursesTableActions({ course }: CoursesTableActionsProps) {
   );
 }
 
-export function CourseStatusBadge({
+const MotionButton = motion(Button);
+
+export function CourseStatusButton({
   status,
   courseId,
 }: {
@@ -169,11 +173,19 @@ export function CourseStatusBadge({
   }
 
   return (
-    <Button
+    <MotionButton
       variant={status === "published" ? "success" : "outline"}
       size="xs"
       onClick={handleUpdateStatus}
       disabled={updateStatusMutation.isPending}
+      initial="initial"
+      whileHover="hovered"
+      className={cn(
+        "relative min-w-24 justify-start overflow-hidden transition-all",
+        status !== "published"
+          ? "hover:border-success hover:bg-success/20 hover:text-success"
+          : "hover:border-destructive hover:bg-destructive/20 hover:text-destructive"
+      )}
     >
       {updateStatusMutation.isPending ? (
         <Spinner />
@@ -182,7 +194,20 @@ export function CourseStatusBadge({
       ) : (
         <IconPencil />
       )}
-      <span className="capitalize">{status}</span>
-    </Button>
+      <motion.span
+        variants={{ initial: { y: 0 }, hovered: { y: "-100%" } }}
+        transition={{ duration: 0.1, ease: "easeOut" }}
+        className="capitalize"
+      >
+        {status}
+      </motion.span>
+      <motion.span
+        variants={{ initial: { y: "100%" }, hovered: { y: 0 } }}
+        transition={{ duration: 0.1, ease: "easeOut" }}
+        className="absolute left-5 capitalize"
+      >
+        {status === "published" ? "draft" : "publish"}
+      </motion.span>
+    </MotionButton>
   );
 }
