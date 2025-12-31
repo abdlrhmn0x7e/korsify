@@ -104,10 +104,10 @@ bun dev
 - [x] Build course list page with table view
 - [x] Add create course button
 - [x] Build course form (title, slug, description, price, thumbnail upload)
-- [ ] Build course edit page
+- [x] Build course edit page
 - [x] Add course status badge (draft/published)
-- [ ] Add publish/unpublish toggle UI
-- [ ] Add delete course with confirmation dialog
+- [x] Add publish/unpublish toggle UI
+- [x] Add delete course with confirmation dialog
 
 #### Lesson Management UI
 
