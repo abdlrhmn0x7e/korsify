@@ -151,11 +151,11 @@
   }
 
   h1 {
-    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 pb-2 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-balance font-serif;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 pb-2 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-balance;
   }
 
   h2 {
-    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 pb-1 text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight first:mt-0 font-serif;
+    @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 pb-1 text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight first:mt-0;
   }
 
   h3 {

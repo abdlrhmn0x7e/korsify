@@ -104,7 +104,7 @@ export default async function Page({ params }: PageProps<"/[locale]">) {
         </Badge>
 
         {/* Headline */}
-        <h1 className={cn("leading-18", isArabic && "leading-20")}>
+        <h1 className={cn("font-serif leading-18", isArabic && "leading-20")}>
           {t("headline.prefix")}{" "}
           <span className="italic capitalize pl-1 pr-3 text-primary-foreground bg-primary rounded-md">
             {t("headline.highlight")}
