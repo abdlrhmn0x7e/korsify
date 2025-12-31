@@ -92,6 +92,11 @@ export function CoursesTableActions({
             <span>{status === "draft" ? "Publish" : "Draft"}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <IconPencil />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <AlertDialogTrigger
             render={<DropdownMenuItem variant="destructive" />}
             nativeButton={false}

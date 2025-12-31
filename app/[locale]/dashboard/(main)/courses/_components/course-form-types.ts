@@ -25,7 +25,7 @@ export const courseFormSchema = z.object({
     .string()
     .regex(
       /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
-      "Slug must start and end with a letter or number, and can only contain lowercase letters, numbers, and hyphens"
+      "Slug must start and end with a letter or number, and can only contain lowercase letters, numbers, and hyphens",
     ),
   isSlugAvailable: z.boolean(),
   price: z.coerce.number<number>().min(0, "Price must be a positive number"),
@@ -56,6 +56,11 @@ export interface Step {
   fields: FieldPath<CourseFormValues>[];
   component: React.ComponentType;
 }
+
+export type CourseFormOnSubmit = (
+  values: CourseFormValues,
+  options?: { onSuccess?: () => void },
+) => void;
 
 export const STEP_IDS = {
   BASICS: "basics",
