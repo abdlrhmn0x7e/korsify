@@ -74,49 +74,50 @@ bun dev
 
 #### Database & Backend
 
-- [x] Create courses table (teacherId, title, description, price, thumbnailUrl, status, order, timestamps)
-- [x] Add indexes: by_teacherId, by_teacherId_status
-- [x] Create courses DAL
+- [x] Create courses table (teacherId, title, slug, description, thumbnailStorageId, pricing, seo, status, timestamps)
+- [x] Add indexes: by_slug, by_teacherId_status
+- [x] Create courses DAL (queries + mutations)
 - [x] Create sections table (courseId, teacherId, title, order, status, timestamps)
-- [x] Add indexes: by_courseId_order, by_teacherId
-- [x] Create sections DAL
+- [x] Add indexes: by_courseId_order
+- [x] Create sections DAL (queries + mutations)
 - [x] Create section mutations (create, update, delete, reorder, publish, draft)
-- [x] Create lessons table (courseId, sectionId, teacherId, title, description, video object, pdfUrl, order, isFree, createdAt)
-- [x] Add indexes: by_courseId_order, by_sectionId_order, by_teacherId
-- [x] Create lessons DAL
-- [x] Create course mutations (create, update, delete, reorder, publish, unpublish, archive)
+- [x] Create lessons table (courseId, sectionId, teacherId, title, description, pdfStorageId, order, isFree, timestamps)
+- [x] Add indexes: by_sectionId_order, by_courseId
+- [x] Create lessons DAL (queries + mutations)
+- [x] Create course mutations (create, update, delete, publish, draft)
 - [x] Create lesson mutations (create, update, delete, reorder)
 
-#### Bunny.net Integration
+#### Mux Video Integration
 
-- [ ] Set up Bunny.net account and Stream library
-- [ ] Create Bunny API client (server-side)
-- [ ] Implement video creation endpoint (calls Bunny API)
-- [ ] Implement signed upload URL generation (TUS protocol)
+- [ ] Set up Mux account and get API credentials
+- [ ] Create Mux API client (server-side action)
+- [ ] Add video field to lessons table (muxAssetId, muxPlaybackId, status, duration)
+- [ ] Implement direct upload URL generation (Mux direct uploads)
 - [ ] Create Convex action for getting upload credentials
-- [ ] Set up Bunny webhook endpoint in convex/http.ts
-- [ ] Handle webhook: video processing complete → update lesson status
-- [ ] Handle webhook: video failed → update lesson status with error
+- [ ] Set up Mux webhook endpoint in convex/http.ts
+- [ ] Handle webhook: video.asset.ready → update lesson with playback ID
+- [ ] Handle webhook: video.asset.errored → update lesson status with error
+- [ ] Handle webhook: video.upload.asset_created → link upload to asset
 
 #### Course Management UI
 
-- [ ] Build course list page with grid/table view
-- [ ] Add create course button and modal/page
-- [ ] Build course form (title, description, price, thumbnail upload)
+- [x] Build course list page with table view
+- [x] Add create course button
+- [ ] Build course form (title, slug, description, price, thumbnail upload)
 - [ ] Build course edit page
-- [ ] Add course status badge (draft/published/archived)
-- [ ] Add publish/unpublish toggle
-- [ ] Add delete course with confirmation
+- [x] Add course status badge (draft/published)
+- [ ] Add publish/unpublish toggle UI
+- [ ] Add delete course with confirmation dialog
 - [ ] Add course reordering (drag-drop or arrows)
 
 #### Lesson Management UI
 
-- [ ] Build lesson list for a course (ordered list)
+- [ ] Build lesson list for a course (organized by sections)
 - [ ] Add create lesson button
 - [ ] Build lesson form (title, description, isFree toggle)
-- [ ] Build video uploader component with TUS client
+- [ ] Build video uploader component with Mux direct upload
 - [ ] Show upload progress bar
-- [ ] Show video processing status (processing/ready/failed)
+- [ ] Show video processing status (waiting/preparing/ready/errored)
 - [ ] Add PDF upload for lesson attachments
 - [ ] Add lesson reordering (drag-drop)
 - [ ] Add delete lesson with confirmation
@@ -238,12 +239,12 @@ Session Middleware
 
 ### Phase 4: Secure Video Player (Week 4-5)
 
-#### Bunny.net Security Configuration
+#### Mux Security Configuration
 
-- [ ] Enable token authentication in Bunny library settings
-- [ ] Set up allowed referers (your domain only)
-- [ ] Configure URL token authentication key
-- [ ] Enable watermarking in Bunny player settings
+- [ ] Enable signed URLs in Mux dashboard
+- [ ] Configure playback restrictions (domain restriction)
+- [ ] Set up signing keys for secure playback
+- [ ] Configure Mux Data for analytics (optional)
 
 #### Playback Backend
 
@@ -254,13 +255,13 @@ The playback backend uses the `studentAuth` component to validate sessions and r
   - Retrieves student record (name + phone for watermark)
   - Checks enrollment status for the requested lesson's course
   - Returns error if not enrolled (unless lesson is free preview)
-- [ ] Generate signed Bunny URL with expiration (1 hour)
+- [ ] Generate signed Mux playback URL with expiration (1 hour)
 - [ ] Include watermark data in response (student name + phone from studentAuth)
 
 #### Video Player Component
 
-- [ ] Build secure player wrapper component
-- [ ] Embed Bunny iframe with signed URL
+- [ ] Build secure player wrapper component using Mux Player React
+- [ ] Configure Mux Player with signed playback token
 - [ ] Add moving watermark overlay (student name + phone + timestamp)
 - [ ] Watermark repositions every 30 seconds
 - [ ] Disable right-click on player container
@@ -390,14 +391,15 @@ The playback backend uses the `studentAuth` component to validate sessions and r
 
 ### Infrastructure & DevOps (Throughout)
 
-- [ ] Add BUNNY_API_KEY to environment variables
-- [ ] Add BUNNY_LIBRARY_ID to environment variables
-- [ ] Add BUNNY_TOKEN_AUTH_KEY to environment variables
+- [ ] Add MUX_TOKEN_ID to environment variables
+- [ ] Add MUX_TOKEN_SECRET to environment variables
+- [ ] Add MUX_SIGNING_KEY_ID to environment variables (for signed URLs)
+- [ ] Add MUX_SIGNING_KEY_PRIVATE to environment variables (for signed URLs)
 - [ ] Add TWILIO_ACCOUNT_SID to environment variables
 - [ ] Add TWILIO_AUTH_TOKEN to environment variables
 - [ ] Add TWILIO_WHATSAPP_FROM to environment variables
 - [ ] Configure Vercel for wildcard subdomain (\*.korsify.com)
-- [ ] Set up Bunny webhook URL in Bunny dashboard
+- [ ] Set up Mux webhook URL in Mux dashboard
 - [ ] Test subdomain routing in production
 - [ ] Set up error monitoring (Sentry or similar)
 - [ ] Document environment variables in README
