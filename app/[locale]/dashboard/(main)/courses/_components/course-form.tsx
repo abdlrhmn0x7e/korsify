@@ -78,18 +78,11 @@ function getDefaultValues(course?: CourseWithThumbnail): CourseFormValues {
   };
 }
 
-export function CourseForm({
-  course,
-  isPending,
-  onSubmit,
-}: CourseFormProps) {
+export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
   const [currentStep, stepHelpers] = useStep(STEPS.length);
-  const mode = course ? "edit" : "create";
+  const mode = course ? ("edit" as const) : ("create" as const);
 
-  const formDefaultValues = useMemo(
-    () => getDefaultValues(course),
-    [course],
-  );
+  const formDefaultValues = useMemo(() => getDefaultValues(course), [course]);
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseFormSchema),
@@ -152,7 +145,9 @@ export function CourseForm({
     <CourseFormContext.Provider value={contextValue}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="contents">
-          <MotionConfig transition={{ type: "spring", duration: 0.4, bounce: 0 }}>
+          <MotionConfig
+            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+          >
             <div className="grid grid-cols-1 sm:grid-cols-3 h-[75svh]">
               {/* Left sidebar - Step navigation */}
               <div className="flex flex-col gap-2 border-e bg-muted/30 p-4">
@@ -241,7 +236,9 @@ export function CourseForm({
                         </>
                       ) : (
                         <>
-                          <span>{mode === "edit" ? "Save Changes" : "Create Course"}</span>
+                          <span>
+                            {mode === "edit" ? "Save Changes" : "Create Course"}
+                          </span>
                           <IconSend className="size-4 ms-2" />
                         </>
                       )}

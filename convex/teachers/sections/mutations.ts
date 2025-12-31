@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { teacherMutation } from "../../utils";
 import { db } from "../../db";
+import { sectionStatusValidator } from "../../db/sections/validators";
 
 export const create = teacherMutation({
   args: {
@@ -46,9 +47,10 @@ export const update = teacherMutation({
   },
 });
 
-export const publish = teacherMutation({
+export const updateStatus = teacherMutation({
   args: {
     sectionId: v.id("sections"),
+    status: sectionStatusValidator,
   },
   handler: async (ctx, args) => {
     const section = await db.sections.queries.getById(ctx, args.sectionId);
@@ -57,22 +59,7 @@ export const publish = teacherMutation({
       throw new ConvexError("section doesn't exist");
     }
 
-    return db.sections.mutations.updateStatus(ctx, args.sectionId, "published");
-  },
-});
-
-export const draft = teacherMutation({
-  args: {
-    sectionId: v.id("sections"),
-  },
-  handler: async (ctx, args) => {
-    const section = await db.sections.queries.getById(ctx, args.sectionId);
-
-    if (!section || section.teacherId !== ctx.teacherId) {
-      throw new ConvexError("section doesn't exist");
-    }
-
-    return db.sections.mutations.updateStatus(ctx, args.sectionId, "draft");
+    return db.sections.mutations.updateStatus(ctx, args.sectionId, args.status);
   },
 });
 

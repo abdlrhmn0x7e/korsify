@@ -29,6 +29,7 @@ import { TiptapViewer } from "@/components/editor/viewer";
 import { JSONContent } from "@tiptap/react";
 import { formatPrice } from "@/lib/format-price";
 import { Separator } from "@/components/ui/separator";
+import { CourseSections } from "./course-sections";
 
 export function CourseDetails({ slug }: { slug: string }) {
   const course = useQuery(api.teachers.courses.queries.getBySlug, {
@@ -165,6 +166,10 @@ export function CourseDetails({ slug }: { slug: string }) {
           </CardContent>
         </Card>
       </div>
+
+      <Separator />
+
+      <CourseSections courseId={course._id} />
     </div>
   );
 }
