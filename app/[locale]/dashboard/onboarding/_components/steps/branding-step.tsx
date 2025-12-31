@@ -30,7 +30,7 @@ export function BrandingStep() {
 
   const [logoObjectUrl, setLogoObjectUrl] = useState<string | null>(null);
   const { inputRef: logoInputRef, ...logoUpload } = useUploadFile({
-    onSuccess: (storageId) => setValue("logoStorageId", storageId),
+    onSuccess: ({ storageId }) => setValue("logoStorageId", storageId),
   });
   const handleLogoChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,12 +39,12 @@ export function BrandingStep() {
       logoUpload.handleChange(e);
       setLogoObjectUrl(URL.createObjectURL(file));
     },
-    [logoUpload]
+    [logoUpload],
   );
 
   const [coverObjectUrl, setCoverObjectUrl] = useState<string | null>(null);
   const { inputRef: coverInputRef, ...coverUpload } = useUploadFile({
-    onSuccess: (storageId) => setValue("coverStorageId", storageId),
+    onSuccess: ({ storageId }) => setValue("coverStorageId", storageId),
   });
   const handleCoverChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +53,7 @@ export function BrandingStep() {
       coverUpload.handleChange(e);
       setCoverObjectUrl(URL.createObjectURL(file));
     },
-    [coverUpload]
+    [coverUpload],
   );
 
   return (
