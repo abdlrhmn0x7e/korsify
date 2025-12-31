@@ -13,6 +13,9 @@ export const lessonsTable = defineTable({
   description: v.nullable(v.any()), // tiptap json
   pdfStorageId: v.nullable(v.id("_storage")),
 
+  // Video reference (foreign key to muxAssets)
+  videoId: v.optional(v.id("muxAssets")),
+
   order: v.number(),
   isFree: v.boolean(),
 

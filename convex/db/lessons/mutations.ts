@@ -17,7 +17,7 @@ export type CreateLessonData = {
 
 export async function create(
   ctx: GenericMutationCtx<DataModel>,
-  data: CreateLessonData,
+  data: CreateLessonData
 ): Promise<Id<"lessons">> {
   const now = Date.now();
 
@@ -41,6 +41,7 @@ export type UpdateLessonData = {
   title?: string;
   description?: JSONContent | null;
   pdfStorageId?: Id<"_storage"> | null;
+  videoId?: Id<"muxAssets">;
   isFree?: boolean;
   sectionId?: Id<"sections">;
 };
@@ -48,7 +49,7 @@ export type UpdateLessonData = {
 export async function update(
   ctx: GenericMutationCtx<DataModel>,
   lessonId: Id<"lessons">,
-  data: UpdateLessonData,
+  data: UpdateLessonData
 ) {
   return ctx.db.patch(lessonId, {
     ...data,
@@ -58,7 +59,7 @@ export async function update(
 
 export async function reorder(
   ctx: GenericMutationCtx<DataModel>,
-  lessonIds: Id<"lessons">[],
+  lessonIds: Id<"lessons">[]
 ) {
   const now = Date.now();
 
@@ -67,21 +68,21 @@ export async function reorder(
       ctx.db.patch(lessonId, {
         order: index + 1,
         updatedAt: now,
-      }),
-    ),
+      })
+    )
   );
 }
 
 export function remove(
   ctx: GenericMutationCtx<DataModel>,
-  lessonId: Id<"lessons">,
+  lessonId: Id<"lessons">
 ) {
   return ctx.db.delete(lessonId);
 }
 
 export async function removeAllBySectionId(
   ctx: GenericMutationCtx<DataModel>,
-  sectionId: Id<"sections">,
+  sectionId: Id<"sections">
 ) {
   const lessons = await ctx.db
     .query("lessons")
@@ -93,7 +94,7 @@ export async function removeAllBySectionId(
 
 export async function removeAllByCourseId(
   ctx: GenericMutationCtx<DataModel>,
-  courseId: Id<"courses">,
+  courseId: Id<"courses">
 ) {
   const lessons = await ctx.db
     .query("lessons")
@@ -101,4 +102,25 @@ export async function removeAllByCourseId(
     .collect();
 
   await Promise.all(lessons.map((lesson) => ctx.db.delete(lesson._id)));
+}
+
+export async function linkVideo(
+  ctx: GenericMutationCtx<DataModel>,
+  lessonId: Id<"lessons">,
+  videoId: Id<"muxAssets">
+) {
+  return ctx.db.patch(lessonId, {
+    videoId,
+    updatedAt: Date.now(),
+  });
+}
+
+export async function unlinkVideo(
+  ctx: GenericMutationCtx<DataModel>,
+  lessonId: Id<"lessons">
+) {
+  return ctx.db.patch(lessonId, {
+    videoId: undefined,
+    updatedAt: Date.now(),
+  });
 }

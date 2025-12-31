@@ -4,6 +4,7 @@ import { teachersDAL, teachersTable } from "./teachers";
 import { coursesDAL, coursesTable } from "./courses";
 import { sectionsDAL, sectionsTable } from "./sections";
 import { lessonsDAL, lessonsTable } from "./lessons";
+import { muxAssetsDAL, muxAssetsTable } from "./muxAssets";
 
 const db = {
   accessTokens: accessTokensDAL,
@@ -12,6 +13,7 @@ const db = {
   courses: coursesDAL,
   sections: sectionsDAL,
   lessons: lessonsDAL,
+  muxAssets: muxAssetsDAL,
 };
 
 const tables = {
@@ -21,6 +23,7 @@ const tables = {
   courses: coursesTable,
   sections: sectionsTable,
   lessons: lessonsTable,
+  muxAssets: muxAssetsTable,
 };
 
 export { tables, db };
