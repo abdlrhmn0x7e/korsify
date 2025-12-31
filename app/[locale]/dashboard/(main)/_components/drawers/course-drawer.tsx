@@ -11,6 +11,7 @@ import {
 import { useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
+import { CourseDetails } from "../../courses/_components/course-details";
 
 export function CourseDrawer() {
   const isMobile = useIsMobile();
@@ -42,7 +43,11 @@ export function CourseDrawer() {
           </div>
         </DrawerHeader>
 
-        <div className="mr-2 overflow-y-auto pb-12">hello world</div>
+        {params.slug && (
+          <div className="mr-2 p-4 overflow-y-auto pb-12 flex-1">
+            <CourseDetails slug={params.slug} />
+          </div>
+        )}
       </DrawerContent>
     </Drawer>
   );
