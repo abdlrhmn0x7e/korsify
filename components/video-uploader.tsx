@@ -44,7 +44,6 @@ export function VideoUploader({
     lessonId,
   });
 
-  // Update state based on video status
   const currentState: UploadState =
     uploadState === "uploading"
       ? "uploading"
@@ -68,18 +67,15 @@ export function VideoUploader({
       setErrorMessage(null);
 
       try {
-        // Get upload URL from Mux via action
         const { uploadUrl, muxAssetId } = await createDirectUpload({
           teacherId,
         });
 
-        // Link the video to the lesson immediately
         await linkVideoToLesson({
           lessonId,
           muxAssetId,
         });
 
-        // Upload directly to Mux
         const xhr = new XMLHttpRequest();
 
         xhr.upload.addEventListener("progress", (event) => {
@@ -132,18 +128,18 @@ export function VideoUploader({
     [handleFileSelect]
   );
 
-  const handleDragOver = (e: React.DragEvent) => {
+  function handleDragOver(e: React.DragEvent) {
     e.preventDefault();
-  };
+  }
 
-  const handleClick = () => {
+  function handleClick() {
     fileInputRef.current?.click();
-  };
+  }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) handleFileSelect(file);
-  };
+  }
 
   return (
     <div className={cn("w-full", className)}>
@@ -156,7 +152,6 @@ export function VideoUploader({
         disabled={currentState === "uploading" || currentState === "processing"}
       />
 
-      {/* Upload Zone */}
       {currentState === "idle" && (
         <div
           onClick={handleClick}
@@ -176,7 +171,6 @@ export function VideoUploader({
         </div>
       )}
 
-      {/* Uploading State */}
       {currentState === "uploading" && (
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-6">
           <div className="flex items-center gap-3">
@@ -195,7 +189,6 @@ export function VideoUploader({
         </div>
       )}
 
-      {/* Processing State */}
       {currentState === "processing" && (
         <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-6">
           <Spinner className="size-5" />
@@ -208,7 +201,6 @@ export function VideoUploader({
         </div>
       )}
 
-      {/* Ready State */}
       {currentState === "ready" && video && (
         <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-6">
           <div className="flex size-10 items-center justify-center rounded-full bg-green-500/20">
@@ -236,7 +228,6 @@ export function VideoUploader({
         </div>
       )}
 
-      {/* Error State */}
       {currentState === "error" && (
         <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-6">
           <div className="flex size-10 items-center justify-center rounded-full bg-destructive/20">

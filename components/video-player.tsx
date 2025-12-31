@@ -1,40 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { useAction } from "convex/react";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/convex/_generated/api";
 import { Spinner } from "@/components/ui/spinner";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
+const TOKEN_EXPIRY_SECONDS = 3600;
+const TOKEN_STALE_TIME_MS = 50 * 60 * 1000;
+const TOKEN_GC_TIME_MS = 55 * 60 * 1000;
+
 interface VideoPlayerProps {
-  /** The Mux playback ID */
   playbackId: string;
-  /** Video title for analytics */
   title?: string;
-  /** Whether this video requires a signed token */
   signed?: boolean;
-  /** Custom accent color for the player */
   accentColor?: string;
-  /** Additional class names */
   className?: string;
-  /** Thumbnail time in seconds */
   thumbnailTime?: number;
-  /** Auto play the video */
   autoPlay?: boolean;
-  /** Start time in seconds */
   startTime?: number;
-  /** Callback when video ends */
   onEnded?: () => void;
-  /** Callback for time updates */
   onTimeUpdate?: (currentTime: number) => void;
 }
 
-/**
- * Video player component using Mux Player.
- * Supports both public and signed playback.
- */
 export function VideoPlayer({
   playbackId,
   title,
@@ -47,49 +37,27 @@ export function VideoPlayer({
   onEnded,
   onTimeUpdate,
 }: VideoPlayerProps) {
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(signed);
-  const [error, setError] = useState<string | null>(null);
-
   const getSignedToken = useAction(api.mux.actions.getSignedPlaybackToken);
 
-  // Fetch signed token if needed
-  useEffect(() => {
-    if (!signed) {
-      setLoading(false);
-      return;
-    }
+  const {
+    data: tokenData,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ["mux-playback-token", playbackId],
+    queryFn: () =>
+      getSignedToken({
+        playbackId,
+        expiresInSeconds: TOKEN_EXPIRY_SECONDS,
+      }),
+    enabled: signed,
+    staleTime: TOKEN_STALE_TIME_MS,
+    gcTime: TOKEN_GC_TIME_MS,
+  });
 
-    let mounted = true;
+  const isLoading = signed && isPending;
 
-    async function fetchToken() {
-      try {
-        const result = await getSignedToken({
-          playbackId,
-          expiresInSeconds: 3600, // 1 hour
-        });
-
-        if (mounted) {
-          setToken(result.token);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : "Failed to load video");
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchToken();
-
-    return () => {
-      mounted = false;
-    };
-  }, [playbackId, signed, getSignedToken]);
-
-  // Loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         className={cn(
@@ -105,7 +73,6 @@ export function VideoPlayer({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div
@@ -115,7 +82,9 @@ export function VideoPlayer({
         )}
       >
         <IconAlertCircle className="size-8 text-destructive" />
-        <p className="text-sm text-destructive">{error}</p>
+        <p className="text-sm text-destructive">
+          {error instanceof Error ? error.message : "Failed to load video"}
+        </p>
       </div>
     );
   }
@@ -123,10 +92,10 @@ export function VideoPlayer({
   return (
     <MuxPlayer
       playbackId={playbackId}
-      tokens={signed && token ? { playback: token } : undefined}
-      metadata={{
-        video_title: title,
-      }}
+      tokens={
+        signed && tokenData?.token ? { playback: tokenData.token } : undefined
+      }
+      metadata={{ video_title: title }}
       streamType="on-demand"
       accentColor={accentColor}
       thumbnailTime={thumbnailTime}
@@ -138,30 +107,13 @@ export function VideoPlayer({
         onTimeUpdate?.(target.currentTime);
       }}
       className={cn(
-        "aspect-video w-full rounded-lg overflow-hidden",
+        "aspect-video w-full overflow-hidden rounded-lg",
         className
       )}
     />
   );
 }
 
-interface VideoPlayerWithLessonProps {
-  /** The lesson ID to fetch video for */
-  lessonId: string;
-  /** Video title for analytics */
-  title?: string;
-  /** Custom accent color for the player */
-  accentColor?: string;
-  /** Additional class names */
-  className?: string;
-  /** Callback when video ends */
-  onEnded?: () => void;
-}
-
-/**
- * Video player that fetches the video token for a specific lesson.
- * Use this when you have a lesson ID and want to handle token fetching automatically.
- */
 export function VideoPlayerWithToken({
   playbackId,
   title,
