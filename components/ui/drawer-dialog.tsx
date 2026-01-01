@@ -4,7 +4,7 @@ import * as React from "react";
 
 import {
   Dialog,
-  DialogBody,
+  // DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerBody,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -57,10 +56,10 @@ interface DrawerDialogDescriptionProps {
   className?: string;
 }
 
-interface DrawerDialogBodyProps {
-  children: React.ReactNode;
-  className?: string;
-}
+// interface DrawerDialogBodyProps {
+//   children: React.ReactNode;
+//   className?: string;
+// }
 
 interface DrawerDialogFooterProps {
   children: React.ReactNode;
@@ -142,16 +141,16 @@ export function DrawerDialogDescription({
   return <DialogDescription {...props}>{children}</DialogDescription>;
 }
 
-export function DrawerDialogBody({
-  children,
-  ...props
-}: DrawerDialogBodyProps) {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    return <DrawerBody {...props}>{children}</DrawerBody>;
-  }
-  return <DialogBody {...props}>{children}</DialogBody>;
-}
+// export function DrawerDialogBody({
+//   children,
+//   ...props
+// }: DrawerDialogBodyProps) {
+//   const isMobile = useIsMobile();
+//   if (isMobile) {
+//     return <DrawerBody {...props}>{children}</DrawerBody>;
+//   }
+//   return <DialogBody {...props}>{children}</DialogBody>;
+// }
 
 export function DrawerDialogFooter({
   children,

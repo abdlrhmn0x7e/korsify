@@ -12,6 +12,8 @@ import { useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 import { CourseDetails } from "../../courses/_components/course-details";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export function CourseDrawer() {
   const isMobile = useIsMobile();
@@ -42,6 +44,11 @@ export function CourseDrawer() {
             <DrawerDescription>View and manage your course</DrawerDescription>
           </div>
         </DrawerHeader>
+
+        <Dialog>
+          <DialogTrigger render={<Button />}>Test</DialogTrigger>
+          <DialogContent>Test</DialogContent>
+        </Dialog>
 
         {params.slug && (
           <div className="mr-2 p-4 overflow-y-auto pb-12 flex-1">
