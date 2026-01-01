@@ -3,71 +3,137 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
-  IconCheck,
-  IconChevronsDown,
-  IconDeviceFloppy,
+  IconBookOff,
+  IconChevronDown,
+  IconDotsVertical,
   IconPencil,
   IconPlus,
+  IconTrash,
+  IconEye,
+  IconEyeOff,
+  IconFileDescription,
 } from "@tabler/icons-react";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  Empty,
+  EmptyContent,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionHeader,
+  AccordionTriggerMinimal,
+} from "@/components/ui/accordion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { WholePageSpinner } from "@/components/whole-page-spinner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
     courseId,
   });
+  const isPending = sections === undefined;
 
+  return (
+    <Card className="gap-0 p-4">
+      <CardHeader className="p-0">
+        <div className="ms-1 flex items-center justify-between">
+          <CardTitle>Sections</CardTitle>
+          <CreateSectionButton courseId={courseId} />
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-0">
+        {isPending && <WholePageSpinner />}
+        {sections &&
+          (sections.length > 0 ? (
+            <Accordion>
+              {sections.map((section) => (
+                <SectionAccordionItem section={section} key={section._id} />
+              ))}
+            </Accordion>
+          ) : (
+            <Empty className="mb-12">
+              <EmptyHeader>
+                <EmptyMedia variant="icon" className="size-12">
+                  <IconBookOff className="size-6" />
+                </EmptyMedia>
+                <EmptyTitle>No Section Yet</EmptyTitle>
+              </EmptyHeader>
+              <EmptyContent>
+                <CreateSectionButton courseId={courseId} variant="outline" />
+              </EmptyContent>
+            </Empty>
+          ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function CreateSectionButton({
+  courseId,
+  variant = "default",
+}: {
+  courseId: Id<"courses">;
+  variant?: "default" | "outline";
+}) {
   const addSectionMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.sections.mutations.create),
   });
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-lg font-bold">Sections</p>
-        <Button
-          disabled={addSectionMutation.isPending}
-          onClick={() => {
-            addSectionMutation.mutate({
-              courseId,
-              title: "New Section",
-            });
-          }}
-        >
-          Add Section{" "}
-          {addSectionMutation.isPending ? <Spinner /> : <IconPlus />}
-        </Button>
-      </div>
-
-      {sections ? (
-        sections.map((section) => (
-          <SectionAccordion section={section} key={section._id} />
-        ))
-      ) : (
-        <p className="text-center text-muted-foreground text-sm">
-          No sections yet.
-        </p>
-      )}
-    </div>
+    <Button
+      disabled={addSectionMutation.isPending}
+      variant={variant}
+      size="sm"
+      onClick={() => {
+        addSectionMutation.mutate({
+          courseId,
+          title: "New Section",
+        });
+      }}
+    >
+      {addSectionMutation.isPending ? <Spinner /> : <IconPlus />}
+      Add Section{" "}
+    </Button>
   );
 }
 
-function SectionAccordion({ section }: { section: Doc<"sections"> }) {
+function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
   const [isEditing, setIsEditing] = useState(false);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+
+  const lessons = useQuery(api.teachers.lessons.queries.getBySectionId, {
+    sectionId: section._id,
+  });
 
   const updateSectionMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.sections.mutations.update),
     onSettled: () => {
       setIsEditing(false);
     },
+  });
+
+  const deleteSectionMutation = useMutation({
+    mutationFn: useConvexMutation(api.teachers.sections.mutations.remove),
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: useConvexMutation(api.teachers.sections.mutations.updateStatus),
   });
 
   function exitEditing() {
@@ -87,25 +153,21 @@ function SectionAccordion({ section }: { section: Doc<"sections"> }) {
     if (e.key === "Enter") {
       exitEditing();
     }
+    if (e.key === "Escape") {
+      setIsEditing(false);
+    }
   }
 
-  function handleEdit() {
-    if (isEditing) {
-      exitEditing();
-    } else {
-      setIsEditing(true);
-    }
+  function handleBlur() {
+    exitEditing();
   }
 
   useEffect(() => {
     if (isEditing) {
       titleInputRef.current?.focus();
+      titleInputRef.current?.select();
     }
   }, [isEditing]);
-
-  const updateStatusMutation = useMutation({
-    mutationFn: useConvexMutation(api.teachers.sections.mutations.updateStatus),
-  });
 
   function handleUpdateStatus() {
     updateStatusMutation.mutate({
@@ -114,70 +176,118 @@ function SectionAccordion({ section }: { section: Doc<"sections"> }) {
     });
   }
 
+  function handleDelete() {
+    deleteSectionMutation.mutate({
+      sectionId: section._id,
+    });
+  }
+
+  const lessonsCount = lessons?.length ?? 0;
+  const isLoading =
+    updateSectionMutation.isPending ||
+    deleteSectionMutation.isPending ||
+    updateStatusMutation.isPending;
+
   return (
-    <Collapsible className="flex w-full flex-col gap-2 group/collapsible">
-      <div className="text-sm [&:hover:not(:has(button:hover))]:bg-muted py-1 px-2 rounded-sm flex items-center justify-between">
-        <CollapsibleTrigger
-          className="flex-1"
-          render={<div />}
-          nativeButton={false}
-        >
-          {isEditing ? (
-            <input
-              defaultValue={section.title}
-              ref={titleInputRef}
-              onKeyDown={handleKeyDown}
-              onClick={(e) => e.stopPropagation()}
-              disabled={updateSectionMutation.isPending}
-              className="bg-transparent outline-none border-b focus:border-primary"
-            />
-          ) : (
-            <span>{section.title}</span>
-          )}
-        </CollapsibleTrigger>
-
-        <div className="flex items-center gap-1">
-          <Button
-            variant="outline"
-            size="xs"
-            disabled={updateSectionMutation.isPending}
-            onClick={handleEdit}
-          >
+    <AccordionItem value={section._id}>
+      <AccordionHeader className="flex items-center gap-2 py-1 px-2 text-sm rounded-sm">
+        <AccordionTriggerMinimal className="flex-1 py-0 hover:no-underline">
+          <div className="flex items-center gap-2 min-h-7">
             {isEditing ? (
-              updateSectionMutation.isPending ? (
-                <Spinner />
-              ) : (
-                <IconDeviceFloppy />
-              )
+              <input
+                defaultValue={section.title}
+                ref={titleInputRef}
+                onKeyDown={handleKeyDown}
+                onBlur={handleBlur}
+                onClick={(e) => e.stopPropagation()}
+                disabled={updateSectionMutation.isPending}
+                className="bg-transparent outline-none border-b focus:border-primary w-full"
+              />
             ) : (
-              <IconPencil />
+              <span>{section.title}</span>
             )}
-          </Button>
+          </div>
+        </AccordionTriggerMinimal>
 
-          <Button
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Badge
             variant={section.status === "published" ? "success" : "outline"}
-            size="xs"
-            onClick={handleUpdateStatus}
-            disabled={updateStatusMutation.isPending}
           >
-            {updateStatusMutation.isPending ? (
-              <Spinner />
-            ) : section.status === "published" ? (
-              <IconCheck />
-            ) : (
-              <IconPencil />
-            )}
-            <span className="capitalize">{section.status}</span>
-          </Button>
-          <CollapsibleTrigger>
-            <IconChevronsDown
-              size={16}
-              className="transition-transform text-muted-foreground group-data-open/collapsible:rotate-180"
-            />
-          </CollapsibleTrigger>
+            {section.status === "published" ? "Published" : "Draft"}
+          </Badge>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className={buttonVariants({ variant: "ghost", size: "xs" })}
+              disabled={isLoading}
+            >
+              {isLoading ? <Spinner /> : <IconDotsVertical size={16} />}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" sideOffset={8}>
+              <DropdownMenuItem
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+              >
+                <IconPencil />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleUpdateStatus}>
+                {section.status === "published" ? (
+                  <>
+                    <IconEyeOff />
+                    Unpublish
+                  </>
+                ) : (
+                  <>
+                    <IconEye />
+                    Publish
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+                <IconTrash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <IconChevronDown
+            size={16}
+            className="transition-transform text-muted-foreground group-data-[open]/accordion-item:rotate-180"
+          />
         </div>
-      </div>
-      <CollapsibleContent>lessons w bta3</CollapsibleContent>
-    </Collapsible>
+      </AccordionHeader>
+
+      <AccordionContent className="pl-4">
+        {lessons === undefined ? (
+          <div className="py-4 flex justify-center">
+            <Spinner />
+          </div>
+        ) : lessonsCount > 0 ? (
+          <div className="space-y-1">
+            {lessons.map((lesson) => (
+              <div
+                key={lesson._id}
+                className="flex items-center gap-2 py-1 px-2 text-sm text-muted-foreground hover:bg-muted rounded-sm"
+              >
+                <IconFileDescription size={16} />
+                <span>{lesson.title}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Empty className="py-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className="size-10">
+                <IconFileDescription className="size-5" />
+              </EmptyMedia>
+              <EmptyTitle className="text-base">No Lessons Yet</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        )}
+      </AccordionContent>
+    </AccordionItem>
   );
 }

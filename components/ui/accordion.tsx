@@ -19,7 +19,18 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn("not-last:border-b", className)}
+      className={cn("not-last:border-b group/accordion-item", className)}
+      {...props}
+    />
+  )
+}
+
+function AccordionHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <AccordionPrimitive.Header
+      data-slot="accordion-header"
+      className={cn("flex", className)}
+      render={<div />}
       {...props}
     />
   )
@@ -48,6 +59,25 @@ function AccordionTrigger({
   )
 }
 
+function AccordionTriggerMinimal({
+  className,
+  children,
+  ...props
+}: AccordionPrimitive.Trigger.Props) {
+  return (
+    <AccordionPrimitive.Trigger
+      data-slot="accordion-trigger-minimal"
+      className={cn(
+        "focus-visible:ring-ring/50 focus-visible:border-ring rounded-lg py-2.5 text-left text-sm font-medium hover:underline focus-visible:ring-[3px] group/accordion-trigger relative flex flex-1 items-center border border-transparent transition-all outline-none disabled:pointer-events-none disabled:opacity-50",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </AccordionPrimitive.Trigger>
+  )
+}
+
 function AccordionContent({
   className,
   children,
@@ -71,4 +101,4 @@ function AccordionContent({
   )
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
+export { Accordion, AccordionItem, AccordionHeader, AccordionTrigger, AccordionTriggerMinimal, AccordionContent }

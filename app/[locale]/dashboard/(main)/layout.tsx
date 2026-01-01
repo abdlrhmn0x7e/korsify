@@ -7,6 +7,7 @@ import {
   IconSettings,
   IconBuildingStore,
   IconUsers,
+  IconHome,
 } from "@tabler/icons-react";
 import SidebarLayout from "@/components/dashboard/sidebar/sidebar-layout";
 import { WelcomeDialog } from "./_components/welcome-dialog";
@@ -37,7 +38,7 @@ export default async function DashboardMainLayout({
         {
           title: t("home"),
           url: `/dashboard`,
-          icon: <IconLayoutDashboardFilled />,
+          icon: <IconHome />,
         },
         {
           title: t("courses"),

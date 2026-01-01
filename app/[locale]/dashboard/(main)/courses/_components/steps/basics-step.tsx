@@ -18,7 +18,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { cn } from "@/lib/utils";
 
-import { slugify, useCourseFormContext, type CourseFormValues } from "../course-form-types";
+import {
+  slugify,
+  useCourseFormContext,
+  type CourseFormValues,
+} from "../course-form-types";
+import { ImageWithFallback } from "@/components/image/image-with-fallback";
+import { SuspendableImage } from "@/components/image/suspendable-image";
 
 export function BasicsStep() {
   const { control, setValue, watch } = useFormContext<CourseFormValues>();
@@ -108,11 +114,12 @@ export function BasicsStep() {
             >
               {thumbnailPreviewUrl ? (
                 <div className="relative aspect-video w-full max-w-sm overflow-hidden rounded-md">
-                  <Image
+                  <SuspendableImage
                     src={thumbnailPreviewUrl}
                     alt="Course thumbnail preview"
-                    fill
-                    className="object-cover"
+                    className="object-cover size-full"
+                    width={640}
+                    height={360}
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
                     <Button

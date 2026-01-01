@@ -1,4 +1,3 @@
-import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import {
@@ -9,27 +8,24 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import {
+  IconCalendar,
   IconCurrencyDollar,
   IconPencil,
+  IconPencilCancel,
   IconSearch,
-  IconTag,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TiptapViewer } from "@/components/editor/viewer";
 import { JSONContent } from "@tiptap/react";
 import { formatPrice } from "@/lib/format-price";
-import { Separator } from "@/components/ui/separator";
 import { CourseSections } from "./course-sections";
+import { WholePageSpinner } from "@/components/whole-page-spinner";
+import Image from "next/image";
+import { formatDate } from "@/lib/format-date";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export function CourseDetails({ slug }: { slug: string }) {
   const course = useQuery(api.teachers.courses.queries.getBySlug, {
@@ -40,11 +36,7 @@ export function CourseDetails({ slug }: { slug: string }) {
   const courseNotFound = course === null;
 
   if (isPending) {
-    return (
-      <div className="min-h-36 grid place-items-center">
-        <Spinner />
-      </div>
-    );
+    return <WholePageSpinner />;
   }
 
   if (courseNotFound) {
@@ -52,122 +44,84 @@ export function CourseDetails({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="space-y-3">
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <div>
-            <CardTitle>{course.title}</CardTitle>
-            <CardDescription>
-              created at {format(course._creationTime, "dd MMM yyyy")}
-            </CardDescription>
+    <div className="space-y-4">
+      <div className="flex gap-4">
+        <AspectRatio
+          ratio={16 / 9}
+          className="relative h-32 shrink-0 overflow-hidden rounded-md border"
+        >
+          <Image
+            src={course.thumbnailUrl ?? ""}
+            className="size-full object-cover"
+            alt={course.title}
+            fill
+          />
+        </AspectRatio>
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="flex items-start justify-between gap-2">
+            <h4 className="line-clamp-2">{course.title}</h4>
+            <Badge
+              className="shrink-0 capitalize"
+              variant={course.status === "draft" ? "secondary" : "default"}
+            >
+              {course.status === "draft" ? <IconPencil /> : <IconUpload />}
+              {course.status}
+            </Badge>
           </div>
-          <Badge
-            className="capitalize"
-            variant={course.status === "draft" ? "secondary" : "default"}
-          >
-            {course.status === "draft" ? <IconPencil /> : <IconUpload />}
-            {course.status}
-          </Badge>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-hidden border rounded-sm max-h-36">
-            <img
-              src={course.thumbnailUrl ?? ""}
-              className="size-full object-cover"
-              alt={course.title}
-            />
-          </div>
-        </CardContent>
-      </Card>
+          <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+            <span className="flex items-center text-muted-foreground">
+              <IconCalendar className="mr-1 size-3.5" />
+              Created
+            </span>
+            <span>{formatDate(new Date(course._creationTime))}</span>
 
-      <Card>
-        <CardHeader>
+            <span className="flex items-center text-muted-foreground">
+              <IconCurrencyDollar className="mr-1 size-3.5" />
+              Price
+            </span>
+            <span className="font-medium">
+              {course.pricing.overridePrice ? (
+                <>
+                  <span className="mr-1 line-through opacity-50">
+                    {formatPrice(course.pricing.price)}
+                  </span>
+                  {formatPrice(course.pricing.overridePrice)}
+                </>
+              ) : (
+                formatPrice(course.pricing.price)
+              )}
+            </span>
+
+            <span className="flex items-center text-muted-foreground">
+              <IconSearch className="mr-1 size-3.5" />
+              SEO
+            </span>
+            <span className="truncate" title={course.seo?.metaTitle}>
+              {course.seo?.metaTitle ?? "Not configured"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <Card className="gap-0 p-4">
+        <CardHeader className="p-0">
           <CardTitle>Description</CardTitle>
         </CardHeader>
-        <CardContent>
-          {course.description ? (
+        <CardContent className="p-0 h-full max-h-60 overflow-y-auto">
+          {course.description && course.description.content.length > 0 ? (
             <TiptapViewer content={course.description as JSONContent} />
           ) : (
-            <p className="text-center text-muted-foreground text-sm">
-              No description provided.
-            </p>
+            <Empty className="mb-12">
+              <EmptyHeader>
+                <EmptyMedia variant="icon" className="size-12">
+                  <IconPencilCancel className="size-6" />
+                </EmptyMedia>
+                <EmptyTitle>No Description</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
           )}
         </CardContent>
       </Card>
-
-      <div className="grid gap-3 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600">
-                <IconCurrencyDollar className="size-4" />
-              </div>
-              <CardTitle className="text-base">Pricing</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col items-center justify-center">
-            {course.pricing.overridePrice ? (
-              <div className="text-center">
-                <span className="text-muted-foreground line-through">
-                  {formatPrice(course.pricing.price)}
-                </span>
-                <p className="text-xl font-bold">
-                  {formatPrice(course.pricing.overridePrice)}
-                </p>
-                <Badge variant="secondary" className="mt-2">
-                  <IconTag className="size-3" />
-                  {Math.round(
-                    ((course.pricing.price - course.pricing.overridePrice) /
-                      course.pricing.price) *
-                      100,
-                  )}
-                  % off
-                </Badge>
-              </div>
-            ) : (
-              <p className="text-3xl font-bold">
-                {formatPrice(course.pricing.price)}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-md bg-blue-500/10 text-blue-600">
-                <IconSearch className="size-4" />
-              </div>
-              <CardTitle className="text-base">SEO</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {course.seo ? (
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    Meta Title
-                  </span>
-                  <p className="text-sm font-medium">{course.seo.metaTitle}</p>
-                </div>
-                <Separator />
-                <div className="space-y-1">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    Meta Description
-                  </span>
-                  <p className="text-sm">{course.seo.metaDescription}</p>
-                </div>
-              </div>
-            ) : (
-              <p className="text-center text-sm text-muted-foreground">
-                No SEO data configured.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <Separator />
 
       <CourseSections courseId={course._id} />
     </div>
@@ -176,7 +130,7 @@ export function CourseDetails({ slug }: { slug: string }) {
 
 function CourseNotFound() {
   return (
-    <Empty>
+    <Empty className="h-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <IconX />

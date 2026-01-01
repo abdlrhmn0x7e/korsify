@@ -25,7 +25,7 @@ export function CourseDrawer() {
 
       void setParams(() => ({ slug: null }));
     },
-    [setParams],
+    [setParams]
   );
 
   return (
@@ -36,7 +36,7 @@ export function CourseDrawer() {
       handleOnly={!isMobile}
     >
       <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-2xl">
-        <DrawerHeader className="items-center justify-between gap-2 lg:flex-row">
+        <DrawerHeader className="sr-only items-center justify-between gap-2 lg:flex-row">
           <div className="space-y-1">
             <DrawerTitle>Course Details</DrawerTitle>
             <DrawerDescription>View and manage your course</DrawerDescription>

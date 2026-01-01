@@ -202,11 +202,11 @@ export function CourseStatusButton({
         {status}
       </motion.span>
       <motion.span
-        variants={{ initial: { y: "100%" }, hovered: { y: 0 } }}
+        variants={{ initial: { y: "100%" }, hovered: { y: "-5%" } }}
         transition={{ duration: 0.1, ease: "easeOut" }}
         className="absolute left-5 capitalize"
       >
-        {status === "published" ? "draft" : "publish"}
+        {status === "published" ? "Draft" : "Publish"}
       </motion.span>
     </MotionButton>
   );

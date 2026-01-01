@@ -5,12 +5,15 @@ export function useDialog() {
 
   const trigger = useCallback(() => setIsOpen(true), []);
 
+  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
+
   return {
     props: {
       open: isOpen,
       onOpenChange: setIsOpen,
     },
-    trigger: trigger,
+    toggle: toggle,
+    trigger,
     dismiss: () => setIsOpen(false),
   };
 }
