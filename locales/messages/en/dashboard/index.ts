@@ -71,7 +71,8 @@ export const dashboard = {
       instaPayPlaceholder: "Enter your InstaPay username",
       instructions: "Payment Instructions",
       instructionsPlaceholder: "Enter any additional payment instructions",
-      instructionsDescription: "These instructions will be shown to students when they make a payment",
+      instructionsDescription:
+        "These instructions will be shown to students when they make a payment",
       save: "Save Changes",
       saving: "Saving...",
       success: "Payment info updated successfully",
@@ -91,7 +92,8 @@ export const dashboard = {
       saving: "Updating...",
       success: "Subdomain updated successfully",
       error: "Failed to update subdomain",
-      warning: "Changing your subdomain will affect all existing links to your store",
+      warning:
+        "Changing your subdomain will affect all existing links to your store",
     },
   },
 } as const;

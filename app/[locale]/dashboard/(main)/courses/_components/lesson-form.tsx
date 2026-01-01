@@ -110,7 +110,7 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(handleFormSubmit)}
-        className="flex flex-col gap-6"
+        className="space-y-6 ps-1"
         id="lesson-form"
       >
         <Controller

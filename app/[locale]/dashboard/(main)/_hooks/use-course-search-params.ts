@@ -3,6 +3,7 @@ import { createLoader, parseAsString } from "nuqs/server";
 
 const courseSearchParams = {
   slug: parseAsString,
+  lessonId: parseAsString,
 };
 
 export function useCourseSearchParams() {

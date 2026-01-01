@@ -10,6 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import {
   IconBookOff,
   IconChevronDown,
+  IconChevronRight,
   IconDotsVertical,
   IconPencil,
   IconPlus,
@@ -17,6 +18,7 @@ import {
   IconEye,
   IconEyeOff,
   IconFileDescription,
+  IconPlayerPlay,
 } from "@tabler/icons-react";
 import {
   Empty,
@@ -44,6 +46,7 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddLessonDialog } from "./add-lesson-dialog";
+import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
@@ -275,17 +278,11 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
             <Spinner />
           </div>
         ) : lessonsCount > 0 ? (
-          <div className="space-y-1">
-            {lessons.map((lesson) => (
-              <div
-                key={lesson._id}
-                className="flex items-center gap-2 py-1 px-2 text-sm text-muted-foreground hover:bg-muted rounded-sm"
-              >
-                <IconFileDescription size={16} />
-                <span>{lesson.title}</span>
-              </div>
-            ))}
-          </div>
+          <LessonsList
+            lessons={lessons}
+            courseId={section.courseId}
+            sectionId={section._id}
+          />
         ) : (
           <Empty className="py-6">
             <EmptyHeader>
@@ -304,5 +301,65 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
         )}
       </AccordionContent>
     </AccordionItem>
+  );
+}
+
+interface LessonsListProps {
+  lessons: Array<{
+    _id: Id<"lessons">;
+    title: string;
+    isFree: boolean;
+  }>;
+  courseId: Id<"courses">;
+  sectionId: Id<"sections">;
+}
+
+function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
+  const [, setParams] = useCourseSearchParams();
+
+  function handleLessonClick(lessonId: Id<"lessons">) {
+    void setParams((prev) => ({ ...prev, lessonId }));
+  }
+
+  return (
+    <div className="space-y-1">
+      <ul className="space-y-0.5">
+        {lessons.map((lesson, index) => (
+          <li key={lesson._id}>
+            <button
+              onClick={() => handleLessonClick(lesson._id)}
+              className="w-full flex items-center gap-3 py-2 px-3 text-sm rounded-md 
+                         hover:bg-accent transition-colors text-left group cursor-pointer"
+            >
+              <span
+                className="flex items-center justify-center size-5 
+                          rounded-full bg-muted text-xs font-medium 
+                          text-muted-foreground shrink-0"
+              >
+                {index + 1}
+              </span>
+              <IconPlayerPlay
+                size={14}
+                className="text-muted-foreground shrink-0"
+              />
+              <span className="flex-1 truncate">{lesson.title}</span>
+              {lesson.isFree && (
+                <Badge variant="secondary" className="shrink-0 text-xs">
+                  Free
+                </Badge>
+              )}
+              <IconChevronRight
+                size={14}
+                className="text-muted-foreground opacity-0 
+                          group-hover:opacity-100 transition-opacity shrink-0"
+              />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="pt-2 border-t mt-2">
+        <AddLessonDialog courseId={courseId} sectionId={sectionId} variant="ghost" />
+      </div>
+    </div>
   );
 }

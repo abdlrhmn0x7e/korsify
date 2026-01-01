@@ -91,7 +91,7 @@ export function AddLessonDialog({
         <DialogHeader>
           <DialogTitle>Add New Lesson</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[75svh] pb-4 pe-4 ps-1">
+        <ScrollArea className="max-h-[75svh] pb-4 pe-4">
           <LessonForm
             isPending={isPending}
             onSubmit={handleSubmit}
