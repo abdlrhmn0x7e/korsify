@@ -1,17 +1,14 @@
 "use client";
 
-import { useCallback } from "react";
 import { Id } from "@/convex/_generated/dataModel";
 import { useUploadVideo } from "@/components/video/use-upload-video";
 import { Button } from "@/components/ui/button";
+import { DropzoneArea } from "@/components/ui/dropzone-area";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  IconUpload,
-  IconVideo,
-  IconCheck,
-  IconAlertCircle,
-} from "@tabler/icons-react";
+import { IconUpload, IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { useCallback } from "react";
+import { VideoPlayer } from "@/components/video/video-player";
 
 interface VideoUploaderProps {
   initialVideoId?: Id<"muxAssets">;
@@ -41,18 +38,13 @@ export function VideoUploader({
     onError: onUploadError,
   });
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      const file = e.dataTransfer.files[0];
+  const handleFilesSelected = useCallback(
+    (files: File[]) => {
+      const file = files[0];
       if (file) upload(file);
     },
     [upload]
   );
-
-  function handleDragOver(e: React.DragEvent) {
-    e.preventDefault();
-  }
 
   const isDisabled = status === "uploading" || status === "processing";
 
@@ -68,22 +60,36 @@ export function VideoUploader({
       />
 
       {status === "idle" && (
-        <div
-          onClick={openFilePicker}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 transition-colors hover:border-primary/50 hover:bg-muted/50"
-        >
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-            <IconUpload className="size-6 text-primary" />
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-medium">Drop your video here</p>
-            <p className="text-xs text-muted-foreground">
-              or click to browse files
-            </p>
-          </div>
-        </div>
+        <DropzoneArea
+          options={{
+            accept: { "video/*": [] },
+            maxFiles: 1,
+          }}
+          onFilesSelected={handleFilesSelected}
+          emptyText="or click to browse files"
+          buttonText="Browse files"
+          icon={
+            <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 mb-2">
+              <IconUpload className="size-6 text-primary" />
+            </div>
+          }
+          emptyContent={
+            <div className="flex flex-col items-center justify-center gap-3">
+              <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
+                <IconUpload className="size-6 text-primary" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium">Drop your video here</p>
+                <p className="text-xs text-muted-foreground">
+                  or click to browse files
+                </p>
+              </div>
+              <Button type="button" size="sm" onClick={openFilePicker}>
+                Browse files
+              </Button>
+            </div>
+          }
+        />
       )}
 
       {status === "uploading" && (
@@ -116,30 +122,30 @@ export function VideoUploader({
         </div>
       )}
 
-      {status === "ready" && video && (
-        <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-6">
-          <div className="flex size-10 items-center justify-center rounded-full bg-green-500/20">
-            <IconCheck className="size-5 text-green-600" />
+      {status === "ready" && video && video.playbackId && (
+        <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-4">
+          <VideoPlayer
+            playbackId={video.playbackId}
+            signed
+            className="rounded-md"
+          />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <IconCheck className="size-4 text-green-600" />
+              <span className="text-sm">
+                Video ready
+                {video.duration && (
+                  <span className="text-muted-foreground">
+                    {" "}
+                    · {formatDuration(video.duration)}
+                  </span>
+                )}
+              </span>
+            </div>
+            <Button variant="ghost" size="sm" onClick={openFilePicker}>
+              Replace
+            </Button>
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-green-700 dark:text-green-400">
-              Video ready
-            </p>
-            {video.duration && (
-              <p className="text-xs text-green-600/80 dark:text-green-500/80">
-                Duration: {formatDuration(video.duration)}
-              </p>
-            )}
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={openFilePicker}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <IconVideo className="size-4" />
-            Replace
-          </Button>
         </div>
       )}
 

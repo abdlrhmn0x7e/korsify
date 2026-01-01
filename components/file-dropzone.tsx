@@ -1,12 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { DropzoneArea } from "@/components/ui/dropzone-area";
 import { Spinner } from "@/components/ui/spinner";
 import type { FileUploadState } from "@/hooks/use-upload-files";
 import { cn } from "@/lib/utils";
-import { IconCloudUpload, IconFile, IconPointer, IconTrash, IconX } from "@tabler/icons-react";
-import { useCallback } from "react";
-import { useDropzone, type DropzoneOptions } from "react-dropzone";
+import { IconFile, IconTrash, IconX } from "@tabler/icons-react";
+import { useCallback, type ReactNode } from "react";
+import type { DropzoneOptions } from "react-dropzone";
 import { toastManager } from "./ui/toast";
 
 export interface FileDropZoneProps {
@@ -21,6 +22,7 @@ export interface FileDropZoneProps {
   emptyText?: string;
   dragActiveText?: string;
   uploadingText?: string;
+  pendingContent?: ReactNode;
 }
 
 export function FileDropzone({
@@ -35,10 +37,11 @@ export function FileDropzone({
   emptyText = "Drag and drop files here, or click to select files",
   dragActiveText = "Drop files here to upload",
   uploadingText = "Uploading files...",
+  pendingContent,
 }: FileDropZoneProps) {
   const successCount = fileStates.filter((s) => s.status === "success").length;
 
-  const onDropAccepted = useCallback(
+  const handleFilesSelected = useCallback(
     (acceptedFiles: File[]) => {
       if (maxFiles && successCount >= maxFiles) {
         toastManager.add({
@@ -56,58 +59,36 @@ export function FileDropzone({
     [onDrop, maxFiles, successCount]
   );
 
-  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
-    onDropAccepted,
-    disabled: isPending,
-    noClick: true,
-    ...options,
-  });
+  const defaultPendingContent = (
+    <>
+      <Spinner />
+      <p className="text-muted-foreground text-sm select-none">
+        {uploadingText}
+      </p>
+    </>
+  );
 
   return (
     <div className="space-y-4">
-      <div
-        className={cn(
-          "hover:bg-input/30 bg-input/20 flex min-h-36 flex-col items-center justify-center gap-2 rounded-lg border-1 border-dashed p-4 text-center transition-colors duration-100",
-          isDragActive && "bg-input/60",
-          isPending && "pointer-events-none opacity-50",
-          className
-        )}
-        {...getRootProps()}
-      >
-        <input {...getInputProps()} />
-
-        {isDragActive ? (
-          <>
-            <IconPointer size={32} className="text-muted-foreground" />
-            <p className="text-muted-foreground text-sm select-none">
-              {dragActiveText}
-            </p>
-          </>
-        ) : isPending ? (
-          <>
-            <Spinner />
-            <p className="text-muted-foreground text-sm select-none">
-              {uploadingText}
-            </p>
-          </>
-        ) : (
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-2">
-              <IconCloudUpload size={16} className="text-muted-foreground" />
-              <p className="text-muted-foreground text-sm select-none">
-                {emptyText}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Button type="button" size="sm" onClick={open}>
-                <IconCloudUpload />
-                Click to select files
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
+      {isPending ? (
+        <div
+          className={cn(
+            "bg-input/20 flex min-h-36 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-center pointer-events-none opacity-50",
+            className
+          )}
+        >
+          {pendingContent ?? defaultPendingContent}
+        </div>
+      ) : (
+        <DropzoneArea
+          options={options}
+          className={className}
+          disabled={isPending}
+          onFilesSelected={handleFilesSelected}
+          emptyText={emptyText}
+          activeText={dragActiveText}
+        />
+      )}
 
       {showFileList && fileStates.length > 0 && (
         <div className="space-y-2">

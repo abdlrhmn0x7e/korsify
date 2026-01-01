@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI and Tailwind.
+You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Base UI and Tailwind.
 
 Code Style and Structure
 
@@ -31,7 +31,7 @@ Syntax and Formatting
 
 UI and Styling
 
-- Use Shadcn UI, Radix, and Tailwind for components and styling.
+- Use Shadcn UI, Base, and Tailwind for components and styling.
 - Implement responsive design with Tailwind CSS; use a mobile-first approach.
 
 Performance Optimization
