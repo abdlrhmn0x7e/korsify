@@ -40,6 +40,7 @@ import { EditCourseDialog } from "../../../courses/_components/edit-course-dialo
 import { useCourseSearchParams } from "../../../_hooks/use-course-search-params";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useScopedI18n } from "@/locales/client";
 
 type CourseWithThumbnail = Doc<"courses"> & { thumbnailUrl: string | null };
 
@@ -50,6 +51,7 @@ interface CoursesTableActionsProps {
 export function CoursesTableActions({ course }: CoursesTableActionsProps) {
   const [, setParams] = useCourseSearchParams();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const t = useScopedI18n("dashboard.courses.table.actions");
 
   const updateStatusMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.updateStatus),
@@ -80,7 +82,7 @@ export function CoursesTableActions({ course }: CoursesTableActionsProps) {
             className={buttonVariants({ variant: "ghost", size: "icon" })}
           >
             <IconDots className="size-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("openMenu")}</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
@@ -93,7 +95,7 @@ export function CoursesTableActions({ course }: CoursesTableActionsProps) {
               }}
             >
               <IconEye className="size-4" />
-              View
+              {t("view")}
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={updateStatusMutation.isPending}
@@ -106,38 +108,39 @@ export function CoursesTableActions({ course }: CoursesTableActionsProps) {
               ) : (
                 <IconShareOff />
               )}
-              <span>{course.status === "draft" ? "Publish" : "Draft"}</span>
+              <span>
+                {course.status === "draft" ? t("publish") : t("draft")}
+              </span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
               <IconPencil />
-              Edit
+              {t("edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <AlertDialogTrigger
               render={<DropdownMenuItem variant="destructive" />}
               nativeButton={false}
             >
-              <IconTrash /> Delete
+              <IconTrash /> {t("delete")}
             </AlertDialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
 
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              course and remove your data from our servers.
+              {t("deleteConfirm.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("deleteConfirm.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRemoveCourse}
               disabled={removeCourseMutation.isPending}
             >
-              Continue
+              {t("deleteConfirm.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -161,6 +164,7 @@ export function CourseStatusButton({
   status: Doc<"courses">["status"];
   courseId: Id<"courses">;
 }) {
+  const t = useScopedI18n("dashboard.courses.table");
   const updateStatusMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.updateStatus),
   });
@@ -195,18 +199,21 @@ export function CourseStatusButton({
         <IconPencil />
       )}
       <motion.span
-        variants={{ initial: { y: 0 }, hovered: { y: "-100%" } }}
+        variants={{
+          initial: { y: "0%", marginBottom: "0px" },
+          hovered: { y: "-100%", marginBottom: "10px" },
+        }}
         transition={{ duration: 0.1, ease: "easeOut" }}
         className="capitalize"
       >
-        {status}
+        {status === "published" ? t("status.published") : t("status.draft")}
       </motion.span>
       <motion.span
-        variants={{ initial: { y: "100%" }, hovered: { y: "-5%" } }}
+        variants={{ initial: { y: "110%" }, hovered: { y: "-5%" } }}
         transition={{ duration: 0.1, ease: "easeOut" }}
-        className="absolute left-5 capitalize"
+        className="absolute start-5 capitalize"
       >
-        {status === "published" ? "Draft" : "Publish"}
+        {status === "published" ? t("actions.draft") : t("actions.publish")}
       </motion.span>
     </MotionButton>
   );

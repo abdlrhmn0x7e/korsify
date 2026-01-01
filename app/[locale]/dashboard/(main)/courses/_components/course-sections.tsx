@@ -46,19 +46,21 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddLessonDialog } from "./add-lesson-dialog";
+import { useScopedI18n } from "@/locales/client";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
     courseId,
   });
+  const t = useScopedI18n("dashboard.courses.sections");
   const isPending = sections === undefined;
 
   return (
     <Card className="gap-1 p-4">
       <CardHeader className="p-0">
         <div className="ms-1 flex items-center justify-between">
-          <CardTitle>Sections</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
           <CreateSectionButton courseId={courseId} />
         </div>
       </CardHeader>
@@ -84,7 +86,7 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
                 <EmptyMedia variant="icon" className="size-12">
                   <IconBookOff className="size-6" />
                 </EmptyMedia>
-                <EmptyTitle>No Section Yet</EmptyTitle>
+                <EmptyTitle>{t("empty")}</EmptyTitle>
               </EmptyHeader>
               <EmptyContent>
                 <CreateSectionButton courseId={courseId} variant="outline" />
@@ -103,6 +105,7 @@ function CreateSectionButton({
   courseId: Id<"courses">;
   variant?: "default" | "outline";
 }) {
+  const t = useScopedI18n("dashboard.courses.sections");
   const addSectionMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.sections.mutations.create),
   });
@@ -115,12 +118,12 @@ function CreateSectionButton({
       onClick={() => {
         addSectionMutation.mutate({
           courseId,
-          title: "New Section",
+          title: t("newSectionDefaultTitle"),
         });
       }}
     >
       {addSectionMutation.isPending ? <Spinner /> : <IconPlus />}
-      Add Section{" "}
+      {t("addSection")}
     </Button>
   );
 }
@@ -128,6 +131,7 @@ function CreateSectionButton({
 function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
   const [isEditing, setIsEditing] = useState(false);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+  const t = useScopedI18n("dashboard.courses");
 
   const lessons = useQuery(api.teachers.lessons.queries.getBySectionId, {
     sectionId: section._id,
@@ -225,7 +229,9 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
           <Badge
             variant={section.status === "published" ? "success" : "outline"}
           >
-            {section.status === "published" ? "Published" : "Draft"}
+            {section.status === "published"
+              ? t("table.status.published")
+              : t("table.status.draft")}
           </Badge>
 
           <DropdownMenu>
@@ -242,25 +248,25 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
                 }}
               >
                 <IconPencil />
-                Edit
+                {t("table.actions.edit")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleUpdateStatus}>
                 {section.status === "published" ? (
                   <>
                     <IconEyeOff />
-                    Unpublish
+                    {t("table.actions.draft")}
                   </>
                 ) : (
                   <>
                     <IconEye />
-                    Publish
+                    {t("table.actions.publish")}
                   </>
                 )}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={handleDelete}>
                 <IconTrash />
-                Delete
+                {t("table.actions.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -289,7 +295,9 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
               <EmptyMedia variant="icon" className="size-10">
                 <IconFileDescription className="size-5" />
               </EmptyMedia>
-              <EmptyTitle className="text-base">No Lessons Yet</EmptyTitle>
+              <EmptyTitle className="text-base">
+                {t("sections.lessons.empty")}
+              </EmptyTitle>
             </EmptyHeader>
             <EmptyContent>
               <AddLessonDialog
@@ -316,6 +324,7 @@ interface LessonsListProps {
 
 function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
   const [, setParams] = useCourseSearchParams();
+  const t = useScopedI18n("dashboard.courses.sections.lessons");
 
   function handleLessonClick(lessonId: Id<"lessons">) {
     void setParams((prev) => ({ ...prev, lessonId }));
@@ -345,21 +354,26 @@ function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
               <span className="flex-1 truncate">{lesson.title}</span>
               {lesson.isFree && (
                 <Badge variant="secondary" className="shrink-0 text-xs">
-                  Free
+                  {t("free")}
                 </Badge>
               )}
               <IconChevronRight
                 size={14}
                 className="text-muted-foreground opacity-0 
-                          group-hover:opacity-100 transition-opacity shrink-0"
+                           group-hover:opacity-100 transition-opacity shrink-0"
               />
             </button>
           </li>
         ))}
       </ul>
       <div className="pt-2 border-t mt-2">
-        <AddLessonDialog courseId={courseId} sectionId={sectionId} variant="ghost" />
+        <AddLessonDialog
+          courseId={courseId}
+          sectionId={sectionId}
+          variant="ghost"
+        />
       </div>
     </div>
   );
 }
+

@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 import {
   CourseFormContext,
-  courseFormSchema,
+  useCourseFormSchema,
   DEFAULT_FORM_VALUES,
   STEP_IDS,
   type CourseFormValues,
@@ -25,39 +25,16 @@ import {
 import { BasicsStep } from "./steps/basics-step";
 import { DescriptionStep } from "./steps/description-step";
 import { PublishSettingsStep } from "./steps/publish-settings-step";
+import { useScopedI18n } from "@/locales/client";
 
 type CourseWithThumbnail = Doc<"courses"> & { thumbnailUrl: string | null };
-
-const STEPS: Step[] = [
-  {
-    id: STEP_IDS.BASICS,
-    title: "Basics",
-    description: "Course title and thumbnail",
-    fields: ["title", "thumbnailStorageId"],
-    component: BasicsStep,
-  },
-  {
-    id: STEP_IDS.DESCRIPTION,
-    title: "Description",
-    description: "Course content and details",
-    fields: ["description"],
-    component: DescriptionStep,
-  },
-  {
-    id: STEP_IDS.PUBLISH,
-    title: "Publish",
-    description: "URL, pricing, and SEO",
-    fields: ["slug", "price", "overridePrice", "metaTitle", "metaDescription"],
-    component: PublishSettingsStep,
-  },
-];
 
 interface CourseFormProps {
   course?: CourseWithThumbnail;
   isPending: boolean;
   onSubmit: (
     values: CourseFormValues,
-    options?: { onSuccess?: () => void },
+    options?: { onSuccess?: () => void }
   ) => void;
 }
 
@@ -70,7 +47,7 @@ function getDefaultValues(course?: CourseWithThumbnail): CourseFormValues {
     thumbnailPreviewUrl: course.thumbnailUrl ?? undefined,
     description: course.description,
     slug: course.slug,
-    isSlugAvailable: true, // The current slug is always available for edit
+    isSlugAvailable: true,
     price: course.pricing.price,
     overridePrice: course.pricing.overridePrice,
     metaTitle: course.seo?.metaTitle ?? "",
@@ -79,6 +56,39 @@ function getDefaultValues(course?: CourseWithThumbnail): CourseFormValues {
 }
 
 export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
+  const t = useScopedI18n("dashboard.courses.form");
+  const courseFormSchema = useCourseFormSchema();
+
+  const STEPS: Step[] = [
+    {
+      id: STEP_IDS.BASICS,
+      title: t("steps.basics.title"),
+      description: t("steps.basics.description"),
+      fields: ["title", "thumbnailStorageId"],
+      component: BasicsStep,
+    },
+    {
+      id: STEP_IDS.DESCRIPTION,
+      title: t("steps.description.title"),
+      description: t("steps.description.description"),
+      fields: ["description"],
+      component: DescriptionStep,
+    },
+    {
+      id: STEP_IDS.PUBLISH,
+      title: t("steps.publish.title"),
+      description: t("steps.publish.description"),
+      fields: [
+        "slug",
+        "price",
+        "overridePrice",
+        "metaTitle",
+        "metaDescription",
+      ],
+      component: PublishSettingsStep,
+    },
+  ];
+
   const [currentStep, stepHelpers] = useStep(STEPS.length);
   const mode = course ? ("edit" as const) : ("create" as const);
 
@@ -96,7 +106,7 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
       courseId: course?._id,
       originalSlug: course?.slug,
     }),
-    [mode, course?._id, course?.slug],
+    [mode, course?._id, course?.slug]
   );
 
   const activeStep = STEPS[currentStep - 1];
@@ -109,8 +119,8 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
       const isSlugAvailable = form.getValues("isSlugAvailable");
       if (!isSlugAvailable) {
         toastManager.add({
-          title: "Slug unavailable",
-          description: "Please choose a different URL for your course.",
+          title: t("errors.slugUnavailable.title"),
+          description: t("errors.slugUnavailable.description"),
           type: "error",
         });
         return;
@@ -152,7 +162,7 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
               {/* Left sidebar - Step navigation */}
               <div className="flex flex-col gap-2 border-e bg-muted/30 p-4">
                 <h5 className="font-semibold text-lg mb-2">
-                  {mode === "edit" ? "Edit Course" : "New Course"}
+                  {mode === "edit" ? t("editTitle") : t("createTitle")}
                 </h5>
                 {STEPS.map((step, idx) => (
                   <button
@@ -166,8 +176,8 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
                     }}
                     disabled={idx + 1 > currentStep}
                     className={cn(
-                      "relative py-2 px-3 text-left rounded-lg transition-colors",
-                      idx + 1 > currentStep && "opacity-50 cursor-not-allowed",
+                      "relative py-2 px-3 text-start rounded-lg transition-colors",
+                      idx + 1 > currentStep && "opacity-50 cursor-not-allowed"
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -178,7 +188,7 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
                             ? "bg-primary text-primary-foreground"
                             : idx + 1 < currentStep
                               ? "bg-primary/20 text-primary"
-                              : "border text-muted-foreground",
+                              : "border text-muted-foreground"
                         )}
                       >
                         {idx + 1 < currentStep ? "✓" : idx + 1}
@@ -218,7 +228,7 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
                       disabled={!stepHelpers.canGoToPrevStep || isPending}
                     >
                       <DirectedArrow inverse />
-                      <span>Back</span>
+                      <span>{t("buttons.back")}</span>
                     </Button>
 
                     <Button
@@ -231,13 +241,15 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
                         <Spinner />
                       ) : stepHelpers.canGoToNextStep ? (
                         <>
-                          <span>Next</span>
+                          <span>{t("buttons.next")}</span>
                           <DirectedArrow />
                         </>
                       ) : (
                         <>
                           <span>
-                            {mode === "edit" ? "Save Changes" : "Create Course"}
+                            {mode === "edit"
+                              ? t("buttons.save")
+                              : t("buttons.create")}
                           </span>
                           <IconSend className="size-4 ms-2" />
                         </>

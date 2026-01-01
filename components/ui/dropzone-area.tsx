@@ -19,6 +19,8 @@ export interface DropzoneAreaProps {
   icon?: ReactNode;
 }
 
+import { useScopedI18n } from "@/locales/client";
+
 export function DropzoneArea({
   options = {},
   className,
@@ -26,11 +28,17 @@ export function DropzoneArea({
   onFilesSelected,
   emptyContent,
   activeContent,
-  emptyText = "Drag and drop files here, or click to select files",
-  activeText = "Drop files here to upload",
-  buttonText = "Click to select files",
+  emptyText,
+  activeText,
+  buttonText,
   icon,
 }: DropzoneAreaProps) {
+  const t = useScopedI18n("components.dropzoneArea");
+
+  const finalEmptyText = emptyText ?? t("emptyText");
+  const finalActiveText = activeText ?? t("activeText");
+  const finalButtonText = buttonText ?? t("buttonText");
+
   const onDropAccepted = useCallback(
     (acceptedFiles: File[]) => {
       onFilesSelected?.(acceptedFiles);
@@ -64,7 +72,7 @@ export function DropzoneArea({
           <>
             <IconPointer size={32} className="text-muted-foreground" />
             <p className="text-muted-foreground text-sm select-none">
-              {activeText}
+              {finalActiveText}
             </p>
           </>
         )
@@ -74,14 +82,14 @@ export function DropzoneArea({
             <div className="flex items-center gap-2">
               {defaultIcon}
               <p className="text-muted-foreground text-sm select-none">
-                {emptyText}
+                {finalEmptyText}
               </p>
             </div>
 
             <div className="flex items-center gap-1">
               <Button type="button" size="sm" onClick={open}>
                 <IconCloudUpload />
-                {buttonText}
+                {finalButtonText}
               </Button>
             </div>
           </div>

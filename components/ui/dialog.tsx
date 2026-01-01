@@ -6,6 +6,7 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { IconX } from "@tabler/icons-react";
+import { useCurrentLocale } from "@/locales/client";
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -47,8 +48,9 @@ function DialogContent({
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean;
 }) {
+  const dir = useCurrentLocale() === "en" ? "ltr" : "rtl";
   return (
-    <DialogPortal>
+    <DialogPortal dir={dir}>
       <DialogOverlay />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
@@ -65,7 +67,10 @@ function DialogContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-2 right-2"
+                className={cn(
+                  "absolute top-2",
+                  dir === "ltr" ? "right-2" : "left-2"
+                )}
                 size="icon-sm"
               />
             }

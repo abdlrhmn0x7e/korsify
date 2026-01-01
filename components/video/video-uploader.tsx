@@ -17,12 +17,15 @@ interface VideoUploaderProps {
   className?: string;
 }
 
+import { useScopedI18n } from "@/locales/client";
+
 export function VideoUploader({
   initialVideoId,
   onVideoReady,
   onUploadError,
   className,
 }: VideoUploaderProps) {
+  const t = useScopedI18n("components.videoUploader");
   const {
     status,
     progress,
@@ -66,8 +69,8 @@ export function VideoUploader({
             maxFiles: 1,
           }}
           onFilesSelected={handleFilesSelected}
-          emptyText="or click to browse files"
-          buttonText="Browse files"
+          emptyText={t("orClick")}
+          buttonText={t("browseFiles")}
           icon={
             <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 mb-2">
               <IconUpload className="size-6 text-primary" />
@@ -79,13 +82,13 @@ export function VideoUploader({
                 <IconUpload className="size-6 text-primary" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-medium">Drop your video here</p>
+                <p className="text-sm font-medium">{t("dropVideo")}</p>
                 <p className="text-xs text-muted-foreground">
-                  or click to browse files
+                  {t("orClick")}
                 </p>
               </div>
               <Button type="button" size="sm" onClick={openFilePicker}>
-                Browse files
+                {t("browseFiles")}
               </Button>
             </div>
           }
@@ -96,7 +99,7 @@ export function VideoUploader({
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-6">
           <div className="flex items-center gap-3">
             <Spinner className="size-5" />
-            <span className="text-sm font-medium">Uploading video...</span>
+            <span className="text-sm font-medium">{t("uploading")}</span>
             <span className="ml-auto text-sm text-muted-foreground">
               {progress}%
             </span>
@@ -114,9 +117,9 @@ export function VideoUploader({
         <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-6">
           <Spinner className="size-5" />
           <div>
-            <p className="text-sm font-medium">Processing video...</p>
+            <p className="text-sm font-medium">{t("processing.title")}</p>
             <p className="text-xs text-muted-foreground">
-              This may take a few minutes
+              {t("processing.description")}
             </p>
           </div>
         </div>
@@ -133,7 +136,7 @@ export function VideoUploader({
             <div className="flex items-center gap-2">
               <IconCheck className="size-4 text-green-600" />
               <span className="text-sm">
-                Video ready
+                {t("ready")}
                 {video.duration && (
                   <span className="text-muted-foreground">
                     {" "}
@@ -143,7 +146,7 @@ export function VideoUploader({
               </span>
             </div>
             <Button variant="ghost" size="sm" onClick={openFilePicker}>
-              Replace
+              {t("replace")}
             </Button>
           </div>
         </div>
@@ -156,7 +159,7 @@ export function VideoUploader({
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-destructive">
-              Upload failed
+              {t("failed")}
             </p>
             {(error?.message || video?.errorMessage) && (
               <p className="text-xs text-destructive/80">
@@ -166,7 +169,7 @@ export function VideoUploader({
           </div>
           <Button variant="outline" size="sm" onClick={openFilePicker}>
             <IconUpload className="size-4" />
-            Try again
+            {t("tryAgain")}
           </Button>
         </div>
       )}

@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { VideoUploader } from "@/components/video/video-uploader";
 import { useUploadFiles, type FileUploadState } from "@/hooks/use-upload-files";
 import { Id } from "@/convex/_generated/dataModel";
+import { useScopedI18n } from "@/locales/client";
 
 import {
   DEFAULT_LESSON_FORM_VALUES,
@@ -33,6 +34,7 @@ interface LessonFormProps {
 }
 
 export function LessonForm({ onSubmit }: LessonFormProps) {
+  const t = useScopedI18n("dashboard.courses.lessonForm.fields");
   const form = useForm<LessonFormValues>({
     resolver: zodResolver(lessonFormSchema),
     defaultValues: DEFAULT_LESSON_FORM_VALUES,
@@ -119,10 +121,8 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>Lesson Title</FieldLabel>
-                <FieldDescription>
-                  A clear, descriptive title for this lesson.
-                </FieldDescription>
+                <FieldLabel htmlFor={field.name}>{t("title")}</FieldLabel>
+                <FieldDescription>{t("titleDescription")}</FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -131,7 +131,7 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
                 {...field}
                 id={field.name}
                 aria-invalid={fieldState.invalid}
-                placeholder="eg. Introduction to Variables"
+                placeholder={t("titlePlaceholder")}
               />
             </Field>
           )}
@@ -143,10 +143,8 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
           render={({ field }) => (
             <Field orientation="horizontal">
               <FieldContent>
-                <FieldLabel htmlFor="isFree">Free Preview</FieldLabel>
-                <FieldDescription>
-                  Allow non-enrolled students to preview this lesson for free.
-                </FieldDescription>
+                <FieldLabel htmlFor="isFree">{t("isFree")}</FieldLabel>
+                <FieldDescription>{t("isFreeDescription")}</FieldDescription>
               </FieldContent>
               <Switch
                 id="isFree"
@@ -166,10 +164,8 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
               className="flex-1 flex flex-col"
             >
               <FieldContent>
-                <FieldLabel>Description (Optional)</FieldLabel>
-                <FieldDescription>
-                  Add details about what students will learn in this lesson.
-                </FieldDescription>
+                <FieldLabel>{t("description")}</FieldLabel>
+                <FieldDescription>{t("descriptionDescription")}</FieldDescription>
               </FieldContent>
               <div className="h-96 mt-2">
                 <Editor
@@ -188,11 +184,8 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
           render={({ fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel>Lesson Video</FieldLabel>
-                <FieldDescription>
-                  Upload the video for this lesson. Video is required before
-                  saving.
-                </FieldDescription>
+                <FieldLabel>{t("video")}</FieldLabel>
+                <FieldDescription>{t("videoDescription")}</FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -204,10 +197,8 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
 
         <Field>
           <FieldContent>
-            <FieldLabel>PDF Attachments (Optional)</FieldLabel>
-            <FieldDescription>
-              Add downloadable PDF resources for this lesson.
-            </FieldDescription>
+            <FieldLabel>{t("attachments")}</FieldLabel>
+            <FieldDescription>{t("attachmentsDescription")}</FieldDescription>
           </FieldContent>
 
           <FileDropzone
@@ -221,7 +212,7 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
             fileStates={allFileStates}
             onDrop={handlePdfDrop}
             onRemove={handlePdfRemove}
-            emptyText="Drag and drop PDF files here, or click to select"
+            emptyText={t("attachmentsEmpty")}
           />
         </Field>
       </form>

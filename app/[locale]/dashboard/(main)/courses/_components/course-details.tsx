@@ -28,8 +28,10 @@ import { WholePageSpinner } from "@/components/whole-page-spinner";
 import Image from "next/image";
 import { formatDate } from "@/lib/format-date";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useScopedI18n } from "@/locales/client";
 
 export function CourseDetails({ slug }: { slug: string }) {
+  const t = useScopedI18n("dashboard.courses");
   const course = useQuery(api.teachers.courses.queries.getBySlug, {
     slug,
   });
@@ -67,19 +69,21 @@ export function CourseDetails({ slug }: { slug: string }) {
               variant={course.status === "draft" ? "secondary" : "default"}
             >
               {course.status === "draft" ? <IconPencil /> : <IconUpload />}
-              {course.status}
+              {course.status === "draft"
+                ? t("table.status.draft")
+                : t("table.status.published")}
             </Badge>
           </div>
           <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
             <span className="flex items-center text-muted-foreground">
               <IconCalendar className="mr-1 size-3.5" />
-              Created
+              {t("details.created")}
             </span>
             <span>{formatDate(new Date(course._creationTime))}</span>
 
             <span className="flex items-center text-muted-foreground">
               <IconCurrencyDollar className="mr-1 size-3.5" />
-              Price
+              {t("details.price")}
             </span>
             <span className="font-medium">
               {course.pricing.overridePrice ? (
@@ -96,10 +100,10 @@ export function CourseDetails({ slug }: { slug: string }) {
 
             <span className="flex items-center text-muted-foreground">
               <IconSearch className="mr-1 size-3.5" />
-              SEO
+              {t("details.seo")}
             </span>
             <span className="truncate" title={course.seo?.metaTitle}>
-              {course.seo?.metaTitle ?? "Not configured"}
+              {course.seo?.metaTitle ?? t("details.notConfigured")}
             </span>
           </div>
         </div>
@@ -107,7 +111,7 @@ export function CourseDetails({ slug }: { slug: string }) {
 
       <Card className="gap-0 p-4">
         <CardHeader className="p-0">
-          <CardTitle>Description</CardTitle>
+          <CardTitle>{t("details.description")}</CardTitle>
         </CardHeader>
         <CardContent className="p-0 h-full max-h-60 overflow-y-auto">
           {course.description && course.description.content.length > 0 ? (
@@ -118,7 +122,7 @@ export function CourseDetails({ slug }: { slug: string }) {
                 <EmptyMedia variant="icon" className="size-12">
                   <IconPencilCancel className="size-6" />
                 </EmptyMedia>
-                <EmptyTitle>No Description</EmptyTitle>
+                <EmptyTitle>{t("details.noDescription")}</EmptyTitle>
               </EmptyHeader>
             </Empty>
           )}
@@ -131,14 +135,16 @@ export function CourseDetails({ slug }: { slug: string }) {
 }
 
 function CourseNotFound() {
+  const t = useScopedI18n("dashboard.courses.details.notFound");
+
   return (
     <Empty className="h-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <IconX />
         </EmptyMedia>
-        <EmptyTitle>{"This Course Doesn't Exist"}</EmptyTitle>
-        <EmptyDescription>Are your sure the URL is correct?</EmptyDescription>
+        <EmptyTitle>{t("title")}</EmptyTitle>
+        <EmptyDescription>{t("description")}</EmptyDescription>
       </EmptyHeader>
     </Empty>
   );

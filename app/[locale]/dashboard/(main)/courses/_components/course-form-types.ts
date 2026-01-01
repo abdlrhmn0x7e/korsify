@@ -3,6 +3,7 @@ import { JSONContent } from "@tiptap/react";
 import { z } from "zod";
 import { createContext, useContext } from "react";
 import { Id } from "@/convex/_generated/dataModel";
+import { useScopedI18n } from "@/locales/client";
 
 /**
  * Simple slugify function to convert a string to a URL-friendly slug
@@ -31,6 +32,25 @@ export const CourseFormContext = createContext<CourseFormContextValue>({
 
 export function useCourseFormContext() {
   return useContext(CourseFormContext);
+}
+
+export function useCourseFormSchema() {
+  const t = useScopedI18n("dashboard.courses.form.errors");
+
+  return z.object({
+    title: z.string().min(3, t("titleRequired")),
+    thumbnailStorageId: z.string().min(1, t("thumbnailRequired")),
+    thumbnailPreviewUrl: z.url().optional(),
+
+    description: z.custom<JSONContent>(),
+
+    slug: z.string().regex(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/, t("slugFormat")),
+    isSlugAvailable: z.boolean(),
+    price: z.coerce.number<number>().min(0, t("pricePositive")),
+    overridePrice: z.coerce.number<number>().nullable(),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+  });
 }
 
 export const courseFormSchema = z.object({

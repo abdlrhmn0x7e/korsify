@@ -18,15 +18,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { type CourseFormValues, useCourseFormContext } from "../course-form-types";
+import {
+  type CourseFormValues,
+  useCourseFormContext,
+} from "../course-form-types";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-  InputGroupText,
 } from "@/components/ui/input-group";
+import { useScopedI18n } from "@/locales/client";
 
 export function PublishSettingsStep() {
+  const t = useScopedI18n("dashboard.courses.form");
   const { watch, control, setValue } = useFormContext<CourseFormValues>();
   const { courseId, originalSlug } = useCourseFormContext();
 
@@ -64,9 +68,9 @@ export function PublishSettingsStep() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Publish Settings</h3>
+        <h3 className="text-lg font-semibold">{t("steps.publish.title")}</h3>
         <p className="text-sm text-muted-foreground">
-          Configure how your course appears to students and set your pricing.
+          {t("steps.publish.description")}
         </p>
       </div>
 
@@ -77,10 +81,9 @@ export function PublishSettingsStep() {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldContent>
-              <FieldLabel htmlFor={field.name}>Course Url</FieldLabel>
+              <FieldLabel htmlFor={field.name}>{t("fields.slug")}</FieldLabel>
               <FieldDescription>
-                This will be the URL path for your course. We&apos;ve generated
-                one from your title, but you can customize it.
+                {t("fields.slugDescription")}
               </FieldDescription>
             </FieldContent>
 
@@ -88,11 +91,12 @@ export function PublishSettingsStep() {
               <InputGroupInput
                 className="pl-1!"
                 {...field}
-                aria-invalid={fieldState.invalid}
-                placeholder={slugValue || "course-slug"}
+                placeholder={slugValue || t("fields.slugPlaceholder")}
               />
               <InputGroupAddon>
-                <InputGroupText>/courses/</InputGroupText>
+                <div className="flex items-center px-3 border-s bg-muted/50 text-muted-foreground text-sm">
+                  /courses/
+                </div>
               </InputGroupAddon>
             </InputGroup>
 
@@ -101,7 +105,7 @@ export function PublishSettingsStep() {
                 {isOriginalSlug ? (
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <IconCheck className="size-4" />
-                    Current URL
+                    {t("errors.slugUnavailable.description")}
                   </span>
                 ) : isCheckingAvailability ? (
                   <span className="flex items-center gap-1 text-muted-foreground">
@@ -116,7 +120,7 @@ export function PublishSettingsStep() {
                 ) : (
                   <span className="flex items-center gap-1 text-destructive">
                     <IconX className="size-4" />
-                    This URL is already taken
+                    {t("errors.slugUnavailable.title")}
                   </span>
                 )}
               </div>
@@ -129,7 +133,7 @@ export function PublishSettingsStep() {
 
       {/* Pricing Section */}
       <div className="space-y-4">
-        <h5 className="font-medium">Pricing</h5>
+        <h5 className="font-medium">{t("fields.price")}</h5>
 
         <Controller
           name="price"
@@ -137,9 +141,9 @@ export function PublishSettingsStep() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} orientation="horizontal">
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>Price</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{t("fields.price")}</FieldLabel>
                 <FieldDescription>
-                  The original price of the course before any discounts.
+                  {t("fields.pricePlaceholder")}
                 </FieldDescription>
 
                 {fieldState.invalid && (
@@ -151,7 +155,7 @@ export function PublishSettingsStep() {
                 id={field.name}
                 aria-invalid={fieldState.invalid}
                 type="number"
-                placeholder="0.00"
+                placeholder={t("fields.pricePlaceholder")}
                 autoComplete="off"
                 className="w-32"
               />
@@ -166,11 +170,11 @@ export function PublishSettingsStep() {
             <Field data-invalid={fieldState.invalid} orientation="horizontal">
               <FieldContent>
                 <FieldLabel htmlFor="overridePrice">
-                  Override Price (Optional)
+                  {t("fields.overridePrice")}
                 </FieldLabel>
 
                 <FieldDescription>
-                  The price after applying any discounts if desired.
+                  {t("fields.overridePriceDescription")}
                 </FieldDescription>
               </FieldContent>
               <div className="w-32 flex flex-col items-center justify-center gap-1">
@@ -178,7 +182,7 @@ export function PublishSettingsStep() {
                   id={field.name}
                   aria-invalid={fieldState.invalid}
                   type="number"
-                  placeholder="0.00"
+                  placeholder={t("fields.overridePricePlaceholder")}
                   autoComplete="off"
                   onChange={(e) =>
                     field.onChange(
@@ -206,9 +210,9 @@ export function PublishSettingsStep() {
       {/* SEO Section */}
       <div className="space-y-4">
         <div>
-          <h5 className="font-medium">SEO (Optional)</h5>
+          <h5 className="font-medium">{t("fields.seo.title")}</h5>
           <p className="text-sm text-muted-foreground">
-            Customize how your course appears in search results.
+            {t("fields.seo.title")}
           </p>
         </div>
         <Controller
@@ -217,16 +221,16 @@ export function PublishSettingsStep() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>Meta Title</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{t("fields.seo.metaTitle")}</FieldLabel>
                 <FieldDescription>
-                  Override the default title for search engines.
+                  {t("fields.seo.metaTitlePlaceholder")}
                 </FieldDescription>
               </FieldContent>
               <Input
                 {...field}
                 id={field.name}
                 aria-invalid={fieldState.invalid}
-                placeholder={title || "Course title"}
+                placeholder={title || t("fields.seo.metaTitlePlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -239,17 +243,16 @@ export function PublishSettingsStep() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>Meta Description</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{t("fields.seo.metaDescription")}</FieldLabel>
                 <FieldDescription>
-                  A brief summary for search engine results (150-160 characters
-                  recommended).
+                  {t("fields.seo.metaDescriptionPlaceholder")}
                 </FieldDescription>
               </FieldContent>
               <Textarea
                 {...field}
                 id={field.name}
                 aria-invalid={fieldState.invalid}
-                placeholder={title || "Course title"}
+                placeholder={title || t("fields.seo.metaDescriptionPlaceholder")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

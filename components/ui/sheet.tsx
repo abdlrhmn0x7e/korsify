@@ -6,6 +6,7 @@ import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { IconX } from "@tabler/icons-react";
+import { useCurrentLocale } from "@/locales/client";
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
@@ -46,6 +47,7 @@ function SheetContent({
   side?: "top" | "right" | "bottom" | "left";
   showCloseButton?: boolean;
 }) {
+  const dir = useCurrentLocale() === "en" ? "rtl" : "ltr";
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -66,7 +68,10 @@ function SheetContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-3 right-3"
+                className={cn(
+                  "absolute top-3",
+                  dir === "ltr" ? "end-3" : "start-3"
+                )}
                 size="icon-sm"
               />
             }

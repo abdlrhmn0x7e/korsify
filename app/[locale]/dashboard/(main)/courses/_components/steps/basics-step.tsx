@@ -25,8 +25,11 @@ import {
 } from "../course-form-types";
 import { ImageWithFallback } from "@/components/image/image-with-fallback";
 import { SuspendableImage } from "@/components/image/suspendable-image";
+import { useScopedI18n } from "@/locales/client";
 
 export function BasicsStep() {
+  const t = useScopedI18n("dashboard.courses");
+  const tForm = useScopedI18n("dashboard.courses.form");
   const { control, setValue, watch } = useFormContext<CourseFormValues>();
   const { mode } = useCourseFormContext();
 
@@ -54,10 +57,9 @@ export function BasicsStep() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold">Course Basics</h3>
+        <h3 className="text-lg font-semibold">{tForm("steps.basics.title")}</h3>
         <p className="text-sm text-muted-foreground">
-          Start with the essentials - give your course a compelling title and an
-          eye-catching thumbnail.
+          {tForm("steps.basics.description")}
         </p>
       </div>
 
@@ -67,10 +69,11 @@ export function BasicsStep() {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldContent>
-              <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
+              <FieldLabel htmlFor={field.name}>
+                {tForm("fields.title")}
+              </FieldLabel>
               <FieldDescription>
-                Choose a clear, descriptive title that tells students what
-                they&apos;ll learn.
+                {tForm("fields.titlePlaceholder")}
               </FieldDescription>
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -86,7 +89,7 @@ export function BasicsStep() {
               }}
               id={field.name}
               aria-invalid={fieldState.invalid}
-              placeholder="eg. Mathematics 101"
+              placeholder={tForm("fields.titlePlaceholder")}
             />
           </Field>
         )}
@@ -98,10 +101,11 @@ export function BasicsStep() {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldContent>
-              <FieldLabel htmlFor={field.name}>Course Thumbnail</FieldLabel>
+              <FieldLabel htmlFor={field.name}>
+                {tForm("fields.thumbnail")}
+              </FieldLabel>
               <FieldDescription>
-                Choose a clear, descriptive title that tells students what
-                they&apos;ll learn.
+                {tForm("fields.thumbnailDescription")}
               </FieldDescription>
             </FieldContent>
             <div
@@ -129,7 +133,11 @@ export function BasicsStep() {
                       onClick={openFilePicker}
                       disabled={isUploading}
                     >
-                      {isUploading ? <Spinner className="size-4" /> : "Change"}
+                      {isUploading ? (
+                        <Spinner className="size-4" />
+                      ) : (
+                        tForm("buttons.save")
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -139,7 +147,9 @@ export function BasicsStep() {
                     <IconPhoto className="size-6 text-muted-foreground" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">Upload thumbnail</p>
+                    <p className="text-sm font-medium">
+                      {tForm("fields.thumbnail")}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       PNG, JPG or WebP up to 5MB
                     </p>
@@ -154,12 +164,12 @@ export function BasicsStep() {
                     {isUploading ? (
                       <>
                         <Spinner className="size-4 me-2" />
-                        Uploading...
+                        {tForm("buttons.create")}...
                       </>
                     ) : (
                       <>
                         <IconUpload className="size-4 me-2" />
-                        Select Image
+                        {tForm("fields.thumbnail")}
                       </>
                     )}
                   </Button>
@@ -178,7 +188,7 @@ export function BasicsStep() {
             {thumbnailStorageId && !isUploading && (
               <p className="text-xs text-green-600 flex items-center gap-1">
                 <span className="size-1.5 rounded-full bg-green-600" />
-                Thumbnail uploaded successfully
+                {t("thumbnailSuccess")}
               </p>
             )}
 

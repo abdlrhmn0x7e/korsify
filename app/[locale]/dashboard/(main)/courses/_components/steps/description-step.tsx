@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/field";
 
 import type { CourseFormValues } from "../course-form-types";
+import { useScopedI18n } from "@/locales/client";
 
 export function DescriptionStep() {
+  const t = useScopedI18n("dashboard.courses.form");
   const {
     setValue,
     watch,
@@ -24,11 +26,9 @@ export function DescriptionStep() {
   return (
     <div className="space-y-6 h-full flex flex-col">
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Course Description</h3>
+        <h3 className="text-lg font-semibold">{t("steps.description.title")}</h3>
         <p className="text-sm text-muted-foreground">
-          Tell potential students what your course is about. A great description
-          helps students understand what they&apos;ll learn and why they should
-          enroll.
+          {t("steps.description.description")}
         </p>
       </div>
 
@@ -36,10 +36,9 @@ export function DescriptionStep() {
         data-invalid={!!errors.description}
         className="flex-1 flex flex-col"
       >
-        <FieldLabel>Description</FieldLabel>
+        <FieldLabel>{t("fields.description")}</FieldLabel>
         <FieldDescription>
-          Use formatting to organize your content. Include learning outcomes,
-          prerequisites, and who this course is for.
+          {t("fields.description")}
         </FieldDescription>
 
         <div className="flex-1 min-h-0">

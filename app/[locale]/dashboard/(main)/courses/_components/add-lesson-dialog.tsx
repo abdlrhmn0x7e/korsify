@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useScopedI18n } from "@/locales/client";
 
 interface AddLessonDialogProps {
   sectionId: Id<"sections">;
@@ -37,22 +38,23 @@ export function AddLessonDialog({
   variant = "outline",
 }: AddLessonDialogProps) {
   const [open, setOpen] = useState(false);
+  const t = useScopedI18n("dashboard.courses.lessonForm");
 
   const { mutateAsync: createLesson, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.lessons.mutations.create),
     onSuccess: () => {
       toastManager.add({
-        title: "Lesson created",
-        description: "Your lesson has been created successfully.",
+        title: t("createSuccess.title"),
+        description: t("createSuccess.description"),
         type: "success",
       });
       setOpen(false);
     },
     onError: (error) => {
       toastManager.add({
-        title: "Error",
+        title: t("createError.title"),
         description:
-          error instanceof Error ? error.message : "Failed to create lesson",
+          error instanceof Error ? error.message : t("createError.description"),
         type: "error",
       });
     },
@@ -80,7 +82,7 @@ export function AddLessonDialog({
   ) : (
     <Button variant={variant} size="sm">
       <IconPlus className="size-4" />
-      Add Lesson
+      {t("buttons.add")}
     </Button>
   );
 
@@ -89,7 +91,7 @@ export function AddLessonDialog({
       <DialogTrigger render={triggerButton} />
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle>Add New Lesson</DialogTitle>
+          <DialogTitle>{t("addTitle")}</DialogTitle>
         </DialogHeader>
         <ScrollArea className="max-h-[75svh] pb-4 pe-4">
           <LessonForm
@@ -105,10 +107,10 @@ export function AddLessonDialog({
             onClick={() => setOpen(false)}
             disabled={isPending}
           >
-            Cancel
+            {t("buttons.cancel")}
           </Button>
           <Button type="submit" form="lesson-form" disabled={isPending}>
-            {isPending ? <Spinner /> : "Add Lesson"}
+            {isPending ? <Spinner /> : t("buttons.add")}
           </Button>
         </DialogFooter>
       </DialogContent>

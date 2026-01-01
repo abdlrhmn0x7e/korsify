@@ -79,7 +79,7 @@ export function Logo({
   withText = false,
   textClassName,
 }: LogoProps) {
-  const t = useScopedI18n("landing.logo");
+  const t = useScopedI18n("components.logo");
 
   return (
     <Link

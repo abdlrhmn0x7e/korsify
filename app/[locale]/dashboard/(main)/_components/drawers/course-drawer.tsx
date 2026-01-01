@@ -15,6 +15,7 @@ import {
 } from "motion/react";
 import { useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useScopedI18n } from "@/locales/client";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 import { CourseDetails } from "../../courses/_components/course-details";
 import { LessonDetails } from "../../courses/_components/lesson-details";
@@ -37,6 +38,7 @@ const slideTransition = {
 export function CourseDrawer() {
   const isMobile = useIsMobile();
   const [params, setParams] = useCourseSearchParams();
+  const t = useScopedI18n("dashboard.courses.drawer");
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -63,12 +65,10 @@ export function CourseDrawer() {
       >
         <SheetHeader className="sr-only">
           <SheetTitle>
-            {hasLesson ? "Lesson Details" : "Course Details"}
+            {hasLesson ? t("lesson.title") : t("course.title")}
           </SheetTitle>
           <SheetDescription>
-            {hasLesson
-              ? "View and manage your lesson"
-              : "View and manage your course"}
+            {hasLesson ? t("lesson.description") : t("course.description")}
           </SheetDescription>
         </SheetHeader>
 

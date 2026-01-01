@@ -27,6 +27,8 @@ import {
 import { JSONContent } from "@tiptap/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VideoPlayer } from "@/components/video/video-player";
+import { useScopedI18n } from "@/locales/client";
+import { DirectedArrow } from "@/components/directed-arrow";
 
 interface LessonDetailsProps {
   lessonId: Id<"lessons">;
@@ -35,6 +37,7 @@ interface LessonDetailsProps {
 
 export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
   const lesson = useQuery(api.teachers.lessons.queries.getById, { lessonId });
+  const t = useScopedI18n("dashboard.courses.lessonDetails");
   const isPending = lesson === undefined;
 
   if (isPending) {
@@ -49,8 +52,8 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
-          <IconArrowLeft className="size-4" />
-          Back
+          <DirectedArrow inverse className="size-4" />
+          {t("back")}
         </Button>
       </div>
 
@@ -60,7 +63,7 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
           {lesson.isFree && (
             <Badge variant="secondary" className="shrink-0">
               <IconEye className="size-3 mr-1" />
-              Free Preview
+              {t("freePreview")}
             </Badge>
           )}
         </div>
@@ -68,7 +71,7 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
 
         <Card className="gap-0 p-4">
           <CardHeader className="p-0">
-            <CardTitle>Description</CardTitle>
+            <CardTitle>{t("description")}</CardTitle>
           </CardHeader>
           <CardContent className="p-0 h-full max-h-60 overflow-y-auto">
             {lesson.description ? (
@@ -79,7 +82,7 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
                   <EmptyMedia variant="icon" className="size-12">
                     <IconPencilCancel className="size-6" />
                   </EmptyMedia>
-                  <EmptyTitle>No Description</EmptyTitle>
+                  <EmptyTitle>{t("noDescription")}</EmptyTitle>
                 </EmptyHeader>
               </Empty>
             )}
@@ -88,7 +91,7 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
 
         <Card className="gap-0 p-4">
           <CardHeader className="p-0">
-            <CardTitle>Attachments</CardTitle>
+            <CardTitle>{t("attachments.title")}</CardTitle>
           </CardHeader>
           <CardContent className="p-0 h-full">
             {lesson.pdfUrls && lesson.pdfUrls.length > 0 ? (
@@ -102,7 +105,9 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
                       className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent transition-colors text-sm"
                     >
                       <IconFileDescription className="size-5 text-muted-foreground shrink-0" />
-                      <span className="flex-1">Attachment {index + 1}</span>
+                      <span className="flex-1">
+                        {t("attachments.attachment")} {index + 1}
+                      </span>
                       <IconDownload className="size-4 text-muted-foreground shrink-0" />
                     </a>
                   </li>
@@ -114,7 +119,7 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
                   <EmptyMedia variant="icon" className="size-12">
                     <IconFileDescription className="size-6" />
                   </EmptyMedia>
-                  <EmptyTitle>No Attachments</EmptyTitle>
+                  <EmptyTitle>{t("attachments.noAttachments")}</EmptyTitle>
                 </EmptyHeader>
               </Empty>
             )}
@@ -132,6 +137,7 @@ function VideoPreview({
   videoId: Id<"muxAssets">;
   title: string;
 }) {
+  const t = useScopedI18n("dashboard.courses.lessonDetails.video");
   const muxAsset = useQuery(api.teachers.mux.queries.getVideo, {
     muxAssetId: videoId,
   });
@@ -149,7 +155,7 @@ function VideoPreview({
       <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
         <IconAlertCircle className="size-8 text-destructive" />
         <p className="text-sm text-destructive">
-          {muxAsset.errorMessage ?? "Video processing failed"}
+          {muxAsset.errorMessage ?? t("failed")}
         </p>
       </div>
     );
@@ -163,9 +169,7 @@ function VideoPreview({
       <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
         <IconLoader2 className="size-8 text-muted-foreground animate-spin" />
         <p className="text-sm text-muted-foreground">
-          {muxAsset.status === "processing"
-            ? "Video is processing..."
-            : "Waiting for upload..."}
+          {muxAsset.status === "processing" ? t("processing") : t("waiting")}
         </p>
       </div>
     );
@@ -175,7 +179,7 @@ function VideoPreview({
     return (
       <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
         <IconAlertCircle className="size-8 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">Video not available</p>
+        <p className="text-sm text-muted-foreground">{t("notAvailable")}</p>
       </div>
     );
   }
@@ -184,12 +188,14 @@ function VideoPreview({
 }
 
 function LessonDetailsSkeleton({ onBack }: { onBack: () => void }) {
+  const t = useScopedI18n("dashboard.courses.lessonDetails");
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <IconArrowLeft className="size-4" />
-          Back
+          {t("back")}
         </Button>
       </div>
       <Skeleton className="h-8 w-3/4" />
@@ -200,12 +206,14 @@ function LessonDetailsSkeleton({ onBack }: { onBack: () => void }) {
 }
 
 function LessonNotFound({ onBack }: { onBack: () => void }) {
+  const t = useScopedI18n("dashboard.courses.lessonDetails");
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <IconArrowLeft className="size-4" />
-          Back
+          {t("back")}
         </Button>
       </div>
       <Empty className="py-12">
@@ -213,10 +221,8 @@ function LessonNotFound({ onBack }: { onBack: () => void }) {
           <EmptyMedia variant="icon">
             <IconX />
           </EmptyMedia>
-          <EmptyTitle>Lesson Not Found</EmptyTitle>
-          <EmptyDescription>
-            This lesson may have been deleted or doesn&apos;t exist.
-          </EmptyDescription>
+          <EmptyTitle>{t("notFound.title")}</EmptyTitle>
+          <EmptyDescription>{t("notFound.description")}</EmptyDescription>
         </EmptyHeader>
       </Empty>
     </div>

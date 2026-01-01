@@ -17,11 +17,12 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useScopedI18n } from "@/locales/client";
 
 import { Preloaded } from "convex/react";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
-import { coursesColumns } from "./columns";
+import { CoursesColumns } from "./columns";
 import { CoursesTableHeader } from "./header";
 import { AddCourseDialog } from "../../../courses/_components/add-course-dialog";
 import { cn } from "@/lib/utils";
@@ -33,10 +34,12 @@ export function CoursesTableClient({
 }) {
   const courses = usePreloadedAuthQuery(preloadedCoursesQuery);
   const coursesData = useMemo(() => courses ?? [], [courses]);
+  const columns = CoursesColumns();
+  const t = useScopedI18n("dashboard.courses.table");
 
   const table = useReactTable({
     data: coursesData,
-    columns: coursesColumns,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -57,13 +60,13 @@ export function CoursesTableClient({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={coursesColumns.length}>
+            <TableCell colSpan={columns.length}>
               <Empty className="mb-12">
                 <EmptyHeader>
                   <EmptyMedia variant="icon" className="size-12">
                     <IconBook className="size-6" />
                   </EmptyMedia>
-                  <EmptyTitle>No Courses Found.</EmptyTitle>
+                  <EmptyTitle>{t("empty")}</EmptyTitle>
                 </EmptyHeader>
                 <EmptyContent>
                   <AddCourseDialog variant="default" />

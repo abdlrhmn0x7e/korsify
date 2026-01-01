@@ -13,28 +13,30 @@ import { toastManager } from "@/components/ui/toast";
 import { CourseFormOnSubmit, slugify } from "./course-form-types";
 import { Id } from "@/convex/_generated/dataModel";
 import { useDialog } from "@/hooks/use-dialog";
+import { useScopedI18n } from "@/locales/client";
 
 interface AddCourseDialogProps {
   variant?: "default" | "outline" | "ghost";
 }
 
 export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
+  const t = useScopedI18n("dashboard.courses");
   const { props, dismiss } = useDialog();
 
   const { mutateAsync: createCourse, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.create),
     onSuccess: () => {
       toastManager.add({
-        title: "Course created",
-        description: "Your course has been created successfully.",
+        title: t("createSuccess.title"),
+        description: t("createSuccess.description"),
         type: "success",
       });
     },
     onError: (error) => {
       toastManager.add({
-        title: "Error",
+        title: t("createError.title"),
         description:
-          error instanceof Error ? error.message : "Failed to create course",
+          error instanceof Error ? error.message : t("createError.description"),
         type: "error",
       });
     },
@@ -69,7 +71,7 @@ export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
   return (
     <Dialog {...props}>
       <DialogTrigger render={<Button variant={variant} />}>
-        Add New Course
+        {t("addCourse")}
         <IconPlus />
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl p-0 gap-0 overflow-hidden">
