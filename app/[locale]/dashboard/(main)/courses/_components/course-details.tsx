@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import {
@@ -111,7 +113,7 @@ export function CourseDetails({ slug }: { slug: string }) {
           {course.description && course.description.content.length > 0 ? (
             <TiptapViewer content={course.description as JSONContent} />
           ) : (
-            <Empty className="mb-12">
+            <Empty>
               <EmptyHeader>
                 <EmptyMedia variant="icon" className="size-12">
                   <IconPencilCancel className="size-6" />

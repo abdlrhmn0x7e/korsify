@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
@@ -41,6 +43,7 @@ import { Badge } from "@/components/ui/badge";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { WholePageSpinner } from "@/components/whole-page-spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
@@ -49,7 +52,7 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const isPending = sections === undefined;
 
   return (
-    <Card className="gap-0 p-4">
+    <Card className="gap-1 p-4">
       <CardHeader className="p-0">
         <div className="ms-1 flex items-center justify-between">
           <CardTitle>Sections</CardTitle>
@@ -57,8 +60,14 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
         </div>
       </CardHeader>
 
-      <CardContent className="p-0">
-        {isPending && <WholePageSpinner />}
+      <CardContent className="p-0 h-full min-h-32">
+        {isPending && (
+          <div className="space-y-3 mt-1">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-8 w-full" />
+            ))}
+          </div>
+        )}
         {sections &&
           (sections.length > 0 ? (
             <Accordion>
@@ -67,7 +76,7 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
               ))}
             </Accordion>
           ) : (
-            <Empty className="mb-12">
+            <Empty>
               <EmptyHeader>
                 <EmptyMedia variant="icon" className="size-12">
                   <IconBookOff className="size-6" />

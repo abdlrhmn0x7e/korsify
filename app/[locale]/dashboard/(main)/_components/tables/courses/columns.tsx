@@ -8,6 +8,9 @@ import { type FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
 import { CoursesTableActions, CourseStatusButton } from "./actions";
 import { formatPrice } from "@/lib/format-price";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useCourseSearchParams } from "../../../_hooks/use-course-search-params";
 
 export const coursesColumns: ColumnDef<
   FunctionReturnType<typeof api.teachers.courses.queries.getAll>[number]
@@ -16,7 +19,17 @@ export const coursesColumns: ColumnDef<
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => {
-      return <span className="font-normal">{row.original.title}</span>;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [, setParams] = useCourseSearchParams();
+      return (
+        <Button
+          variant="link"
+          className="font-normal"
+          onClick={() => void setParams({ slug: row.original.slug })}
+        >
+          {row.original.title}
+        </Button>
+      );
     },
   },
 
