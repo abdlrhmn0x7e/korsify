@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useUploadFiles } from "@/hooks/use-upload-files";
+import type { FileUploadState } from "@/hooks/use-upload-files";
 import { cn } from "@/lib/utils";
-import { IconCloudUpload, IconPointer } from "@tabler/icons-react";
+import { IconCloudUpload, IconFile, IconPointer, IconTrash, IconX } from "@tabler/icons-react";
 import { useCallback } from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { toastManager } from "./ui/toast";
@@ -12,42 +12,53 @@ import { toastManager } from "./ui/toast";
 export interface FileDropZoneProps {
   options?: DropzoneOptions;
   className?: string;
-  onChange?: () => void;
   maxFiles?: number;
-  showFiles?: boolean;
+  isPending?: boolean;
+  fileStates?: FileUploadState[];
+  onDrop?: (files: File[]) => void;
+  onRemove?: (index: number) => void;
+  showFileList?: boolean;
+  emptyText?: string;
+  dragActiveText?: string;
+  uploadingText?: string;
 }
 
 export function FileDropzone({
   options = {},
-  onChange,
-  maxFiles,
   className,
+  maxFiles,
+  isPending = false,
+  fileStates = [],
+  onDrop,
+  onRemove,
+  showFileList = true,
+  emptyText = "Drag and drop files here, or click to select files",
+  dragActiveText = "Drop files here to upload",
+  uploadingText = "Uploading files...",
 }: FileDropZoneProps) {
-  const { uploadFiles, isPending, urls } = useUploadFiles({
-    onFileSuccess: () => {
-      onChange?.();
-    },
-  });
+  const successCount = fileStates.filter((s) => s.status === "success").length;
+
   const onDropAccepted = useCallback(
     (acceptedFiles: File[]) => {
-      if (maxFiles && urls.length >= maxFiles) {
+      if (maxFiles && successCount >= maxFiles) {
         toastManager.add({
           title: "You've reached the maximum number of files",
           type: "error",
         });
         return;
       }
-      uploadFiles(acceptedFiles);
+
+      const remainingSlots = maxFiles ? maxFiles - successCount : acceptedFiles.length;
+      const filesToUpload = acceptedFiles.slice(0, remainingSlots);
+
+      onDrop?.(filesToUpload);
     },
-    [uploadFiles, maxFiles, urls]
+    [onDrop, maxFiles, successCount]
   );
 
   const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
     onDropAccepted,
     disabled: isPending,
-    accept: {
-      "image/*": [".png", ".jpg", ".jpeg"],
-    },
     noClick: true,
     ...options,
   });
@@ -63,35 +74,28 @@ export function FileDropzone({
         )}
         {...getRootProps()}
       >
-        {/*
-					This input has it's own state away from any
-					external state which could be a problem
-				*/}
         <input {...getInputProps()} />
 
         {isDragActive ? (
           <>
             <IconPointer size={32} className="text-muted-foreground" />
-
             <p className="text-muted-foreground text-sm select-none">
-              Drop files here to upload
+              {dragActiveText}
             </p>
           </>
         ) : isPending ? (
           <>
             <Spinner />
-
             <p className="text-muted-foreground text-sm select-none">
-              Uploading files...
+              {uploadingText}
             </p>
           </>
         ) : (
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-2">
               <IconCloudUpload size={16} className="text-muted-foreground" />
-
               <p className="text-muted-foreground text-sm select-none">
-                Drag and drop files here, click to select files
+                {emptyText}
               </p>
             </div>
 
@@ -104,6 +108,105 @@ export function FileDropzone({
           </div>
         )}
       </div>
+
+      {showFileList && fileStates.length > 0 && (
+        <div className="space-y-2">
+          {fileStates.map((state, index) => (
+            <FileItem
+              key={`${state.file.name}-${index}`}
+              state={state}
+              onRemove={() => onRemove?.(index)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface FileItemProps {
+  state: FileUploadState;
+  onRemove?: () => void;
+}
+
+function FileItem({ state, onRemove }: FileItemProps) {
+  const { file, status, error } = state;
+
+  const statusStyles = {
+    pending: "border-muted bg-muted/10",
+    uploading: "border-blue-500/30 bg-blue-500/10",
+    success: "border-green-500/30 bg-green-500/10",
+    error: "border-red-500/30 bg-red-500/10",
+  };
+
+  const iconStyles = {
+    pending: "bg-muted/20 text-muted-foreground",
+    uploading: "bg-blue-500/20 text-blue-600",
+    success: "bg-green-500/20 text-green-600",
+    error: "bg-red-500/20 text-red-600",
+  };
+
+  const textStyles = {
+    pending: "text-muted-foreground",
+    uploading: "text-blue-700 dark:text-blue-400",
+    success: "text-green-700 dark:text-green-400",
+    error: "text-red-700 dark:text-red-400",
+  };
+
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-3 rounded-lg border p-3",
+        statusStyles[status]
+      )}
+    >
+      <div
+        className={cn(
+          "flex size-10 items-center justify-center rounded-full",
+          iconStyles[status]
+        )}
+      >
+        {status === "uploading" ? (
+          <Spinner className="size-5" />
+        ) : status === "error" ? (
+          <IconX className="size-5" />
+        ) : (
+          <IconFile className="size-5" />
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className={cn("text-sm font-medium truncate", textStyles[status])}>
+          {file.name}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {status === "error" && error
+            ? error.message
+            : status === "uploading"
+              ? "Uploading..."
+              : status === "success"
+                ? "Uploaded"
+                : formatFileSize(file.size)}
+        </p>
+      </div>
+
+      {onRemove && status !== "uploading" && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onRemove}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <IconTrash className="size-4" />
+        </Button>
+      )}
     </div>
   );
 }

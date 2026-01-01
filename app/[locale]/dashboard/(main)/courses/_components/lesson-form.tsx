@@ -1,12 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconFile, IconTrash, IconUpload } from "@tabler/icons-react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 
 import { Editor } from "@/components/editor";
-import { Button } from "@/components/ui/button";
+import { FileDropzone } from "@/components/file-dropzone";
 import {
   Field,
   FieldContent,
@@ -15,10 +14,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { VideoUploader } from "@/components/video/video-uploader";
-import { useUploadFile } from "@/hooks/use-upload-file";
+import { useUploadFiles, type FileUploadState } from "@/hooks/use-upload-files";
 import { Id } from "@/convex/_generated/dataModel";
 
 import {
@@ -34,7 +32,7 @@ interface LessonFormProps {
   onCancel?: () => void;
 }
 
-export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
+export function LessonForm({ onSubmit }: LessonFormProps) {
   const form = useForm<LessonFormValues>({
     resolver: zodResolver(lessonFormSchema),
     defaultValues: DEFAULT_LESSON_FORM_VALUES,
@@ -43,33 +41,41 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
 
   const { setValue, watch } = form;
   const videoId = watch("videoId");
-  const pdfStorageId = watch("pdfStorageId");
+  const pdfStorageIds = watch("pdfStorageIds");
 
   const {
-    inputRef: pdfInputRef,
-    isUploading: isPdfUploading,
-    openFilePicker: openPdfPicker,
-    upload: uploadPdf,
+    uploadFiles,
+    isPending: isPdfUploading,
+    fileStates,
+    storageIds,
     reset: resetPdfUpload,
-  } = useUploadFile({
-    onSuccess: ({ storageId }) => {
-      setValue("pdfStorageId", storageId);
-    },
-  });
+  } = useUploadFiles();
 
-  const handlePdfChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      await uploadPdf(file);
+  useEffect(() => {
+    if (storageIds.length > 0) {
+      setValue("pdfStorageIds", storageIds);
+    }
+  }, [storageIds, setValue]);
+
+  const handlePdfDrop = useCallback(
+    (files: File[]) => {
+      uploadFiles(files);
     },
-    [uploadPdf]
+    [uploadFiles]
   );
 
-  const handleRemovePdf = useCallback(() => {
-    setValue("pdfStorageId", undefined);
-    resetPdfUpload();
-  }, [setValue, resetPdfUpload]);
+  const handlePdfRemove = useCallback(
+    (index: number) => {
+      const newStorageIds = [...pdfStorageIds];
+      newStorageIds.splice(index, 1);
+      setValue("pdfStorageIds", newStorageIds);
+
+      if (newStorageIds.length === 0) {
+        resetPdfUpload();
+      }
+    },
+    [pdfStorageIds, setValue, resetPdfUpload]
+  );
 
   function handleVideoReady(muxAssetId: Id<"muxAssets">) {
     setValue("videoId", muxAssetId);
@@ -81,11 +87,24 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
     onSubmit(values, {
       onSuccess: () => {
         form.reset(DEFAULT_LESSON_FORM_VALUES);
+        resetPdfUpload();
       },
     });
   }
 
   const isVideoReady = !!videoId;
+
+  const existingFileStates: Array<FileUploadState> = pdfStorageIds
+    .filter((id) => !storageIds.includes(id))
+    .map((id) => ({
+      file: new File([], `PDF ${id.slice(-6)}`),
+      status: "success" as const,
+      storageId: id,
+      url: null,
+      error: null,
+    }));
+
+  const allFileStates = [...existingFileStates, ...fileStates];
 
   return (
     <FormProvider {...form}>
@@ -185,63 +204,25 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
 
         <Field>
           <FieldContent>
-            <FieldLabel>PDF Attachment (Optional)</FieldLabel>
+            <FieldLabel>PDF Attachments (Optional)</FieldLabel>
             <FieldDescription>
-              Add a downloadable PDF resource for this lesson.
+              Add downloadable PDF resources for this lesson.
             </FieldDescription>
           </FieldContent>
 
-          <input
-            ref={pdfInputRef}
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            onChange={handlePdfChange}
+          <FileDropzone
+            className="mt-2"
+            options={{
+              accept: {
+                "application/pdf": [".pdf"],
+              },
+            }}
+            isPending={isPdfUploading}
+            fileStates={allFileStates}
+            onDrop={handlePdfDrop}
+            onRemove={handlePdfRemove}
+            emptyText="Drag and drop PDF files here, or click to select"
           />
-
-          {pdfStorageId ? (
-            <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4 mt-2">
-              <div className="flex size-10 items-center justify-center rounded-full bg-green-500/20">
-                <IconFile className="size-5 text-green-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                  PDF uploaded
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={handleRemovePdf}
-                className="text-muted-foreground hover:text-destructive"
-              >
-                <IconTrash className="size-4" />
-                Remove
-              </Button>
-            </div>
-          ) : (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={openPdfPicker}
-              disabled={isPdfUploading}
-              className="mt-2 w-fit"
-            >
-              {isPdfUploading ? (
-                <>
-                  <Spinner className="size-4" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <IconUpload className="size-4" />
-                  Upload PDF
-                </>
-              )}
-            </Button>
-          )}
         </Field>
       </form>
     </FormProvider>

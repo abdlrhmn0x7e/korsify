@@ -264,7 +264,7 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
 
           <IconChevronDown
             size={16}
-            className="transition-transform text-muted-foreground group-data-[open]/accordion-item:rotate-180"
+            className="transition-transform text-muted-foreground group-data-open/accordion-item:rotate-180"
           />
         </div>
       </AccordionHeader>

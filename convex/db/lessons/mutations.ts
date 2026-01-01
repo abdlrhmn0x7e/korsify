@@ -9,7 +9,7 @@ export type CreateLessonData = {
 
   title: string;
   description: JSONContent | null;
-  pdfStorageId: Id<"_storage"> | null;
+  pdfStorageIds: Array<Id<"_storage">>;
   videoId: Id<"muxAssets">;
 
   order: number;
@@ -29,7 +29,7 @@ export async function create(
 
     title: data.title,
     description: data.description,
-    pdfStorageId: data.pdfStorageId,
+    pdfStorageIds: data.pdfStorageIds,
     videoId: data.videoId,
 
     order: data.order,
@@ -42,7 +42,7 @@ export async function create(
 export type UpdateLessonData = {
   title?: string;
   description?: JSONContent | null;
-  pdfStorageId?: Id<"_storage"> | null;
+  pdfStorageIds?: Array<Id<"_storage">>;
   videoId?: Id<"muxAssets">;
   isFree?: boolean;
   sectionId?: Id<"sections">;

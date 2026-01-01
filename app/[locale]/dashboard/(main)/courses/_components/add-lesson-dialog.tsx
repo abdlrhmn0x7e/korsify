@@ -68,7 +68,7 @@ export function AddLessonDialog({
       title: values.title,
       description: values.description,
       videoId: values.videoId as Id<"muxAssets">,
-      pdfStorageId: values.pdfStorageId as Id<"_storage"> | undefined,
+      pdfStorageIds: values.pdfStorageIds as Array<Id<"_storage">>,
       isFree: values.isFree,
     });
 
@@ -91,7 +91,7 @@ export function AddLessonDialog({
         <DialogHeader>
           <DialogTitle>Add New Lesson</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[75svh] pb-4 pe-4">
+        <ScrollArea className="max-h-[75svh] pb-4 pe-4 ps-1">
           <LessonForm
             isPending={isPending}
             onSubmit={handleSubmit}

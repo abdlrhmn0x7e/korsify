@@ -2,7 +2,7 @@ import { GenericQueryCtx } from "convex/server";
 import { DataModel, Doc } from "../../_generated/dataModel";
 
 type LessonWithUrls = Doc<"lessons"> & {
-  pdfUrl: string | null;
+  pdfUrls: Array<string>;
 };
 
 export async function attachMediaURLs(
@@ -20,21 +20,24 @@ export async function attachMediaURLs(
 ): Promise<LessonWithUrls | LessonWithUrls[] | null> {
   if (data === null) return null;
 
+  async function resolvePdfUrls(pdfStorageIds: Array<Doc<"lessons">["pdfStorageIds"][number]>): Promise<Array<string>> {
+    const urls = await Promise.all(
+      pdfStorageIds.map((id) => ctx.storage.getUrl(id))
+    );
+    return urls.filter((url): url is string => url !== null);
+  }
+
   if (Array.isArray(data)) {
     return Promise.all(
       data.map(async (lesson) => ({
         ...lesson,
-        pdfUrl: lesson.pdfStorageId
-          ? await ctx.storage.getUrl(lesson.pdfStorageId)
-          : null,
+        pdfUrls: await resolvePdfUrls(lesson.pdfStorageIds),
       })),
     );
   }
 
   return {
     ...data,
-    pdfUrl: data.pdfStorageId
-      ? await ctx.storage.getUrl(data.pdfStorageId)
-      : null,
+    pdfUrls: await resolvePdfUrls(data.pdfStorageIds),
   };
 }

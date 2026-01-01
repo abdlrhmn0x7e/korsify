@@ -11,7 +11,7 @@ export const lessonsTable = defineTable({
 
   title: v.string(),
   description: v.nullable(v.any()),
-  pdfStorageId: v.nullable(v.id("_storage")),
+  pdfStorageIds: v.array(v.id("_storage")),
 
   videoId: v.id("muxAssets"),
 
