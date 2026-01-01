@@ -30,6 +30,7 @@ import { useScopedI18n } from "@/locales/client";
 export function BasicsStep() {
   const t = useScopedI18n("dashboard.courses");
   const tForm = useScopedI18n("dashboard.courses.form");
+  const tCommon = useScopedI18n("components.common");
   const { control, setValue, watch } = useFormContext<CourseFormValues>();
   const { mode } = useCourseFormContext();
 
@@ -146,14 +147,15 @@ export function BasicsStep() {
                   <div className="rounded-full bg-muted p-3">
                     <IconPhoto className="size-6 text-muted-foreground" />
                   </div>
-                  <div className="space-y-1">
+                    <div className="space-y-1">
                     <p className="text-sm font-medium">
                       {tForm("fields.thumbnail")}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      PNG, JPG or WebP up to 5MB
+                      {tForm("fields.thumbnailFormats")}
                     </p>
                   </div>
+
                   <Button
                     type="button"
                     variant="outline"
@@ -161,17 +163,19 @@ export function BasicsStep() {
                     onClick={openFilePicker}
                     disabled={isUploading}
                   >
-                    {isUploading ? (
-                      <>
-                        <Spinner className="size-4 me-2" />
-                        {tForm("buttons.create")}...
-                      </>
-                    ) : (
-                      <>
-                        <IconUpload className="size-4 me-2" />
-                        {tForm("fields.thumbnail")}
-                      </>
-                    )}
+                      {isUploading ? (
+                        <>
+                          <Spinner className="size-4 me-2" />
+                          {tCommon("loading")}
+                        </>
+                      ) : (
+                        <>
+                          <IconUpload className="size-4 me-2" />
+                          {tForm("fields.thumbnail")}
+                        </>
+                      )}
+
+
                   </Button>
                 </div>
               )}

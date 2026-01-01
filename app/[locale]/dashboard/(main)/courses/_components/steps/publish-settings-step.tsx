@@ -105,17 +105,17 @@ export function PublishSettingsStep() {
                 {isOriginalSlug ? (
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <IconCheck className="size-4" />
-                    {t("errors.slugUnavailable.description")}
+                    {t("fields.slugAvailable")}
                   </span>
                 ) : isCheckingAvailability ? (
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <IconLoader2 className="size-4 animate-spin" />
-                    Checking availability...
+                    {t("fields.slugChecking")}
                   </span>
                 ) : isAvailable ? (
                   <span className="flex items-center gap-1 text-green-600">
                     <IconCheck className="size-4" />
-                    This URL is available
+                    {t("fields.slugAvailable")}
                   </span>
                 ) : (
                   <span className="flex items-center gap-1 text-destructive">
@@ -195,7 +195,7 @@ export function PublishSettingsStep() {
                     {Math.round(
                       ((price - (watch("overridePrice") || 0)) / price) * 100
                     )}
-                    % discount
+                    % {t("fields.discount")}
                   </p>
                 )}
                 {fieldState.invalid && (
