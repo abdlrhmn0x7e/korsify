@@ -1,19 +1,17 @@
 "use client";
 
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 import { useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 import { CourseDetails } from "../../courses/_components/course-details";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 
 export function CourseDrawer() {
   const isMobile = useIsMobile();
@@ -31,31 +29,22 @@ export function CourseDrawer() {
   );
 
   return (
-    <Drawer
-      open={!!params.slug}
-      onOpenChange={handleOpenChange}
-      direction={isMobile ? "bottom" : "right"}
-      handleOnly={!isMobile}
-    >
-      <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-2xl">
-        <DrawerHeader className="sr-only items-center justify-between gap-2 lg:flex-row">
-          <div className="space-y-1">
-            <DrawerTitle>Course Details</DrawerTitle>
-            <DrawerDescription>View and manage your course</DrawerDescription>
-          </div>
-        </DrawerHeader>
-
-        <Dialog>
-          <DialogTrigger render={<Button />}>Test</DialogTrigger>
-          <DialogContent>Test</DialogContent>
-        </Dialog>
+    <Sheet open={!!params.slug} onOpenChange={handleOpenChange}>
+      <SheetContent
+        side={isMobile ? "bottom" : "right"}
+        className="sm:max-w-2xl data-[side=right]:sm:max-w-2xl"
+      >
+        <SheetHeader className="sr-only">
+          <SheetTitle>Course Details</SheetTitle>
+          <SheetDescription>View and manage your course</SheetDescription>
+        </SheetHeader>
 
         {params.slug && (
           <div className="mr-2 p-4 overflow-y-auto pb-12 flex-1">
             <CourseDetails slug={params.slug} />
           </div>
         )}
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
 }

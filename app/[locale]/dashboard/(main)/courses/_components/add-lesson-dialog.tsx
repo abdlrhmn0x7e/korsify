@@ -6,20 +6,22 @@ import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
 
 import { Button } from "@/components/ui/button";
-import {
-  DrawerDialog,
-  DrawerDialogContent,
-  DrawerDialogHeader,
-  DrawerDialogTitle,
-  DrawerDialogTrigger,
-  DrawerDialogBody,
-} from "@/components/ui/drawer-dialog";
 import { toastManager } from "@/components/ui/toast";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 import { LessonForm } from "./lesson-form";
 import type { LessonFormValues } from "./lesson-form-types";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AddLessonDialogProps {
   sectionId: Id<"sections">;
@@ -83,20 +85,33 @@ export function AddLessonDialog({
   );
 
   return (
-    <DrawerDialog open={open} onOpenChange={setOpen} nested>
-      <DrawerDialogTrigger render={triggerButton} />
-      <DrawerDialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden">
-        <DrawerDialogHeader>
-          <DrawerDialogTitle>Add New Lesson</DrawerDialogTitle>
-        </DrawerDialogHeader>
-        <DrawerDialogBody className="overflow-y-auto max-h-[calc(90vh-120px)]">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={triggerButton} />
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden">
+        <DialogHeader>
+          <DialogTitle>Add New Lesson</DialogTitle>
+        </DialogHeader>
+        <ScrollArea className="max-h-[75svh] pb-4 pe-4">
           <LessonForm
             isPending={isPending}
             onSubmit={handleSubmit}
             onCancel={() => setOpen(false)}
           />
-        </DrawerDialogBody>
-      </DrawerDialogContent>
-    </DrawerDialog>
+        </ScrollArea>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setOpen(false)}
+            disabled={isPending}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" form="lesson-form" disabled={isPending}>
+            {isPending ? <Spinner /> : "Add Lesson"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

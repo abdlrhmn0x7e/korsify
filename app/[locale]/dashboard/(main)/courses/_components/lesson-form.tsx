@@ -76,6 +76,8 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
   }
 
   function handleFormSubmit(values: LessonFormValues) {
+    if (isPdfUploading || !isVideoReady) return;
+
     onSubmit(values, {
       onSuccess: () => {
         form.reset(DEFAULT_LESSON_FORM_VALUES);
@@ -90,6 +92,7 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
       <form
         onSubmit={form.handleSubmit(handleFormSubmit)}
         className="flex flex-col gap-6"
+        id="lesson-form"
       >
         <Controller
           name="title"
@@ -101,7 +104,9 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
                 <FieldDescription>
                   A clear, descriptive title for this lesson.
                 </FieldDescription>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
               </FieldContent>
               <Input
                 {...field}
@@ -114,20 +119,20 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
         />
 
         <Controller
-          name="videoId"
+          name="isFree"
           control={form.control}
-          render={({ fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
+          render={({ field }) => (
+            <Field orientation="horizontal">
               <FieldContent>
-                <FieldLabel>Lesson Video</FieldLabel>
+                <FieldLabel htmlFor="isFree">Free Preview</FieldLabel>
                 <FieldDescription>
-                  Upload the video for this lesson. Video is required before saving.
+                  Allow non-enrolled students to preview this lesson for free.
                 </FieldDescription>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </FieldContent>
-              <VideoUploader
-                onVideoReady={handleVideoReady}
-                className="mt-2"
+              <Switch
+                id="isFree"
+                checked={field.value}
+                onCheckedChange={field.onChange}
               />
             </Field>
           )}
@@ -137,20 +142,43 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
           name="description"
           control={form.control}
           render={({ fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="flex-1 flex flex-col">
+            <Field
+              data-invalid={fieldState.invalid}
+              className="flex-1 flex flex-col"
+            >
               <FieldContent>
                 <FieldLabel>Description (Optional)</FieldLabel>
                 <FieldDescription>
                   Add details about what students will learn in this lesson.
                 </FieldDescription>
               </FieldContent>
-              <div className="min-h-48 mt-2">
+              <div className="h-96 mt-2">
                 <Editor
                   defaultContent={form.getValues("description")}
                   onUpdate={(json) => setValue("description", json)}
                 />
               </div>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="videoId"
+          control={form.control}
+          render={({ fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel>Lesson Video</FieldLabel>
+                <FieldDescription>
+                  Upload the video for this lesson. Video is required before
+                  saving.
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <VideoUploader onVideoReady={handleVideoReady} className="mt-2" />
             </Field>
           )}
         />
@@ -215,37 +243,6 @@ export function LessonForm({ isPending, onSubmit, onCancel }: LessonFormProps) {
             </Button>
           )}
         </Field>
-
-        <Controller
-          name="isFree"
-          control={form.control}
-          render={({ field }) => (
-            <Field orientation="horizontal">
-              <FieldContent>
-                <FieldLabel htmlFor="isFree">Free Preview</FieldLabel>
-                <FieldDescription>
-                  Allow non-enrolled students to preview this lesson for free.
-                </FieldDescription>
-              </FieldContent>
-              <Switch
-                id="isFree"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </Field>
-          )}
-        />
-
-        <div className="flex justify-end gap-2 pt-4 border-t">
-          {onCancel && (
-            <Button type="button" variant="ghost" onClick={onCancel} disabled={isPending}>
-              Cancel
-            </Button>
-          )}
-          <Button type="submit" disabled={isPending || !isVideoReady}>
-            {isPending ? <Spinner /> : "Add Lesson"}
-          </Button>
-        </div>
       </form>
     </FormProvider>
   );

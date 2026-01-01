@@ -41,9 +41,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { WholePageSpinner } from "@/components/whole-page-spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AddLessonDialog } from "./add-lesson-dialog";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
@@ -294,6 +294,12 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
               </EmptyMedia>
               <EmptyTitle className="text-base">No Lessons Yet</EmptyTitle>
             </EmptyHeader>
+            <EmptyContent>
+              <AddLessonDialog
+                courseId={section.courseId}
+                sectionId={section._id}
+              />
+            </EmptyContent>
           </Empty>
         )}
       </AccordionContent>
