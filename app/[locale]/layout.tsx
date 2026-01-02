@@ -12,6 +12,7 @@ import { setStaticParamsLocale } from "next-international/server";
 import { I18nProviderClient } from "@/locales/client";
 import { AnchoredToastProvider, ToastProvider } from "@/components/ui/toast";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "@/components/ui/sonner";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-serif-latin",
@@ -75,6 +76,8 @@ export default async function RootLayout({
                 <NuqsAdapter>{children}</NuqsAdapter>
               </AnchoredToastProvider>
             </ToastProvider>
+
+            <Toaster richColors />
           </I18nProviderClient>
         </ConvexClientProvider>
       </body>

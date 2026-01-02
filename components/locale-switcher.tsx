@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { changeLanguage } from "@/lib/actions/change-language";
 import { Locale, locales } from "@/locales/config";
 import { useCurrentLocale } from "@/locales/client";
-import { toastManager } from "./ui/toast";
+import { toast } from "sonner";
 
 type Props = {
   className?: string;
@@ -38,10 +38,7 @@ export function LocaleSwitcherSelect({ className, showLocale = false }: Props) {
       const { error: langError } = await tryCatch(changeLanguage(value));
 
       if (langError) {
-        toastManager.add({
-          title: "Couldn't change your locale",
-          type: "error",
-        });
+        toast.error("Couldn't change your locale");
         return;
       }
 

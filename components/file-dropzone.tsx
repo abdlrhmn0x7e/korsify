@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { IconFile, IconX } from "@tabler/icons-react";
 import { useCallback, type ReactNode } from "react";
 import type { DropzoneOptions } from "react-dropzone";
-import { toastManager } from "./ui/toast";
+import { toast } from "sonner";
 
 export interface FileDropZoneProps {
   options?: DropzoneOptions;
@@ -43,10 +43,7 @@ export function FileDropzone({
   const handleFilesSelected = useCallback(
     (acceptedFiles: File[]) => {
       if (maxFiles && successCount >= maxFiles) {
-        toastManager.add({
-          title: "You've reached the maximum number of files",
-          type: "error",
-        });
+        toast.error("You've reached the maximum number of files");
         return;
       }
 

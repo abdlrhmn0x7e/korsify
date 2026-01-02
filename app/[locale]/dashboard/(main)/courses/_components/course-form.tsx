@@ -10,7 +10,7 @@ import { useStep } from "usehooks-ts";
 import { DirectedArrow } from "@/components/directed-arrow";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 
@@ -118,10 +118,8 @@ export function CourseForm({ course, isPending, onSubmit }: CourseFormProps) {
     if (!stepHelpers.canGoToNextStep) {
       const isSlugAvailable = form.getValues("isSlugAvailable");
       if (!isSlugAvailable) {
-        toastManager.add({
-          title: t("errors.slugUnavailable.title"),
+        toast.error(t("errors.slugUnavailable.title"), {
           description: t("errors.slugUnavailable.description"),
-          type: "error",
         });
         return;
       }

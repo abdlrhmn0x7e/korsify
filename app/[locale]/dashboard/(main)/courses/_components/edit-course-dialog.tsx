@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { CourseFormOnSubmit, slugify } from "./course-form-types";
 import { CourseForm } from "./course-form";
 
@@ -25,18 +25,14 @@ export function EditCourseDialog({
   const { mutateAsync: updateCourse, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.update),
     onSuccess: () => {
-      toastManager.add({
-        title: "Course updated",
+      toast.success("Course updated", {
         description: "Your course has been updated successfully.",
-        type: "success",
       });
     },
     onError: (error) => {
-      toastManager.add({
-        title: "Error",
+      toast.error("Error", {
         description:
           error instanceof Error ? error.message : "Failed to update course",
-        type: "error",
       });
     },
   });

@@ -21,7 +21,7 @@ import { api } from "@/convex/_generated/api";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 
 export default function EarlyAccessForm() {
   const t = useScopedI18n("landing");
@@ -57,10 +57,7 @@ export default function EarlyAccessForm() {
       sendEarlyAccessRequest(values);
       setIsSuccess(true);
     } catch {
-      toastManager.add({
-        title: "Failed to send early access request. Please try again.",
-        type: "error",
-      });
+      toast.error("Failed to send early access request. Please try again.");
     }
   }
 

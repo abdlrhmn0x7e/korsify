@@ -9,7 +9,7 @@ import { CourseForm } from "./course-form";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@/convex/_generated/api";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { CourseFormOnSubmit, slugify } from "./course-form-types";
 import { Id } from "@/convex/_generated/dataModel";
 import { useDialog } from "@/hooks/use-dialog";
@@ -26,18 +26,14 @@ export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
   const { mutateAsync: createCourse, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.create),
     onSuccess: () => {
-      toastManager.add({
-        title: t("createSuccess.title"),
+      toast.success(t("createSuccess.title"), {
         description: t("createSuccess.description"),
-        type: "success",
       });
     },
     onError: (error) => {
-      toastManager.add({
-        title: t("createError.title"),
+      toast.error(t("createError.title"), {
         description:
           error instanceof Error ? error.message : t("createError.description"),
-        type: "error",
       });
     },
   });

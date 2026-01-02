@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
 
 import { Button } from "@/components/ui/button";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
@@ -43,19 +43,15 @@ export function AddLessonDialog({
   const { mutateAsync: createLesson, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.lessons.mutations.create),
     onSuccess: () => {
-      toastManager.add({
-        title: t("createSuccess.title"),
+      toast.success(t("createSuccess.title"), {
         description: t("createSuccess.description"),
-        type: "success",
       });
       setOpen(false);
     },
     onError: (error) => {
-      toastManager.add({
-        title: t("createError.title"),
+      toast.error(t("createError.title"), {
         description:
           error instanceof Error ? error.message : t("createError.description"),
-        type: "error",
       });
     },
   });

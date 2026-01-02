@@ -36,7 +36,7 @@ import {
   DEFAULT_STORAGE_DATA,
   ONBOARDING_STORAGE_KEY,
 } from "./types";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 
 interface OnboardingFormProps {
   onSuccess: () => void;
@@ -138,10 +138,8 @@ export function OnboardingForm({ onSuccess }: OnboardingFormProps) {
       onSuccess();
     },
     onError: () => {
-      toastManager.add({
-        title: tRoot("error.title"),
+      toast.error(tRoot("error.title"), {
         description: tRoot("error.description"),
-        type: "error",
       });
     },
   });

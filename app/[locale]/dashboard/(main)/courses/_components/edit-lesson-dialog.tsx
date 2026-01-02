@@ -8,7 +8,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { useScopedI18n } from "@/locales/client";
 import { LessonForm } from "./lesson-form";
 import type { LessonFormValues } from "./lesson-form-types";
@@ -38,19 +38,15 @@ export function EditLessonDialog({
   const { mutateAsync: updateLesson, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.lessons.mutations.update),
     onSuccess: () => {
-      toastManager.add({
-        title: t("updateSuccess.title"),
+      toast.success(t("updateSuccess.title"), {
         description: t("updateSuccess.description"),
-        type: "success",
       });
       onOpenChange(false);
     },
     onError: (error) => {
-      toastManager.add({
-        title: t("updateError.title"),
+      toast.error(t("updateError.title"), {
         description:
           error instanceof Error ? error.message : t("updateError.description"),
-        type: "error",
       });
     },
   });

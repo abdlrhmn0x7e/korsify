@@ -17,7 +17,7 @@ import { UndoRedo } from "@tiptap/extensions";
 import { FileHandler } from "@tiptap/extension-file-handler";
 import { type JSONContent, useEditor as useTiptapEditor } from "@tiptap/react";
 import { useMemo } from "react";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { useUploadFiles } from "@/hooks/use-upload-files";
 
 export function useEditor({
@@ -79,11 +79,8 @@ export function useEditor({
         onDrop: (currentEditor, files, pos) => {
           const fileNames = files.map((file) => file.name).join(", ");
 
-          toastManager.promise(upload(files), {
-            loading: {
-              title: "Uploading…",
-              description: `Uploading ${fileNames}`,
-            },
+          toast.promise(upload(files), {
+            loading: `Uploading ${fileNames}`,
             success: (data) => {
               data.urls.forEach((url) => {
                 currentEditor
@@ -95,15 +92,9 @@ export function useEditor({
                   .focus()
                   .run();
               });
-              return {
-                title: "Upload complete",
-                description: `Uploaded ${data.successCount} file(s)`,
-              };
+              return `Uploaded ${data.successCount} file(s)`;
             },
-            error: () => ({
-              title: "Upload failed",
-              description: "Please try again.",
-            }),
+            error: "Upload failed. Please try again.",
           });
         },
         onPaste: (currentEditor, files, htmlContent) => {
@@ -113,11 +104,8 @@ export function useEditor({
 
           const fileNames = files.map((file) => file.name).join(", ");
 
-          toastManager.promise(upload(files), {
-            loading: {
-              title: "Uploading…",
-              description: `Uploading ${fileNames}`,
-            },
+          toast.promise(upload(files), {
+            loading: `Uploading ${fileNames}`,
             success: (data) => {
               data.urls.forEach((url) => {
                 currentEditor
@@ -129,15 +117,9 @@ export function useEditor({
                   .focus()
                   .run();
               });
-              return {
-                title: "Upload complete",
-                description: `Uploaded ${data.successCount} file(s)`,
-              };
+              return `Uploaded ${data.successCount} file(s)`;
             },
-            error: () => ({
-              title: "Upload failed",
-              description: "Please try again.",
-            }),
+            error: "Upload failed. Please try again.",
           });
         },
       }),

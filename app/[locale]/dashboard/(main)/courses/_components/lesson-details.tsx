@@ -45,7 +45,7 @@ import { EditLessonDialog } from "./edit-lesson-dialog";
 import { useDialog } from "@/hooks/use-dialog";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
-import { toastManager } from "@/components/ui/toast";
+import { toast } from "sonner";
 
 interface LessonDetailsProps {
   lessonId: Id<"lessons">;
@@ -63,20 +63,16 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
   const removeLessonMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.lessons.mutations.remove),
     onSuccess: () => {
-      toastManager.add({
-        title: t("deleteSuccess.title"),
+      toast.success(t("deleteSuccess.title"), {
         description: t("deleteSuccess.description"),
-        type: "success",
       });
       dismissDeleteDialog();
       onBack();
     },
     onError: (error) => {
-      toastManager.add({
-        title: t("deleteError.title"),
+      toast.error(t("deleteError.title"), {
         description:
           error instanceof Error ? error.message : t("deleteError.description"),
-        type: "error",
       });
     },
   });
