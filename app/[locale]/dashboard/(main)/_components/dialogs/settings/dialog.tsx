@@ -13,17 +13,22 @@ import { Dialog } from "@/components/ui/dialog";
 import { IconSettings } from "@tabler/icons-react";
 import { SettingsForm } from "./form";
 import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { Preloaded, useQuery } from "convex/react";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { toast } from "sonner";
 import { SettingsFormValues } from "./types";
 import { Spinner } from "@/components/ui/spinner";
 import { useDialog } from "@/hooks/use-dialog";
+import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 
-export function SettingsDialog() {
+export function SettingsDialog({
+  teacher,
+}: {
+  teacher: Preloaded<typeof api.teachers.queries.getTeacher>;
+}) {
   const dialog = useDialog();
-  const teacher = useQuery(api.teachers.queries.getTeacher);
+  const teacherData = usePreloadedAuthQuery(teacher);
   const updateTeacher = useMutation({
     mutationFn: useConvexMutation(api.teachers.mutations.update),
     onSuccess: () => {
@@ -60,7 +65,9 @@ export function SettingsDialog() {
         </DialogHeader>
 
         <div className="h-96">
-          {teacher && <SettingsForm teacher={teacher} onSubmit={onSubmit} />}
+          {teacherData && (
+            <SettingsForm teacher={teacherData} onSubmit={onSubmit} />
+          )}
         </div>
 
         <DialogFooter>

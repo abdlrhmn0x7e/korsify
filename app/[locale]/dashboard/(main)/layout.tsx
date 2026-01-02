@@ -28,8 +28,10 @@ export default async function DashboardMainLayout({
   const { locale } = await params;
   setStaticParamsLocale(locale);
 
-  const t = await getScopedI18n("dashboard.sidebar");
-  void preloadAuthQuery(api.teachers.queries.getTeacher);
+  const [t, teacher] = await Promise.all([
+    getScopedI18n("dashboard.sidebar"),
+    preloadAuthQuery(api.teachers.queries.getTeacher),
+  ]);
 
   const dir = locale === "ar" ? "rtl" : "ltr";
 
@@ -72,7 +74,7 @@ export default async function DashboardMainLayout({
       title: t("settings"),
       url: `/dashboard/settings`,
       icon: <IconSettings />,
-      component: <SettingsDialog />,
+      component: <SettingsDialog teacher={teacher} />,
     },
   ];
 
