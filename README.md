@@ -240,30 +240,30 @@ Session Middleware
 
 #### Mux Security Configuration
 
-- [ ] Enable signed URLs in Mux dashboard
-- [ ] Configure playback restrictions (domain restriction)
-- [ ] Set up signing keys for secure playback
-- [ ] Configure Mux Data for analytics (optional)
+- [x] Enable signed URLs in Mux dashboard
+- [x] Configure playback restrictions (domain restriction)
+- [x] Set up signing keys for secure playback
+- [x] Configure Mux Data for analytics (optional)
 
 #### Playback Backend
 
 The playback backend uses the `studentAuth` component to validate sessions and retrieve student data for watermarking.
 
-- [ ] Create `getPlaybackUrl` query that:
+- [x] Create `getPlaybackUrl` query that:
   - Validates student session token (via studentAuth component)
   - Retrieves student record (name + phone for watermark)
   - Checks enrollment status for the requested lesson's course
   - Returns error if not enrolled (unless lesson is free preview)
-- [ ] Generate signed Mux playback URL with expiration (1 hour)
-- [ ] Include watermark data in response (student name + phone from studentAuth)
+- [x] Generate signed Mux playback URL with expiration (1 hour)
+- [x] Include watermark data in response (student name + phone from studentAuth)
 
 #### Video Player Component
 
-- [ ] Build secure player wrapper component using Mux Player React
-- [ ] Configure Mux Player with signed playback token
-- [ ] Add moving watermark overlay (student name + phone + timestamp)
+- [x] Build secure player wrapper component using Mux Player React
+- [x] Configure Mux Player with signed playback token
+- [x] Add moving watermark overlay (student name + phone + timestamp)
 - [ ] Watermark repositions every 30 seconds
-- [ ] Disable right-click on player container
+- [x] Disable right-click on player container
 - [ ] Block keyboard shortcuts (Ctrl+S, Ctrl+U, F12, Ctrl+Shift+I)
 - [ ] Add basic DevTools detection (optional warning)
 
@@ -390,15 +390,15 @@ The playback backend uses the `studentAuth` component to validate sessions and r
 
 ### Infrastructure & DevOps (Throughout)
 
-- [ ] Add MUX_TOKEN_ID to environment variables
-- [ ] Add MUX_TOKEN_SECRET to environment variables
-- [ ] Add MUX_SIGNING_KEY_ID to environment variables (for signed URLs)
-- [ ] Add MUX_SIGNING_KEY_PRIVATE to environment variables (for signed URLs)
+- [x] Add MUX_TOKEN_ID to environment variables
+- [x] Add MUX_TOKEN_SECRET to environment variables
+- [x] Add MUX_SIGNING_KEY_ID to environment variables (for signed URLs)
+- [x] Add MUX_SIGNING_KEY_PRIVATE to environment variables (for signed URLs)
 - [ ] Add TWILIO_ACCOUNT_SID to environment variables
 - [ ] Add TWILIO_AUTH_TOKEN to environment variables
 - [ ] Add TWILIO_WHATSAPP_FROM to environment variables
 - [ ] Configure Vercel for wildcard subdomain (\*.korsify.com)
-- [ ] Set up Mux webhook URL in Mux dashboard
+- [x] Set up Mux webhook URL in Mux dashboard
 - [ ] Test subdomain routing in production
 - [ ] Set up error monitoring (Sentry or similar)
-- [ ] Document environment variables in README
+- [x] Document environment variables in README

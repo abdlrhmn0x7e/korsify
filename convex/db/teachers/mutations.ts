@@ -52,7 +52,7 @@ export async function update(
   teacherId: Id<"teachers">,
   data: UpdateTeacherData
 ): Promise<void> {
-  await ctx.db.patch(teacherId, {
+  await ctx.db.patch("teachers", teacherId, {
     ...data,
     updatedAt: Date.now(),
   });
@@ -63,7 +63,7 @@ export async function updateBranding(
   teacherId: Id<"teachers">,
   branding: Branding
 ): Promise<void> {
-  await ctx.db.patch(teacherId, {
+  await ctx.db.patch("teachers", teacherId, {
     branding,
     updatedAt: Date.now(),
   });
@@ -74,7 +74,7 @@ export async function updatePaymentInfo(
   teacherId: Id<"teachers">,
   paymentInfo: PaymentInfo
 ): Promise<void> {
-  await ctx.db.patch(teacherId, {
+  await ctx.db.patch("teachers", teacherId, {
     paymentInfo,
     updatedAt: Date.now(),
   });
@@ -85,7 +85,7 @@ export async function updateStatus(
   teacherId: Id<"teachers">,
   status: TeacherStatus
 ): Promise<void> {
-  await ctx.db.patch(teacherId, {
+  await ctx.db.patch("teachers", teacherId, {
     status,
     updatedAt: Date.now(),
   });
@@ -96,7 +96,7 @@ export async function updateSubdomain(
   teacherId: Id<"teachers">,
   subdomain: string
 ): Promise<void> {
-  await ctx.db.patch(teacherId, {
+  await ctx.db.patch("teachers", teacherId, {
     subdomain,
     updatedAt: Date.now(),
   });
@@ -108,7 +108,7 @@ export async function updateCustomDomain(
   customDomain: string | undefined,
   verified: boolean = false
 ): Promise<void> {
-  await ctx.db.patch(teacherId, {
+  await ctx.db.patch("teachers", teacherId, {
     customDomain,
     customDomainVerified: verified,
     updatedAt: Date.now(),
@@ -119,5 +119,5 @@ export async function remove(
   ctx: GenericMutationCtx<DataModel>,
   teacherId: Id<"teachers">
 ): Promise<void> {
-  await ctx.db.delete(teacherId);
+  await ctx.db.delete("teachers", teacherId);
 }

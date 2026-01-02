@@ -24,27 +24,29 @@ function validateSubdomain(subdomain: string): string {
   return result.data;
 }
 
+const onboardingValidator = v.object({
+  name: v.string(),
+  email: v.string(),
+  subdomain: v.string(),
+  phone: v.optional(v.string()),
+  branding: v.optional(
+    v.object({
+      logoStorageId: v.optional(v.string()),
+      coverStorageId: v.optional(v.string()),
+      primaryColor: v.optional(v.string()),
+    })
+  ),
+  paymentInfo: v.optional(
+    v.object({
+      vodafoneCash: v.optional(v.string()),
+      instaPay: v.optional(v.string()),
+      instructions: v.optional(v.string()),
+    })
+  ),
+});
+
 export const completeOnboarding = mutation({
-  args: {
-    name: v.string(),
-    email: v.string(),
-    subdomain: v.string(),
-    phone: v.optional(v.string()),
-    branding: v.optional(
-      v.object({
-        logoStorageId: v.optional(v.string()),
-        coverStorageId: v.optional(v.string()),
-        primaryColor: v.optional(v.string()),
-      })
-    ),
-    paymentInfo: v.optional(
-      v.object({
-        vodafoneCash: v.optional(v.string()),
-        instaPay: v.optional(v.string()),
-        instructions: v.optional(v.string()),
-      })
-    ),
-  },
+  args: onboardingValidator,
   handler: async (ctx, args) => {
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) {
@@ -128,11 +130,7 @@ export const create = mutation({
 });
 
 export const update = mutation({
-  args: {
-    name: v.optional(v.string()),
-    phone: v.optional(v.string()),
-    email: v.optional(v.string()),
-  },
+  args: onboardingValidator,
   handler: async (ctx, args) => {
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) {

@@ -1,7 +1,7 @@
 import { Logo } from "@/components/logo";
 import { Onboarding } from "./_components/onboarding";
 import { api } from "@/convex/_generated/api";
-import { fetchAuthQuery } from "@/lib/auth-server";
+import { preloadAuthQuery } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { TopGrid } from "@/components/top-grid";
@@ -13,18 +13,18 @@ export function generateStaticParams() {
 }
 
 export default async function OnboardingPage(
-  props: PageProps<"/[locale]/dashboard/onboarding">,
+  props: PageProps<"/[locale]/dashboard/onboarding">
 ) {
   const { locale } = await props.params;
   setStaticParamsLocale(locale);
   const [t, teacher] = await Promise.all([
     getScopedI18n("onboarding"),
-    fetchAuthQuery(api.teachers.queries.getTeacher),
+    preloadAuthQuery(api.teachers.queries.getTeacher),
   ]);
 
-  // if (Boolean(teacher)) {
-  // return redirect("/dashboard");
-  // }
+  if (Boolean(teacher._valueJSON)) {
+    return redirect("/dashboard");
+  }
 
   return (
     <main className="h-screen">

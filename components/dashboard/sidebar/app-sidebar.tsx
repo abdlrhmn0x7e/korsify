@@ -31,7 +31,10 @@ export type NavItem = {
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   data: NavItem[];
-  secondary?: (NavItem & { icon: React.ReactNode })[];
+  secondary?: (NavItem & {
+    icon: React.ReactNode;
+    component?: React.ComponentProps<typeof SidebarMenuButton>["render"];
+  })[];
 }
 
 export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
@@ -87,7 +90,12 @@ export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
         <SidebarMenu>
           {secondary?.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton render={<Link href={item.url} />} size="sm">
+              <SidebarMenuButton
+                render={
+                  item.component ? item.component : <Link href={item.url} />
+                }
+                size="sm"
+              >
                 {item.icon}
                 <span>{item.title}</span>
               </SidebarMenuButton>

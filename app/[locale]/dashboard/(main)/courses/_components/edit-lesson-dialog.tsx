@@ -1,6 +1,12 @@
 "use client";
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,11 +18,12 @@ import { toast } from "sonner";
 import { useScopedI18n } from "@/locales/client";
 import { LessonForm } from "./lesson-form";
 import type { LessonFormValues } from "./lesson-form-types";
+import { type JSONContent } from "@tiptap/react";
 
 interface Lesson {
   _id: Id<"lessons">;
   title: string;
-  description: unknown;
+  description: JSONContent;
   videoId: Id<"muxAssets">;
   pdfStorageIds: Array<Id<"_storage">>;
   isFree: boolean;

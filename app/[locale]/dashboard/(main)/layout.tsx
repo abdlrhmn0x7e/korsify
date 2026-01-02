@@ -3,14 +3,16 @@ import { setStaticParamsLocale } from "next-international/server";
 import {
   IconBook,
   IconCreditCard,
-  IconLayoutDashboardFilled,
   IconSettings,
   IconBuildingStore,
   IconUsers,
   IconHome,
 } from "@tabler/icons-react";
 import SidebarLayout from "@/components/dashboard/sidebar/sidebar-layout";
-import { WelcomeDialog } from "./_components/welcome-dialog";
+import { WelcomeDialog } from "./_components/dialogs/welcome-dialog";
+import { SettingsDialog } from "./_components/dialogs/settings/dialog";
+import { preloadAuthQuery } from "@/lib/auth-server";
+import { api } from "@/convex/_generated/api";
 
 export function generateStaticParams() {
   return getStaticParams();
@@ -27,6 +29,7 @@ export default async function DashboardMainLayout({
   setStaticParamsLocale(locale);
 
   const t = await getScopedI18n("dashboard.sidebar");
+  void preloadAuthQuery(api.teachers.queries.getTeacher);
 
   const dir = locale === "ar" ? "rtl" : "ltr";
 
@@ -69,6 +72,7 @@ export default async function DashboardMainLayout({
       title: t("settings"),
       url: `/dashboard/settings`,
       icon: <IconSettings />,
+      component: <SettingsDialog />,
     },
   ];
 
