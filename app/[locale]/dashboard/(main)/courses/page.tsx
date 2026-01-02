@@ -6,7 +6,7 @@ import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
 import { PageLayout } from "@/components/dashboard/page-layout";
-import { CourseDrawer } from "../_components/drawers/course-drawer";
+import { CourseSheet } from "../_components/sheets/course-sheet";
 import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
 
@@ -36,7 +36,7 @@ export default async function CoursesPage({
 
       <CoursesTable />
 
-      <CourseDrawer />
+      <CourseSheet />
     </PageLayout>
   );
 }

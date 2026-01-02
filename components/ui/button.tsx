@@ -42,10 +42,10 @@ const buttonVariants = cva(
         secondary:
           "border-transparent active:bg-secondary bg-secondary text-secondary-foreground hover:bg-secondary/90 [:active,[data-pressed]]:bg-secondary/80",
         success:
-          "border-transparent active:bg-success bg-success text-green-200 hover:bg-success/90 [:active,[data-pressed]]:bg-success/80",
+          "border-success active:bg-success/40 bg-success/20 text-green-800 hover:bg-success/30 [:active,[data-pressed]]:bg-success/80",
       },
     },
-  },
+  }
 );
 
 interface ButtonProps extends useRender.ComponentProps<"button"> {

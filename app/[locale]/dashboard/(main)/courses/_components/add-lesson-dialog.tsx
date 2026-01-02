@@ -109,7 +109,12 @@ export function AddLessonDialog({
           >
             {t("buttons.cancel")}
           </Button>
-          <Button type="submit" form="lesson-form" disabled={isPending}>
+          <Button
+            type="submit"
+            form="lesson-form"
+            className="w-24"
+            disabled={isPending}
+          >
             {isPending ? <Spinner /> : t("buttons.add")}
           </Button>
         </DialogFooter>

@@ -111,14 +111,14 @@ bun dev
 
 #### Lesson Management UI
 
-- [ ] Build lesson list for a course (organized by sections)
-- [ ] Add create lesson button
-- [ ] Build lesson form (title, description, isFree toggle)
-- [ ] Build video uploader component with Mux direct upload
-- [ ] Show upload progress bar
-- [ ] Show video processing status (waiting/preparing/ready/errored)
-- [ ] Add PDF upload for lesson attachments
-- [ ] Add lesson reordering (drag-drop)
+- [x] Build lesson list for a course (organized by sections)
+- [x] Add create lesson button
+- [x] Build lesson form (title, description, isFree toggle)
+- [x] Build video uploader component with Mux direct upload
+- [x] Show upload progress bar
+- [x] Show video processing status (waiting/preparing/ready/errored)
+- [x] Add PDF upload for lesson attachments
+- [x] Add lesson reordering (drag-drop)
 - [ ] Add delete lesson with confirmation
 - [ ] Build lesson preview/edit page
 

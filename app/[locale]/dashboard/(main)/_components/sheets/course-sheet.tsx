@@ -20,6 +20,7 @@ import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 import { CourseDetails } from "../../courses/_components/course-details";
 import { LessonDetails } from "../../courses/_components/lesson-details";
 import { Id } from "@/convex/_generated/dataModel";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const slideVariants: Variants = {
   enterFromRight: { x: "100%", opacity: 0 },
@@ -29,13 +30,7 @@ const slideVariants: Variants = {
   exitToRight: { x: "50%", opacity: 0 },
 };
 
-const slideTransition = {
-  type: "spring",
-  stiffness: 300,
-  damping: 30,
-} as const;
-
-export function CourseDrawer() {
+export function CourseSheet() {
   const isMobile = useIsMobile();
   const [params, setParams] = useCourseSearchParams();
   const t = useScopedI18n("dashboard.courses.drawer");
@@ -61,7 +56,7 @@ export function CourseDrawer() {
     <Sheet open={!!params.slug} onOpenChange={handleOpenChange}>
       <SheetContent
         side={isMobile ? "bottom" : "right"}
-        className="sm:max-w-2xl data-[side=right]:sm:max-w-2xl overflow-hidden"
+        className="sm:max-w-2xl data-[side=right]:sm:max-w-2xl h-screen overflow-x-hidden overflow-y-auto"
       >
         <SheetHeader className="sr-only">
           <SheetTitle>
@@ -72,19 +67,17 @@ export function CourseDrawer() {
           </SheetDescription>
         </SheetHeader>
 
-        {params.slug && (
-          <div className="relative h-full overflow-hidden">
-            <MotionConfig transition={{ duration: 0.3, ease: "easeOut" }}>
+        <div className="h-full overflow-y-auto px-4 mt-12 pb-12">
+          {params.slug && (
+            <MotionConfig transition={{ duration: 0.2, ease: "easeOut" }}>
               <AnimatePresence mode="popLayout" initial={false}>
                 {hasLesson ? (
                   <motion.div
-                    key="lesson"
+                    key="lesson-details"
                     variants={slideVariants}
                     initial="enterFromRight"
                     animate="center"
                     exit="exitToRight"
-                    transition={slideTransition}
-                    className="absolute inset-0 p-4 overflow-y-auto pb-12"
                   >
                     <LessonDetails
                       lessonId={params.lessonId as Id<"lessons">}
@@ -93,21 +86,20 @@ export function CourseDrawer() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="course"
+                    key="course-details"
                     variants={slideVariants}
                     initial="enterFromLeft"
                     animate="center"
+                    className="h-full"
                     exit="exitToLeft"
-                    transition={slideTransition}
-                    className="absolute inset-0 p-4 overflow-y-auto pb-12"
                   >
                     <CourseDetails slug={params.slug} />
                   </motion.div>
                 )}
               </AnimatePresence>
             </MotionConfig>
-          </div>
-        )}
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );

@@ -72,20 +72,18 @@ export function VideoUploader({
           emptyText={t("orClick")}
           buttonText={t("browseFiles")}
           icon={
-            <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 mb-2">
-              <IconUpload className="size-6 text-primary" />
+            <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 mb-2">
+              <IconUpload className="size-6 text-accent-foreground" />
             </div>
           }
           emptyContent={
             <div className="flex flex-col items-center justify-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-                <IconUpload className="size-6 text-primary" />
+              <div className="flex size-12 items-center justify-center rounded-full bg-accent">
+                <IconUpload className="size-6 text-accent-foreground" />
               </div>
               <div className="text-center">
                 <p className="text-sm font-medium">{t("dropVideo")}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t("orClick")}
-                </p>
+                <p className="text-xs text-muted-foreground">{t("orClick")}</p>
               </div>
               <Button type="button" size="sm" onClick={openFilePicker}>
                 {t("browseFiles")}

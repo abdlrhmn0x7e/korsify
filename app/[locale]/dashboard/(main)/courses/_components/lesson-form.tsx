@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 
 import { Editor } from "@/components/editor";
@@ -31,13 +31,14 @@ interface LessonFormProps {
   isPending: boolean;
   onSubmit: LessonFormOnSubmit;
   onCancel?: () => void;
+  defaultValues?: Partial<LessonFormValues>;
 }
 
-export function LessonForm({ onSubmit }: LessonFormProps) {
+export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
   const t = useScopedI18n("dashboard.courses.lessonForm.fields");
   const form = useForm<LessonFormValues>({
     resolver: zodResolver(lessonFormSchema),
-    defaultValues: DEFAULT_LESSON_FORM_VALUES,
+    defaultValues: { ...DEFAULT_LESSON_FORM_VALUES, ...defaultValues },
     mode: "onChange",
   });
 
@@ -45,19 +46,23 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
   const videoId = watch("videoId");
   const pdfStorageIds = watch("pdfStorageIds");
 
+  const handlePdfUploadSuccess = useCallback(
+    (_file: File, storageId: string) => {
+      const current = form.getValues("pdfStorageIds");
+      setValue("pdfStorageIds", [...current, storageId]);
+    },
+    [form, setValue]
+  );
+
   const {
     uploadFiles,
     isPending: isPdfUploading,
     fileStates,
     storageIds,
     reset: resetPdfUpload,
-  } = useUploadFiles();
-
-  useEffect(() => {
-    if (storageIds.length > 0) {
-      setValue("pdfStorageIds", storageIds);
-    }
-  }, [storageIds, setValue]);
+  } = useUploadFiles({
+    onFileSuccess: handlePdfUploadSuccess,
+  });
 
   const handlePdfDrop = useCallback(
     (files: File[]) => {
@@ -79,9 +84,12 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
     [pdfStorageIds, setValue, resetPdfUpload]
   );
 
-  function handleVideoReady(muxAssetId: Id<"muxAssets">) {
-    setValue("videoId", muxAssetId);
-  }
+  const handleVideoReady = useCallback(
+    (muxAssetId: Id<"muxAssets">) => {
+      setValue("videoId", muxAssetId);
+    },
+    [setValue]
+  );
 
   function handleFormSubmit(values: LessonFormValues) {
     if (isPdfUploading || !isVideoReady) return;
@@ -123,9 +131,6 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
               <FieldContent>
                 <FieldLabel htmlFor={field.name}>{t("title")}</FieldLabel>
                 <FieldDescription>{t("titleDescription")}</FieldDescription>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
               </FieldContent>
               <Input
                 {...field}
@@ -133,6 +138,7 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
                 aria-invalid={fieldState.invalid}
                 placeholder={t("titlePlaceholder")}
               />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -165,7 +171,9 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
             >
               <FieldContent>
                 <FieldLabel>{t("description")}</FieldLabel>
-                <FieldDescription>{t("descriptionDescription")}</FieldDescription>
+                <FieldDescription>
+                  {t("descriptionDescription")}
+                </FieldDescription>
               </FieldContent>
               <div className="h-96 mt-2">
                 <Editor
@@ -186,11 +194,13 @@ export function LessonForm({ onSubmit }: LessonFormProps) {
               <FieldContent>
                 <FieldLabel>{t("video")}</FieldLabel>
                 <FieldDescription>{t("videoDescription")}</FieldDescription>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
               </FieldContent>
-              <VideoUploader onVideoReady={handleVideoReady} className="mt-2" />
+              <VideoUploader
+                initialVideoId={defaultValues?.videoId as Id<"muxAssets"> | undefined}
+                onVideoReady={handleVideoReady}
+                className="mt-2"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />

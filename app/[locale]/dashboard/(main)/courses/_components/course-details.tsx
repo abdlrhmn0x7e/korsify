@@ -48,7 +48,7 @@ export function CourseDetails({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="space-y-4 mt-8">
+    <div className="space-y-4">
       <div className="flex gap-4">
         <AspectRatio
           ratio={16 / 9}

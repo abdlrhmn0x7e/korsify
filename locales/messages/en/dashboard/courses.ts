@@ -136,6 +136,7 @@ export const courses = {
   },
   lessonForm: {
     addTitle: "Add New Lesson",
+    editTitle: "Edit Lesson",
     createSuccess: {
       title: "Lesson created",
       description: "Your lesson has been created successfully.",
@@ -144,9 +145,18 @@ export const courses = {
       title: "Error",
       description: "Failed to create lesson",
     },
+    updateSuccess: {
+      title: "Lesson updated",
+      description: "Your lesson has been updated successfully.",
+    },
+    updateError: {
+      title: "Error",
+      description: "Failed to update lesson",
+    },
     buttons: {
       cancel: "Cancel",
       add: "Add Lesson",
+      save: "Save Changes",
     },
     fields: {
       title: "Lesson Title",
@@ -170,6 +180,7 @@ export const courses = {
   },
   lessonDetails: {
     back: "Back",
+    edit: "Edit",
     freePreview: "Free Preview",
     description: "Description",
     noDescription: "No Description",

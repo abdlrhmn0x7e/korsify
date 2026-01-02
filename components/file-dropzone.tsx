@@ -1,11 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { DropzoneArea } from "@/components/ui/dropzone-area";
 import { Spinner } from "@/components/ui/spinner";
 import type { FileUploadState } from "@/hooks/use-upload-files";
 import { cn } from "@/lib/utils";
-import { IconFile, IconTrash, IconX } from "@tabler/icons-react";
+import { IconFile, IconX } from "@tabler/icons-react";
 import { useCallback, type ReactNode } from "react";
 import type { DropzoneOptions } from "react-dropzone";
 import { toastManager } from "./ui/toast";
@@ -51,7 +50,9 @@ export function FileDropzone({
         return;
       }
 
-      const remainingSlots = maxFiles ? maxFiles - successCount : acceptedFiles.length;
+      const remainingSlots = maxFiles
+        ? maxFiles - successCount
+        : acceptedFiles.length;
       const filesToUpload = acceptedFiles.slice(0, remainingSlots);
 
       onDrop?.(filesToUpload);
@@ -69,7 +70,7 @@ export function FileDropzone({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {isPending ? (
         <div
           className={cn(
@@ -91,7 +92,7 @@ export function FileDropzone({
       )}
 
       {showFileList && fileStates.length > 0 && (
-        <div className="space-y-2">
+        <div className="rounded-lg border divide-y">
           {fileStates.map((state, index) => (
             <FileItem
               key={`${state.file.name}-${index}`}
@@ -113,25 +114,11 @@ interface FileItemProps {
 function FileItem({ state, onRemove }: FileItemProps) {
   const { file, status, error } = state;
 
-  const statusStyles = {
-    pending: "border-muted bg-muted/10",
-    uploading: "border-blue-500/30 bg-blue-500/10",
-    success: "border-green-500/30 bg-green-500/10",
-    error: "border-red-500/30 bg-red-500/10",
-  };
-
   const iconStyles = {
-    pending: "bg-muted/20 text-muted-foreground",
-    uploading: "bg-blue-500/20 text-blue-600",
-    success: "bg-green-500/20 text-green-600",
-    error: "bg-red-500/20 text-red-600",
-  };
-
-  const textStyles = {
     pending: "text-muted-foreground",
-    uploading: "text-blue-700 dark:text-blue-400",
-    success: "text-green-700 dark:text-green-400",
-    error: "text-red-700 dark:text-red-400",
+    uploading: "text-blue-500",
+    success: "text-muted-foreground",
+    error: "text-red-500",
   };
 
   function formatFileSize(bytes: number): string {
@@ -140,53 +127,51 @@ function FileItem({ state, onRemove }: FileItemProps) {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
 
+  function getStatusText(): string | null {
+    if (status === "error" && error) return error.message;
+    if (status === "uploading") return "Uploading...";
+    return null;
+  }
+
+  const statusText = getStatusText();
+
   return (
-    <div
-      className={cn(
-        "flex items-center gap-3 rounded-lg border p-3",
-        statusStyles[status]
-      )}
-    >
-      <div
-        className={cn(
-          "flex size-10 items-center justify-center rounded-full",
-          iconStyles[status]
-        )}
-      >
+    <div className="flex items-center gap-2 px-3 py-2">
+      <div className={cn("shrink-0", iconStyles[status])}>
         {status === "uploading" ? (
-          <Spinner className="size-5" />
+          <Spinner className="size-4" />
         ) : status === "error" ? (
-          <IconX className="size-5" />
+          <IconX className="size-4" />
         ) : (
-          <IconFile className="size-5" />
+          <IconFile className="size-4" />
         )}
       </div>
 
-      <div className="flex-1 min-w-0">
-        <p className={cn("text-sm font-medium truncate", textStyles[status])}>
-          {file.name}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {status === "error" && error
-            ? error.message
-            : status === "uploading"
-              ? "Uploading..."
-              : status === "success"
-                ? "Uploaded"
-                : formatFileSize(file.size)}
-        </p>
-      </div>
+      <span className="flex-1 min-w-0 text-sm truncate">{file.name}</span>
+
+      {statusText ? (
+        <span
+          className={cn(
+            "shrink-0 text-xs",
+            status === "error" ? "text-red-500" : "text-muted-foreground"
+          )}
+        >
+          {statusText}
+        </span>
+      ) : file.size > 0 ? (
+        <span className="shrink-0 text-xs text-muted-foreground">
+          {formatFileSize(file.size)}
+        </span>
+      ) : null}
 
       {onRemove && status !== "uploading" && (
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="sm"
           onClick={onRemove}
-          className="text-muted-foreground hover:text-destructive"
+          className="shrink-0 p-1 rounded text-muted-foreground hover:text-destructive hover:bg-muted/50 transition-colors"
         >
-          <IconTrash className="size-4" />
-        </Button>
+          <IconX className="size-3.5" />
+        </button>
       )}
     </div>
   );

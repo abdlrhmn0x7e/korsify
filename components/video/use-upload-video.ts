@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAction, useQuery } from "convex/react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/convex/_generated/api";
@@ -46,7 +46,11 @@ interface UseUploadVideoReturn {
 export function useUploadVideo(
   options: UseUploadVideoOptions = {}
 ): UseUploadVideoReturn {
-  const { initialVideoId, onUploadStart, onVideoReady, onError } = options;
+  const { initialVideoId, onUploadStart, onError } = options;
+
+  // Use ref for onVideoReady to avoid dependency in useEffect
+  const onVideoReadyRef = useRef(options.onVideoReady);
+  onVideoReadyRef.current = options.onVideoReady;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [progress, setProgress] = useState(0);
@@ -62,10 +66,12 @@ export function useUploadVideo(
     muxAssetId ? { muxAssetId } : "skip"
   );
 
-  if (video?.status === "ready" && muxAssetId && lastReadyId !== muxAssetId) {
-    setLastReadyId(muxAssetId);
-    onVideoReady?.(muxAssetId);
-  }
+  useEffect(() => {
+    if (video?.status === "ready" && muxAssetId && lastReadyId !== muxAssetId) {
+      setLastReadyId(muxAssetId);
+      onVideoReadyRef.current?.(muxAssetId);
+    }
+  }, [video?.status, muxAssetId, lastReadyId]);
 
   const mutation = useMutation({
     mutationFn: async (file: File): Promise<UploadVideoResult> => {

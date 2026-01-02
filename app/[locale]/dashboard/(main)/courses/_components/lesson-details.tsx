@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
@@ -9,14 +10,12 @@ import {
   IconX,
   IconDownload,
   IconEye,
-  IconLoader2,
   IconAlertCircle,
-  IconPencilCancel,
+  IconEdit,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TiptapViewer } from "@/components/editor/viewer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Empty,
   EmptyDescription,
@@ -29,6 +28,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { VideoPlayer } from "@/components/video/video-player";
 import { useScopedI18n } from "@/locales/client";
 import { DirectedArrow } from "@/components/directed-arrow";
+import { Spinner } from "@/components/ui/spinner";
+import { EditLessonDialog } from "./edit-lesson-dialog";
 
 interface LessonDetailsProps {
   lessonId: Id<"lessons">;
@@ -36,6 +37,7 @@ interface LessonDetailsProps {
 }
 
 export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const lesson = useQuery(api.teachers.lessons.queries.getById, { lessonId });
   const t = useScopedI18n("dashboard.courses.lessonDetails");
   const isPending = lesson === undefined;
@@ -50,16 +52,21 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <DirectedArrow inverse className="size-4" />
           {t("back")}
         </Button>
+        <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(true)}>
+          <IconEdit className="size-4" />
+          {t("edit")}
+        </Button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 px-2">
+        <VideoPreview videoId={lesson.videoId} title={lesson.title} />
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-lg capitalize font-semibold">{lesson.title}</h3>
+          <h3 className="text-xl capitalize font-semibold">{lesson.title}</h3>
           {lesson.isFree && (
             <Badge variant="secondary" className="shrink-0">
               <IconEye className="size-3 mr-1" />
@@ -67,65 +74,58 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
             </Badge>
           )}
         </div>
-        <VideoPreview videoId={lesson.videoId} title={lesson.title} />
 
-        <Card className="gap-0 p-4">
-          <CardHeader className="p-0">
-            <CardTitle>{t("description")}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 h-full max-h-60 overflow-y-auto">
-            {lesson.description ? (
+        <div className="space-y-1">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            {t("description")}
+          </h4>
+          {lesson.description ? (
+            <div className="max-h-60 overflow-y-auto">
               <TiptapViewer content={lesson.description as JSONContent} />
-            ) : (
-              <Empty>
-                <EmptyHeader>
-                  <EmptyMedia variant="icon" className="size-12">
-                    <IconPencilCancel className="size-6" />
-                  </EmptyMedia>
-                  <EmptyTitle>{t("noDescription")}</EmptyTitle>
-                </EmptyHeader>
-              </Empty>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">
+              {t("noDescription")}
+            </p>
+          )}
+        </div>
 
-        <Card className="gap-0 p-4">
-          <CardHeader className="p-0">
-            <CardTitle>{t("attachments.title")}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 h-full">
-            {lesson.pdfUrls && lesson.pdfUrls.length > 0 ? (
-              <ul className="space-y-2 mt-2">
-                {lesson.pdfUrls.map((url, index) => (
-                  <li key={index}>
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent transition-colors text-sm"
-                    >
-                      <IconFileDescription className="size-5 text-muted-foreground shrink-0" />
-                      <span className="flex-1">
-                        {t("attachments.attachment")} {index + 1}
-                      </span>
-                      <IconDownload className="size-4 text-muted-foreground shrink-0" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <Empty>
-                <EmptyHeader>
-                  <EmptyMedia variant="icon" className="size-12">
-                    <IconFileDescription className="size-6" />
-                  </EmptyMedia>
-                  <EmptyTitle>{t("attachments.noAttachments")}</EmptyTitle>
-                </EmptyHeader>
-              </Empty>
-            )}
-          </CardContent>
-        </Card>
+        <div className="space-y-1">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            {t("attachments.title")}
+          </h4>
+          {lesson.pdfUrls && lesson.pdfUrls.length > 0 ? (
+            <ul className="space-y-1">
+              {lesson.pdfUrls.map((url, index) => (
+                <li key={index}>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 py-1.5 px-2 -mx-2 rounded-md hover:bg-accent transition-colors text-sm"
+                  >
+                    <IconFileDescription className="size-4 text-muted-foreground shrink-0" />
+                    <span className="flex-1">
+                      {t("attachments.attachment")} {index + 1}
+                    </span>
+                    <IconDownload className="size-3.5 text-muted-foreground shrink-0" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">
+              {t("attachments.noAttachments")}
+            </p>
+          )}
+        </div>
       </div>
+
+      <EditLessonDialog
+        lesson={lesson}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+      />
     </div>
   );
 }
@@ -144,8 +144,9 @@ function VideoPreview({
 
   if (muxAsset === undefined) {
     return (
-      <div className="aspect-video w-full rounded-lg bg-muted flex items-center justify-center">
-        <IconLoader2 className="size-8 text-muted-foreground animate-spin" />
+      <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
+        <Spinner />
+        <p className="text-sm text-muted-foreground">{t("processing")}</p>
       </div>
     );
   }
@@ -167,7 +168,7 @@ function VideoPreview({
   ) {
     return (
       <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
-        <IconLoader2 className="size-8 text-muted-foreground animate-spin" />
+        <Spinner />
         <p className="text-sm text-muted-foreground">
           {muxAsset.status === "processing" ? t("processing") : t("waiting")}
         </p>
@@ -198,9 +199,12 @@ function LessonDetailsSkeleton({ onBack }: { onBack: () => void }) {
           {t("back")}
         </Button>
       </div>
-      <Skeleton className="h-8 w-3/4" />
-      <Skeleton className="aspect-video w-full rounded-lg" />
-      <Skeleton className="h-24 w-full" />
+
+      <div className="space-y-4 px-2">
+        <Skeleton className="aspect-video w-full rounded-lg" />
+        <Skeleton className="h-8 w-3/4" />
+        <Skeleton className="h-24 w-full" />
+      </div>
     </div>
   );
 }

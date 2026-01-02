@@ -137,6 +137,7 @@ export const courses = {
   },
   lessonForm: {
     addTitle: "إضافة درس جديد",
+    editTitle: "تعديل الدرس",
     createSuccess: {
       title: "تم إنشاء الدرس",
       description: "تم إنشاء درسك بنجاح.",
@@ -145,9 +146,18 @@ export const courses = {
       title: "خطأ",
       description: "فشل في إنشاء الدرس",
     },
+    updateSuccess: {
+      title: "تم تحديث الدرس",
+      description: "تم تحديث درسك بنجاح.",
+    },
+    updateError: {
+      title: "خطأ",
+      description: "فشل في تحديث الدرس",
+    },
     buttons: {
       cancel: "إلغاء",
       add: "إضافة درس",
+      save: "حفظ التغييرات",
     },
     fields: {
       title: "عنوان الدرس",
@@ -166,6 +176,7 @@ export const courses = {
   },
   lessonDetails: {
     back: "رجوع",
+    edit: "تعديل",
     freePreview: "عرض مجاني",
     description: "الوصف",
     noDescription: "لا يوجد وصف",
