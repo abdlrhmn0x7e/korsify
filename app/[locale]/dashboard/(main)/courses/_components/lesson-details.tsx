@@ -12,6 +12,7 @@ import {
   IconEye,
   IconAlertCircle,
   IconEdit,
+  IconTrash,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,17 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { JSONContent } from "@tiptap/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VideoPlayer } from "@/components/video/video-player";
@@ -30,6 +42,10 @@ import { useScopedI18n } from "@/locales/client";
 import { DirectedArrow } from "@/components/directed-arrow";
 import { Spinner } from "@/components/ui/spinner";
 import { EditLessonDialog } from "./edit-lesson-dialog";
+import { useDialog } from "@/hooks/use-dialog";
+import { useMutation } from "@tanstack/react-query";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { toastManager } from "@/components/ui/toast";
 
 interface LessonDetailsProps {
   lessonId: Id<"lessons">;
@@ -41,6 +57,33 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
   const lesson = useQuery(api.teachers.lessons.queries.getById, { lessonId });
   const t = useScopedI18n("dashboard.courses.lessonDetails");
   const isPending = lesson === undefined;
+
+  const { props: deleteDialogProps, dismiss: dismissDeleteDialog } = useDialog();
+
+  const removeLessonMutation = useMutation({
+    mutationFn: useConvexMutation(api.teachers.lessons.mutations.remove),
+    onSuccess: () => {
+      toastManager.add({
+        title: t("deleteSuccess.title"),
+        description: t("deleteSuccess.description"),
+        type: "success",
+      });
+      dismissDeleteDialog();
+      onBack();
+    },
+    onError: (error) => {
+      toastManager.add({
+        title: t("deleteError.title"),
+        description:
+          error instanceof Error ? error.message : t("deleteError.description"),
+        type: "error",
+      });
+    },
+  });
+
+  function handleDeleteLesson() {
+    removeLessonMutation.mutate({ lessonId });
+  }
 
   if (isPending) {
     return <LessonDetailsSkeleton onBack={onBack} />;
@@ -57,10 +100,35 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
           <DirectedArrow inverse className="size-4" />
           {t("back")}
         </Button>
-        <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(true)}>
-          <IconEdit className="size-4" />
-          {t("edit")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(true)}>
+            <IconEdit className="size-4" />
+            {t("edit")}
+          </Button>
+          <AlertDialog {...deleteDialogProps}>
+            <AlertDialogTrigger render={<Button variant="destructive" size="sm" />}>
+              <IconTrash className="size-4" />
+              {t("delete")}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("deleteConfirm.title")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("deleteConfirm.description")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("deleteConfirm.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteLesson}
+                  disabled={removeLessonMutation.isPending}
+                >
+                  {removeLessonMutation.isPending ? <Spinner /> : t("deleteConfirm.confirm")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
 
       <div className="space-y-4 px-2">

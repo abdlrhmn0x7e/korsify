@@ -43,7 +43,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddLessonDialog } from "./add-lesson-dialog";
 import { useScopedI18n } from "@/locales/client";
@@ -57,15 +56,13 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const isPending = sections === undefined;
 
   return (
-    <Card className="gap-1 p-4">
-      <CardHeader className="p-0">
-        <div className="ms-1 flex items-center justify-between">
-          <CardTitle>{t("title")}</CardTitle>
-          <CreateSectionButton courseId={courseId} />
-        </div>
-      </CardHeader>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <h5>{t("title")}</h5>
+        <CreateSectionButton courseId={courseId} />
+      </div>
 
-      <CardContent className="p-0 h-full min-h-32">
+      <div className="h-full min-h-32">
         {isPending && (
           <div className="space-y-3 mt-1">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -93,8 +90,8 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
               </EmptyContent>
             </Empty>
           ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -337,12 +334,12 @@ function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
           <li key={lesson._id}>
             <button
               onClick={() => handleLessonClick(lesson._id)}
-              className="w-full flex items-center gap-3 py-2 px-3 text-sm rounded-md 
+              className="w-full flex items-center gap-3 py-2 px-3 text-sm rounded-md
                          hover:bg-accent transition-colors text-left group cursor-pointer"
             >
               <span
-                className="flex items-center justify-center size-5 
-                          rounded-full bg-muted text-xs font-medium 
+                className="flex items-center justify-center size-5
+                          rounded-full bg-muted text-xs font-medium
                           text-muted-foreground shrink-0"
               >
                 {index + 1}
@@ -359,7 +356,7 @@ function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
               )}
               <IconChevronRight
                 size={14}
-                className="text-muted-foreground opacity-0 
+                className="text-muted-foreground opacity-0
                            group-hover:opacity-100 transition-opacity shrink-0"
               />
             </button>
@@ -376,4 +373,3 @@ function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
     </div>
   );
 }
-

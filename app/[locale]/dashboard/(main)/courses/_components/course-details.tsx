@@ -48,7 +48,7 @@ export function CourseDetails({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex gap-4">
         <AspectRatio
           ratio={16 / 9}
@@ -109,11 +109,9 @@ export function CourseDetails({ slug }: { slug: string }) {
         </div>
       </div>
 
-      <Card className="gap-0 p-4">
-        <CardHeader className="p-0">
-          <CardTitle>{t("details.description")}</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0 h-full max-h-60 overflow-y-auto">
+      <div className="space-y-3">
+        <h5>{t("details.description")}</h5>
+        <div className="h-full max-h-60 overflow-y-auto">
           {course.description && course.description.content.length > 0 ? (
             <TiptapViewer content={course.description as JSONContent} />
           ) : (
@@ -126,8 +124,8 @@ export function CourseDetails({ slug }: { slug: string }) {
               </EmptyHeader>
             </Empty>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <CourseSections courseId={course._id} />
     </div>

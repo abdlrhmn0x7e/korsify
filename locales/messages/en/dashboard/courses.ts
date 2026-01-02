@@ -181,9 +181,24 @@ export const courses = {
   lessonDetails: {
     back: "Back",
     edit: "Edit",
+    delete: "Delete",
     freePreview: "Free Preview",
     description: "Description",
     noDescription: "No Description",
+    deleteSuccess: {
+      title: "Lesson deleted",
+      description: "The lesson has been deleted successfully.",
+    },
+    deleteError: {
+      title: "Error",
+      description: "Failed to delete lesson",
+    },
+    deleteConfirm: {
+      title: "Delete Lesson?",
+      description: "This action cannot be undone. This will permanently delete the lesson and remove its video and attachments.",
+      cancel: "Cancel",
+      confirm: "Delete",
+    },
     attachments: {
       title: "Attachments",
       noAttachments: "No Attachments",

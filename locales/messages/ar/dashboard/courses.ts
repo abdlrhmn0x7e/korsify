@@ -177,9 +177,24 @@ export const courses = {
   lessonDetails: {
     back: "رجوع",
     edit: "تعديل",
+    delete: "حذف",
     freePreview: "عرض مجاني",
     description: "الوصف",
     noDescription: "لا يوجد وصف",
+    deleteSuccess: {
+      title: "تم حذف الدرس",
+      description: "تم حذف الدرس بنجاح.",
+    },
+    deleteError: {
+      title: "خطأ",
+      description: "فشل في حذف الدرس",
+    },
+    deleteConfirm: {
+      title: "حذف الدرس؟",
+      description: "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف الدرس بشكل دائم وإزالة الفيديو والمرفقات.",
+      cancel: "إلغاء",
+      confirm: "حذف",
+    },
     attachments: {
       title: "المرفقات",
       noAttachments: "لا توجد مرفقات",

@@ -119,8 +119,8 @@ bun dev
 - [x] Show video processing status (waiting/preparing/ready/errored)
 - [x] Add PDF upload for lesson attachments
 - [x] Add lesson reordering (drag-drop)
-- [ ] Add delete lesson with confirmation
-- [ ] Build lesson preview/edit page
+- [x] Add delete lesson with confirmation
+- [x] Build lesson preview/edit page
 
 ---
 
