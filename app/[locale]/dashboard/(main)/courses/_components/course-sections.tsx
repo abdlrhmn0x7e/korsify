@@ -19,6 +19,7 @@ import {
   IconEyeOff,
   IconFileDescription,
   IconPlayerPlay,
+  IconGripVertical,
 } from "@tabler/icons-react";
 import {
   Empty,
@@ -48,6 +49,21 @@ import { AddLessonDialog } from "./add-lesson-dialog";
 import { useScopedI18n } from "@/locales/client";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 import { cn } from "@/lib/utils";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
@@ -55,6 +71,66 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   });
   const t = useScopedI18n("dashboard.courses.sections");
   const isPending = sections === undefined;
+
+  const reorderSections = useConvexMutation(
+    api.teachers.sections.mutations.reorder
+  ).withOptimisticUpdate((localStore, args) => {
+    const existingSections = localStore.getQuery(
+      api.teachers.sections.queries.getByCourseId,
+      {
+        courseId,
+      }
+    );
+
+    if (!existingSections) {
+      return;
+    }
+
+    const sectionIdMap = new Map(
+      existingSections.map((section) => [section._id, section])
+    );
+    const newSections = args.sectionIds.map(
+      (sectionId) => sectionIdMap.get(sectionId)!
+    );
+
+    localStore.setQuery(
+      api.teachers.sections.queries.getByCourseId,
+      {
+        courseId,
+      },
+      newSections
+    );
+  });
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!sections || !over || active.id === over.id) {
+      return;
+    }
+
+    const activeIndex = sections.findIndex(
+      (section) => section._id === active.id
+    );
+    const overIndex = sections.findIndex((section) => section._id === over.id);
+
+    if (activeIndex === -1 || overIndex === -1) {
+      return;
+    }
+
+    const newSectionIds = arrayMove(
+      sections.map((section) => section._id),
+      activeIndex,
+      overIndex
+    );
+
+    await reorderSections({
+      courseId,
+      sectionIds: newSectionIds,
+    });
+  }
 
   return (
     <div className="space-y-2">
@@ -73,11 +149,22 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
         )}
         {sections &&
           (sections.length > 0 ? (
-            <Accordion>
-              {sections.map((section) => (
-                <SectionAccordionItem section={section} key={section._id} />
-              ))}
-            </Accordion>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={sections.map((section) => section._id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <Accordion>
+                  {sections.map((section) => (
+                    <SectionAccordionItem section={section} key={section._id} />
+                  ))}
+                </Accordion>
+              </SortableContext>
+            </DndContext>
           ) : (
             <Empty>
               <EmptyHeader>
@@ -130,6 +217,14 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
   const [isEditing, setIsEditing] = useState(false);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
   const t = useScopedI18n("dashboard.courses");
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: section._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const lessons = useQuery(api.teachers.lessons.queries.getBySectionId, {
     sectionId: section._id,
@@ -203,108 +298,114 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
     updateStatusMutation.isPending;
 
   return (
-    <AccordionItem value={section._id}>
-      <AccordionHeader className="flex items-center gap-2 py-1 px-2 text-sm rounded-sm">
-        <AccordionTriggerMinimal className="flex-1 py-0 hover:no-underline">
-          <div className="flex items-center gap-2 min-h-7">
-            {isEditing ? (
-              <input
-                defaultValue={section.title}
-                ref={titleInputRef}
-                onKeyDown={handleKeyDown}
-                onBlur={handleBlur}
-                onClick={(e) => e.stopPropagation()}
-                disabled={updateSectionMutation.isPending}
-                className="bg-transparent outline-none border-b focus:border-primary w-full"
-              />
-            ) : (
-              <span>{section.title}</span>
-            )}
-          </div>
-        </AccordionTriggerMinimal>
+    <div ref={setNodeRef} style={style}>
+      <AccordionItem value={section._id}>
+        <AccordionHeader className="flex items-center gap-2 py-1 px-2 text-sm rounded-sm">
+          <Button variant="ghost" {...listeners} {...attributes}>
+            <IconGripVertical />
+          </Button>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <SectionStatusButton
-            status={section.status}
-            sectionId={section._id}
-            isDropdownMenuPending={isLoading}
-          />
+          <AccordionTriggerMinimal className="flex-1 py-0 hover:no-underline">
+            <div className="flex items-center gap-2 min-h-7">
+              {isEditing ? (
+                <input
+                  defaultValue={section.title}
+                  ref={titleInputRef}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                  onClick={(e) => e.stopPropagation()}
+                  disabled={updateSectionMutation.isPending}
+                  className="bg-transparent outline-none border-b focus:border-primary w-full"
+                />
+              ) : (
+                <span>{section.title}</span>
+              )}
+            </div>
+          </AccordionTriggerMinimal>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              className={buttonVariants({ variant: "ghost", size: "xs" })}
-              disabled={isLoading}
-            >
-              {isLoading ? <Spinner /> : <IconDotsVertical size={16} />}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" sideOffset={8}>
-              <DropdownMenuItem
-                onClick={() => {
-                  setIsEditing(true);
-                }}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <SectionStatusButton
+              status={section.status}
+              sectionId={section._id}
+              isDropdownMenuPending={isLoading}
+            />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={buttonVariants({ variant: "ghost", size: "xs" })}
+                disabled={isLoading}
               >
-                <IconPencil />
-                {t("table.actions.edit")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleUpdateStatus}>
-                {section.status === "published" ? (
-                  <>
-                    <IconEyeOff />
-                    {t("table.actions.draft")}
-                  </>
-                ) : (
-                  <>
-                    <IconEye />
-                    {t("table.actions.publish")}
-                  </>
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={handleDelete}>
-                <IconTrash />
-                {t("table.actions.delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {isLoading ? <Spinner /> : <IconDotsVertical size={16} />}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={8}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                >
+                  <IconPencil />
+                  {t("table.actions.edit")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleUpdateStatus}>
+                  {section.status === "published" ? (
+                    <>
+                      <IconEyeOff />
+                      {t("table.actions.draft")}
+                    </>
+                  ) : (
+                    <>
+                      <IconEye />
+                      {t("table.actions.publish")}
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+                  <IconTrash />
+                  {t("table.actions.delete")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <IconChevronDown
-            size={16}
-            className="transition-transform text-muted-foreground group-data-open/accordion-item:rotate-180"
-          />
-        </div>
-      </AccordionHeader>
-
-      <AccordionContent className="pl-4">
-        {lessons === undefined ? (
-          <div className="py-4 flex justify-center">
-            <Spinner />
+            <IconChevronDown
+              size={16}
+              className="transition-transform text-muted-foreground group-data-open/accordion-item:rotate-180"
+            />
           </div>
-        ) : lessonsCount > 0 ? (
-          <LessonsList
-            lessons={lessons}
-            courseId={section.courseId}
-            sectionId={section._id}
-          />
-        ) : (
-          <Empty className="py-6">
-            <EmptyHeader>
-              <EmptyMedia variant="icon" className="size-10">
-                <IconFileDescription className="size-5" />
-              </EmptyMedia>
-              <EmptyTitle className="text-base">
-                {t("sections.lessons.empty")}
-              </EmptyTitle>
-            </EmptyHeader>
-            <EmptyContent>
-              <AddLessonDialog
-                courseId={section.courseId}
-                sectionId={section._id}
-              />
-            </EmptyContent>
-          </Empty>
-        )}
-      </AccordionContent>
-    </AccordionItem>
+        </AccordionHeader>
+
+        <AccordionContent className="pl-4">
+          {lessons === undefined ? (
+            <div className="py-4 flex justify-center">
+              <Spinner />
+            </div>
+          ) : lessonsCount > 0 ? (
+            <LessonsList
+              lessons={lessons}
+              courseId={section.courseId}
+              sectionId={section._id}
+            />
+          ) : (
+            <Empty className="py-6">
+              <EmptyHeader>
+                <EmptyMedia variant="icon" className="size-10">
+                  <IconFileDescription className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-base">
+                  {t("sections.lessons.empty")}
+                </EmptyTitle>
+              </EmptyHeader>
+              <EmptyContent>
+                <AddLessonDialog
+                  courseId={section.courseId}
+                  sectionId={section._id}
+                />
+              </EmptyContent>
+            </Empty>
+          )}
+        </AccordionContent>
+      </AccordionItem>
+    </div>
   );
 }
 
