@@ -47,6 +47,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddLessonDialog } from "./add-lesson-dialog";
 import { useScopedI18n } from "@/locales/client";
 import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
+import { cn } from "@/lib/utils";
 
 export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   const sections = useQuery(api.teachers.sections.queries.getByCourseId, {
@@ -223,13 +224,11 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
         </AccordionTriggerMinimal>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <Badge
-            variant={section.status === "published" ? "success" : "outline"}
-          >
-            {section.status === "published"
-              ? t("table.status.published")
-              : t("table.status.draft")}
-          </Badge>
+          <SectionStatusButton
+            status={section.status}
+            sectionId={section._id}
+            isDropdownMenuPending={isLoading}
+          />
 
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -306,6 +305,81 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
         )}
       </AccordionContent>
     </AccordionItem>
+  );
+}
+
+function SectionStatusButton({
+  status,
+  sectionId,
+  isDropdownMenuPending,
+}: {
+  status: "draft" | "published";
+  sectionId: Id<"sections">;
+  isDropdownMenuPending: boolean;
+}) {
+  const [offsetDistance, setOffsetDistance] = useState(0);
+
+  const t = useScopedI18n("dashboard.courses");
+  const updateStatusMutation = useMutation({
+    onMutate: () => {
+      const interval = setInterval(() => {
+        setOffsetDistance((o) => (o + 0.2) % 100);
+      }, 1);
+
+      return {
+        clearInterval: () => clearInterval(interval),
+      };
+    },
+    mutationFn: useConvexMutation(api.teachers.sections.mutations.updateStatus),
+    onSettled: (
+      _,
+      __,
+      ___: {
+        status: "draft" | "published";
+        sectionId: Id<"sections">;
+      },
+      context
+    ) => {
+      context?.clearInterval();
+    },
+  });
+
+  function handleUpdateStatus() {
+    updateStatusMutation.mutate({
+      sectionId,
+      status: status === "draft" ? "published" : "draft",
+    });
+  }
+
+  return (
+    <div className="relative grid items-center">
+      {updateStatusMutation.isPending && (
+        <div className="z-10 pointer-events-none absolute -inset-[0.5px] rounded-md border-2 border-transparent mask-[linear-gradient(transparent,transparent),linear-gradient(#000,#000)] mask-intersect [mask-clip:padding-box,border-box]">
+          <div
+            className={cn(
+              "absolute aspect-square",
+              status === "published" ? "bg-success" : "bg-gray-500"
+            )}
+            style={{
+              width: "30px",
+              offsetPath: "rect(0px auto auto 0px round 40px)",
+              offsetDistance: `${offsetDistance}%`,
+            }}
+          ></div>
+        </div>
+      )}
+
+      <Button
+        size="xs"
+        variant={status === "published" ? "success" : "outline"}
+        onClick={handleUpdateStatus}
+        disabled={isDropdownMenuPending || updateStatusMutation.isPending}
+      >
+        {status === "published"
+          ? t("table.status.published")
+          : t("table.status.draft")}
+      </Button>
+    </div>
   );
 }
 

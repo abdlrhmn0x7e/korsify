@@ -10,7 +10,6 @@ import { format } from "date-fns";
 import { CoursesTableActions, CourseStatusButton } from "./actions";
 import { formatPrice } from "@/lib/format-price";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useCourseSearchParams } from "../../../_hooks/use-course-search-params";
 
 export const CoursesColumns = () => {
