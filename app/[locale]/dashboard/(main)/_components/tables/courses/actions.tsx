@@ -185,7 +185,7 @@ export function CourseStatusButton({
       initial="initial"
       whileHover="hovered"
       className={cn(
-        "relative min-w-24 justify-start overflow-hidden transition-all",
+        "min-w-24 justify-start overflow-hidden transition-all",
         status !== "published"
           ? "hover:border-success hover:bg-success/20 hover:text-success"
           : "hover:border-destructive hover:bg-destructive/20 hover:text-destructive"
@@ -198,10 +198,11 @@ export function CourseStatusButton({
       ) : (
         <IconPencil />
       )}
+      <span className="grid relative">
       <motion.span
         variants={{
-          initial: { y: "0%", marginBottom: "0px" },
-          hovered: { y: "-100%", marginBottom: "10px" },
+          initial: { y: "0%", },
+          hovered: { y: "-100%", },
         }}
         transition={{ duration: 0.1, ease: "easeOut" }}
         className="capitalize"
@@ -209,12 +210,13 @@ export function CourseStatusButton({
         {status === "published" ? t("status.published") : t("status.draft")}
       </motion.span>
       <motion.span
-        variants={{ initial: { y: "110%" }, hovered: { y: "-5%" } }}
+        variants={{ initial: { y: "110%" }, hovered: { y: "0%" } }}
         transition={{ duration: 0.1, ease: "easeOut" }}
-        className="absolute start-5 capitalize"
+        className="capitalize absolute"
       >
         {status === "published" ? t("actions.draft") : t("actions.publish")}
       </motion.span>
+      </span>
     </MotionButton>
   );
 }
