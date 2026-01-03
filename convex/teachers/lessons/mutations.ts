@@ -92,8 +92,8 @@ export const update = teacherMutation({
 
     return db.lessons.mutations.update(ctx, lessonId, {
       ...updateData,
-      sectionId,
-      videoId,
+      ...(sectionId && { sectionId }),
+      ...(videoId && { videoId }),
     });
   },
 });
