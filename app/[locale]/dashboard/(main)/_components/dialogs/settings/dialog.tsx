@@ -13,7 +13,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { IconSettings } from "@tabler/icons-react";
 import { SettingsForm } from "./form";
 import { api } from "@/convex/_generated/api";
-import { Preloaded, useQuery } from "convex/react";
+import { Preloaded } from "convex/react";
 import { useMutation } from "@tanstack/react-query";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { toast } from "sonner";

@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { IconAlertCircle, IconCheck, IconX } from "@tabler/icons-react";
 import { Spinner } from "@/components/ui/spinner";
 
-export function Domain() {
+export function Domain({ originalSubdomain }: { originalSubdomain: string }) {
   const form = useFormContext<SettingsFormValues>();
 
   const subdomainValue = form.watch("subdomain");
@@ -33,7 +33,8 @@ export function Domain() {
 
   const showAvailabilityStatus =
     debouncedSubdomain.length >= 3 && subdomainValue === debouncedSubdomain;
-  const isOriginalSubdomain = form.getValues("subdomain") === subdomainValue;
+
+  const isOriginalSubdomain = subdomainValue === originalSubdomain;
 
   return (
     <div className="space-y-4">

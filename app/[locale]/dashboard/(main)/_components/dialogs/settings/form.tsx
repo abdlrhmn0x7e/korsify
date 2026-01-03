@@ -114,7 +114,7 @@ export function SettingsForm({
               <Payment />
             </TabsContent>
             <TabsContent value="subdomain" keepMounted>
-              <Domain />
+              <Domain originalSubdomain={teacher.subdomain} />
             </TabsContent>
           </Tabs>
         </ScrollArea>
