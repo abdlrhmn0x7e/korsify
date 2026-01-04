@@ -47,7 +47,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   createdAt: number;
                   expiresAt: number;
                   ipAddress?: null | string;
-                  teacherId: string;
                   token: string;
                   updatedAt: number;
                   userAgent?: null | string;
@@ -67,7 +66,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   refreshToken?: null | string;
                   refreshTokenExpiresAt?: null | number;
                   scope?: null | string;
-                  teacherId: string;
                   updatedAt: number;
                   userId: string;
                 };
@@ -150,7 +148,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -190,7 +187,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -341,7 +337,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -381,7 +376,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -604,7 +598,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
-                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -620,7 +613,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -656,7 +648,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   refreshToken?: null | string;
                   refreshTokenExpiresAt?: null | number;
                   scope?: null | string;
-                  teacherId?: string;
                   updatedAt?: number;
                   userId?: string;
                 };
@@ -675,7 +666,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -843,7 +833,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
-                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -859,7 +848,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -895,7 +883,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   refreshToken?: null | string;
                   refreshTokenExpiresAt?: null | number;
                   scope?: null | string;
-                  teacherId?: string;
                   updatedAt?: number;
                   userId?: string;
                 };
@@ -914,7 +901,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"

@@ -1,10 +1,14 @@
 import { api } from "@/convex/_generated/api";
 import { convexBetterAuthNextJs } from "@convex-dev/better-auth/nextjs";
-import { headers } from "next/headers";
 import { fetchQuery } from "convex/nextjs";
+import { headers } from "next/headers";
 
 const STOREFRONT_HEADER = "x-storefront-subdomain";
 const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
+
+type Teacher = Awaited<
+  ReturnType<typeof fetchQuery<typeof api.teachers.queries.getBySubdomain>>
+>;
 
 export const {
   handler: studentAuthHandler,
@@ -17,14 +21,10 @@ export const {
 } = convexBetterAuthNextJs({
   convexUrl: process.env.NEXT_PUBLIC_CONVEX_URL!,
   convexSiteUrl: process.env.NEXT_PUBLIC_CONVEX_SITE_URL!,
-  cookiePrefix: "student",
 });
 
-export async function getCurrentStudent() {
-  return await fetchStudentAuthQuery(api.studentAuth.getCurrentStudent);
-}
-
-export async function getTeacherFromHeaders() {
+export async function getTeacherFromHeaders(): Promise<Teacher | null> {
+  "use server";
   const headersList = await headers();
 
   const subdomain = headersList.get(STOREFRONT_HEADER);
@@ -42,22 +42,8 @@ export async function getTeacherFromHeaders() {
   return null;
 }
 
-export async function requireStudentAuth() {
-  const student = await getCurrentStudent();
+export async function getCurrentStudent() {
+  "use server";
 
-  if (!student) {
-    return null;
-  }
-
-  const teacher = await getTeacherFromHeaders();
-
-  if (!teacher) {
-    return null;
-  }
-
-  if (student.teacherId !== teacher._id) {
-    return null;
-  }
-
-  return { student, teacher };
+  return await fetchStudentAuthQuery(api.studentAuth.getCurrentStudent);
 }

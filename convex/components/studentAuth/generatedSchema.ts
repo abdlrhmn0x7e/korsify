@@ -33,7 +33,6 @@ export const tables = {
     ipAddress: v.optional(v.union(v.null(), v.string())),
     userAgent: v.optional(v.union(v.null(), v.string())),
     userId: v.string(),
-    teacherId: v.string(),
   })
     .index("expiresAt", ["expiresAt"])
     .index("expiresAt_userId", ["expiresAt","userId"])
@@ -52,7 +51,6 @@ export const tables = {
     password: v.optional(v.union(v.null(), v.string())),
     createdAt: v.number(),
     updatedAt: v.number(),
-    teacherId: v.string(),
   })
     .index("accountId", ["accountId"])
     .index("accountId_providerId", ["accountId","providerId"])

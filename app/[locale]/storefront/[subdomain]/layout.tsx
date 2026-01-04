@@ -1,35 +1,14 @@
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { fetchQuery } from "convex/nextjs";
-import { api } from "@/convex/_generated/api";
-
-const STOREFRONT_HEADER = "x-storefront-subdomain";
-const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
-
-type Teacher = Awaited<
-  ReturnType<typeof fetchQuery<typeof api.teachers.queries.getBySubdomain>>
->;
+import {
+  getTeacherFromHeaders,
+  getStudentToken,
+} from "@/lib/student-auth-server";
+import { TeacherContextProvider } from "./_components/teacher-context-provider";
+import { StudentAuthProvider } from "./_components/student-auth-provider";
+import { Doc } from "@/convex/_generated/dataModel";
 
 interface StorefrontLayoutProps {
   children: React.ReactNode;
-}
-
-async function getTeacherFromHeaders(): Promise<Teacher | null> {
-  const headersList = await headers();
-
-  const subdomain = headersList.get(STOREFRONT_HEADER);
-  if (subdomain) {
-    return fetchQuery(api.teachers.queries.getBySubdomain, { subdomain });
-  }
-
-  const customDomain = headersList.get(CUSTOM_DOMAIN_HEADER);
-  if (customDomain) {
-    return fetchQuery(api.teachers.queries.getByCustomDomain, {
-      customDomain,
-    });
-  }
-
-  return null;
 }
 
 export default async function StorefrontLayout({
@@ -42,23 +21,28 @@ export default async function StorefrontLayout({
   }
 
   const primaryColor = teacher.branding?.primaryColor || "#3b82f6";
+  const initialToken = await getStudentToken();
 
   return (
-    <div
-      className="min-h-screen"
-      style={
-        {
-          "--storefront-primary": primaryColor,
-        } as React.CSSProperties
-      }
-    >
-      <StorefrontHeader teacher={teacher} />
-      <main>{children}</main>
-    </div>
+    <StudentAuthProvider initialToken={initialToken}>
+      <TeacherContextProvider teacher={teacher}>
+        <div
+          className="min-h-screen"
+          style={
+            {
+              "--storefront-primary": primaryColor,
+            } as React.CSSProperties
+          }
+        >
+          <StorefrontHeader teacher={teacher} />
+          <main>{children}</main>
+        </div>
+      </TeacherContextProvider>
+    </StudentAuthProvider>
   );
 }
 
-function StorefrontHeader({ teacher }: { teacher: NonNullable<Teacher> }) {
+function StorefrontHeader({ teacher }: { teacher: Doc<"teachers"> }) {
   return (
     <header className="border-b bg-white">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">

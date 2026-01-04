@@ -1173,7 +1173,6 @@ export declare const components: {
                   createdAt: number;
                   expiresAt: number;
                   ipAddress?: null | string;
-                  teacherId: string;
                   token: string;
                   updatedAt: number;
                   userAgent?: null | string;
@@ -1193,7 +1192,6 @@ export declare const components: {
                   refreshToken?: null | string;
                   refreshTokenExpiresAt?: null | number;
                   scope?: null | string;
-                  teacherId: string;
                   updatedAt: number;
                   userId: string;
                 };
@@ -1275,7 +1273,6 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1315,7 +1312,6 @@ export declare const components: {
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1465,7 +1461,6 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1505,7 +1500,6 @@ export declare const components: {
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1725,7 +1719,6 @@ export declare const components: {
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
-                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -1741,7 +1734,6 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1777,7 +1769,6 @@ export declare const components: {
                   refreshToken?: null | string;
                   refreshTokenExpiresAt?: null | number;
                   scope?: null | string;
-                  teacherId?: string;
                   updatedAt?: number;
                   userId?: string;
                 };
@@ -1796,7 +1787,6 @@ export declare const components: {
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1963,7 +1953,6 @@ export declare const components: {
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
-                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -1979,7 +1968,6 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -2015,7 +2003,6 @@ export declare const components: {
                   refreshToken?: null | string;
                   refreshTokenExpiresAt?: null | number;
                   scope?: null | string;
-                  teacherId?: string;
                   updatedAt?: number;
                   userId?: string;
                 };
@@ -2034,7 +2021,6 @@ export declare const components: {
                     | "password"
                     | "createdAt"
                     | "updatedAt"
-                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
