@@ -2,10 +2,12 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { authComponent, createAuth } from "./auth";
+import { createStudentAuth, studentAuthComponent } from "./studentAuth";
 
 const http = httpRouter();
 
 authComponent.registerRoutes(http, createAuth);
+studentAuthComponent.registerRoutes(http, createStudentAuth);
 
 // ============================================
 // Mux Webhook Handler

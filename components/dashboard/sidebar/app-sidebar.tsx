@@ -64,7 +64,6 @@ export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
       <SidebarContent>
         {data.map((item) => (
           <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="space-y-1">
                 {item.items?.map((item) => (

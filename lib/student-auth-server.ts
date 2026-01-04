@@ -1,0 +1,63 @@
+import { api } from "@/convex/_generated/api";
+import { convexBetterAuthNextJs } from "@convex-dev/better-auth/nextjs";
+import { headers } from "next/headers";
+import { fetchQuery } from "convex/nextjs";
+
+const STOREFRONT_HEADER = "x-storefront-subdomain";
+const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
+
+export const {
+  handler: studentAuthHandler,
+  preloadAuthQuery: preloadStudentAuthQuery,
+  isAuthenticated: isStudentAuthenticated,
+  getToken: getStudentToken,
+  fetchAuthQuery: fetchStudentAuthQuery,
+  fetchAuthMutation: fetchStudentAuthMutation,
+  fetchAuthAction: fetchStudentAuthAction,
+} = convexBetterAuthNextJs({
+  convexUrl: process.env.NEXT_PUBLIC_CONVEX_URL!,
+  convexSiteUrl: process.env.NEXT_PUBLIC_CONVEX_SITE_URL!,
+  cookiePrefix: "student",
+});
+
+export async function getCurrentStudent() {
+  return await fetchStudentAuthQuery(api.studentAuth.getCurrentStudent);
+}
+
+export async function getTeacherFromHeaders() {
+  const headersList = await headers();
+
+  const subdomain = headersList.get(STOREFRONT_HEADER);
+  if (subdomain) {
+    return fetchQuery(api.teachers.queries.getBySubdomain, { subdomain });
+  }
+
+  const customDomain = headersList.get(CUSTOM_DOMAIN_HEADER);
+  if (customDomain) {
+    return fetchQuery(api.teachers.queries.getByCustomDomain, {
+      customDomain,
+    });
+  }
+
+  return null;
+}
+
+export async function requireStudentAuth() {
+  const student = await getCurrentStudent();
+
+  if (!student) {
+    return null;
+  }
+
+  const teacher = await getTeacherFromHeaders();
+
+  if (!teacher) {
+    return null;
+  }
+
+  if (student.teacherId !== teacher._id) {
+    return null;
+  }
+
+  return { student, teacher };
+}
