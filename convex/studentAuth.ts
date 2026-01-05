@@ -1,8 +1,7 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { betterAuth, type BetterAuthOptions } from "better-auth/minimal";
-import { phoneNumber } from "better-auth/plugins";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
@@ -44,17 +43,57 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
           required: true,
           input: true,
         },
-      },
-    },
-
-    session: {
-      additionalFields: {
-        teacherId: {
+        phoneNumber: {
           type: "string",
           required: true,
           input: true,
         },
       },
+    },
+
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path !== "/sign-in/email") {
+          return;
+        }
+
+        const email = ctx.body?.email as string | undefined;
+        const expectedTeacherId = ctx.body?.teacherId as string | undefined;
+
+        if (!email) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Email is required",
+          });
+        }
+
+        if (!expectedTeacherId) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Teacher ID is required",
+          });
+        }
+
+        const user = await ctx.context.adapter.findOne<{
+          teacherId: string;
+          email: string;
+        }>({
+          model: "user",
+          where: [{ field: "email", value: email }],
+        });
+
+        if (!user) {
+          throw new APIError("UNAUTHORIZED", {
+            message: "Invalid credentials",
+          });
+        }
+
+        // SECURITY: Prevent cross-tenant sign-in by validating the user's teacherId
+        // matches the expected tenant context from the request
+        if (user.teacherId !== expectedTeacherId) {
+          throw new APIError("UNAUTHORIZED", {
+            message: "Invalid credentials",
+          });
+        }
+      }),
     },
 
     databaseHooks: {
@@ -63,14 +102,7 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
           before: async (user, hookCtx) => {
             if (!hookCtx) return;
 
-            console.log(
-              "[StudentAuth] user.create.before - path:",
-              hookCtx.path
-            );
-
             if (hookCtx.path !== "/sign-up/email") return;
-
-            console.log("[StudentAuth] user.create.before - user:", user);
 
             const teacherId = (user as { teacherId?: string }).teacherId;
 
@@ -82,6 +114,7 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
 
             const email = user.email;
 
+            // Check if user already exists for this teacher
             const existingUserForTenant = await hookCtx.context.adapter.findOne(
               {
                 model: "user",
@@ -95,71 +128,15 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
             if (existingUserForTenant) {
               throw new APIError("BAD_REQUEST", {
                 message:
-                  "An account with this email already exists for this storefront",
+                  "An account with this phone number already exists for this storefront",
               });
             }
-          },
-        },
-      },
-
-      session: {
-        create: {
-          before: async (session, hookCtx) => {
-            if (!hookCtx) return;
-            if (
-              hookCtx.path !== "/sign-in/email" &&
-              hookCtx.path !== "/sign-up/email"
-            )
-              return;
-
-            const teacherId = (
-              hookCtx.context.session?.user as { teacherId?: string }
-            ).teacherId;
-            console.log(
-              "[StudentAuth] session.create.before - teacherId:",
-              teacherId
-            );
-
-            if (!teacherId) {
-              throw new APIError("BAD_REQUEST", {
-                message: "Teacher ID is required for student session creation",
-              });
-            }
-
-            const existingUserForTenant = await hookCtx.context.adapter.findOne(
-              {
-                model: "user",
-                where: [{ field: "teacherId", value: teacherId }],
-              }
-            );
-
-            if (!existingUserForTenant) {
-              throw new APIError("BAD_REQUEST", {
-                message: "User not found for this storefront",
-              });
-            }
-
-            console.log(
-              "[StudentAuth] session.create.after - session:",
-              session
-            );
           },
         },
       },
     },
+
     plugins: [
-      phoneNumber({
-        sendOTP: ({ phoneNumber: phone, code }, _ctx) => {
-          console.log(
-            `[StudentAuth] Sending OTP ${code} to phone number ${phone}`
-          );
-        },
-        signUpOnVerification: {
-          getTempEmail: (phone) =>
-            `${phone.replace(/\+/g, "")}@student.korsify.com`,
-          getTempName: (phone) => phone,
-        },
-      }),
       convex({
         authConfig,
         jwks: process.env.JWKS,

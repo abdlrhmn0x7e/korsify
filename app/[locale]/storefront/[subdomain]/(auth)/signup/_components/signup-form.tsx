@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Spinner } from "@/components/ui/spinner";
-import { studentAuthClient } from "@/lib/student-auth-client";
+import { generateEmail, studentAuthClient } from "@/lib/student-auth-client";
 import { useScopedI18n } from "@/locales/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import parsePhoneNumber from "libphonenumber-js";
-import { APIError } from "better-auth";
 
 export function SignupForm() {
   const t = useScopedI18n("storefront.auth.signup");
@@ -66,11 +65,11 @@ export function SignupForm() {
   const { mutate: createAccount, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       const result = await studentAuthClient.signUp.email({
-        email: `${values.phoneNumber.replace(/\+/g, "")}@${teacher.subdomain}.com`,
         name: values.name,
         password: values.password,
         teacherId: teacher._id,
         phoneNumber: values.phoneNumber,
+        email: generateEmail(values.phoneNumber, teacher.subdomain),
       });
       if (result.error) {
         switch (result.error.code) {

@@ -6,7 +6,8 @@ const schema = defineSchema({
 
   user: tables.user
     .index("by_teacherId", ["teacherId"])
-    .index("by_teacherId_email", ["teacherId", "email"]),
+    .index("by_teacherId_email", ["teacherId", "email"])
+    .index("by_teacherId_phoneNumber", ["teacherId", "phoneNumber"]),
 });
 
 export default schema;

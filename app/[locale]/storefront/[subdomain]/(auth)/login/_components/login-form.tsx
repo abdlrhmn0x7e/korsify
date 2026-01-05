@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/input-group";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Spinner } from "@/components/ui/spinner";
-import { studentAuthClient } from "@/lib/student-auth-client";
+import { generateEmail, studentAuthClient } from "@/lib/student-auth-client";
 import { useScopedI18n } from "@/locales/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -52,8 +52,8 @@ export function LoginForm() {
 
   const { mutate: signIn, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      const result = await studentAuthClient.signIn.phoneNumber({
-        phoneNumber: values.phoneNumber,
+      const result = await studentAuthClient.signIn.email({
+        email: generateEmail(values.phoneNumber, teacher.subdomain),
         password: values.password,
         fetchOptions: {
           body: {
