@@ -16,6 +16,7 @@ import { useScopedI18n } from "@/locales/client";
 export function Navbar() {
   const scrolled = useScroll(0);
   const user = useQuery(api.auth.getCurrentUser);
+  console.log("user", user);
   const t = useScopedI18n("landing.navbar");
 
   const isLoggedIn = !!user;

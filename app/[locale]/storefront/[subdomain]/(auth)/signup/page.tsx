@@ -12,5 +12,4 @@ export default async function StorefrontSignupPage() {
   }
 
   return <SignUpButton />;
-  // return <div>Signup Page</div>;
 }

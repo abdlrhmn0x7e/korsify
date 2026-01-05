@@ -4,7 +4,7 @@ import { betterAuth, type BetterAuthOptions } from "better-auth/minimal";
 import { admin } from "better-auth/plugins";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
-import { query } from "./_generated/server";
+import { internalAction, query } from "./_generated/server";
 import authConfig from "./auth.config";
 import authSchema from "./components/betterAuth/schema";
 
@@ -35,7 +35,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
       },
     },
 
-    plugins: [convex({ authConfig }), admin()],
+    plugins: [convex({ authConfig, jwks: process.env.JWKS }), admin()],
   } satisfies BetterAuthOptions;
 };
 
@@ -47,5 +47,15 @@ export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
     return authComponent.safeGetAuthUser(ctx);
+  },
+});
+
+export const getLatestJwks = internalAction({
+  args: {},
+  handler: async (ctx) => {
+    const auth = createAuth(ctx);
+    // This method is added by the Convex Better Auth plugin and is
+    // available via `auth.api` only, not exposed as a route.
+    return await auth.api.getLatestJwks();
   },
 });

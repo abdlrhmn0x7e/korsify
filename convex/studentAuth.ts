@@ -5,7 +5,7 @@ import { APIError } from "better-auth/api";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
-import studentAuthConfig from "./studentAuth.config";
+import authConfig from "./auth.config";
 import studentAuthSchema from "./components/studentAuth/schema";
 
 const siteUrl = process.env.SITE_URL!;
@@ -93,7 +93,7 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
     },
     plugins: [
       convex({
-        authConfig: studentAuthConfig,
+        authConfig,
         jwks: process.env.JWKS,
         options: {
           basePath: "/api/student-auth",

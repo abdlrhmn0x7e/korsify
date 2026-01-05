@@ -6,6 +6,8 @@ import {
 import { TeacherContextProvider } from "./_components/teacher-context-provider";
 import { StudentAuthProvider } from "./_components/student-auth-provider";
 import { Doc } from "@/convex/_generated/dataModel";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface StorefrontLayoutProps {
   children: React.ReactNode;
@@ -66,6 +68,7 @@ function StorefrontHeader({ teacher }: { teacher: Doc<"teachers"> }) {
           <a href="/courses" className="text-sm hover:underline">
             Courses
           </a>
+          <Button render={<Link href="/signup" />}>Sign up</Button>
         </nav>
       </div>
     </header>
