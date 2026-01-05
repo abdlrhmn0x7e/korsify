@@ -1162,6 +1162,8 @@ export declare const components: {
                   emailVerified: boolean;
                   image?: null | string;
                   name: string;
+                  phoneNumber?: null | string;
+                  phoneNumberVerified?: null | boolean;
                   teacherId: string;
                   updatedAt: number;
                   userId?: null | string;
@@ -1173,6 +1175,7 @@ export declare const components: {
                   createdAt: number;
                   expiresAt: number;
                   ipAddress?: null | string;
+                  teacherId: string;
                   token: string;
                   updatedAt: number;
                   userAgent?: null | string;
@@ -1237,6 +1240,8 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -1273,6 +1278,7 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1425,6 +1431,8 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -1461,6 +1469,7 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1676,6 +1685,8 @@ export declare const components: {
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
+                  phoneNumber?: null | string;
+                  phoneNumberVerified?: null | boolean;
                   teacherId?: string;
                   updatedAt?: number;
                   userId?: null | string;
@@ -1689,6 +1700,8 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -1719,6 +1732,7 @@ export declare const components: {
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
+                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -1734,6 +1748,7 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -1910,6 +1925,8 @@ export declare const components: {
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
+                  phoneNumber?: null | string;
+                  phoneNumberVerified?: null | boolean;
                   teacherId?: string;
                   updatedAt?: number;
                   userId?: null | string;
@@ -1923,6 +1940,8 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -1953,6 +1972,7 @@ export declare const components: {
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
+                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -1968,6 +1988,7 @@ export declare const components: {
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"

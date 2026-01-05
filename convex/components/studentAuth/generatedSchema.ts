@@ -19,12 +19,15 @@ export const tables = {
     image: v.optional(v.union(v.null(), v.string())),
     createdAt: v.number(),
     updatedAt: v.number(),
+    phoneNumber: v.optional(v.union(v.null(), v.string())),
+    phoneNumberVerified: v.optional(v.union(v.null(), v.boolean())),
     userId: v.optional(v.union(v.null(), v.string())),
     teacherId: v.string(),
   })
     .index("email_name", ["email","name"])
     .index("name", ["name"])
-    .index("userId", ["userId"]),
+    .index("userId", ["userId"])
+    .index("phoneNumber", ["phoneNumber"]),
   session: defineTable({
     expiresAt: v.number(),
     token: v.string(),
@@ -33,6 +36,7 @@ export const tables = {
     ipAddress: v.optional(v.union(v.null(), v.string())),
     userAgent: v.optional(v.union(v.null(), v.string())),
     userId: v.string(),
+    teacherId: v.string(),
   })
     .index("expiresAt", ["expiresAt"])
     .index("expiresAt_userId", ["expiresAt","userId"])

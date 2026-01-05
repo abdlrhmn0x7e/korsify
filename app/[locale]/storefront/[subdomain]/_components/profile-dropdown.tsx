@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarWithFallback } from "./avatar-with-fallback";
+import { AvatarWithFallback } from "@/components/avatar-with-fallback";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
+} from "@/components/ui/dropdown-menu";
+import { studentAuthClient } from "@/lib/student-auth-client";
 import { useRouter } from "next/navigation";
 import { IconLogout } from "@tabler/icons-react";
 
@@ -42,7 +42,10 @@ export function ProfileDropdown({
         <DropdownMenuGroup>
           <DropdownMenuItem
             onClick={async () => {
-              await Promise.all([authClient.signOut(), router.push("/")]);
+              await Promise.all([
+                studentAuthClient.signOut(),
+                router.push("/"),
+              ]);
             }}
           >
             <IconLogout />

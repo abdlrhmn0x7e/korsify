@@ -12,19 +12,37 @@ export function getByUserId(ctx: GenericQueryCtx<DataModel>, userId: string) {
     .first();
 }
 
-export function getBySubdomain(
+export async function getBySubdomain(
   ctx: GenericQueryCtx<DataModel>,
-  subdomain: string,
+  subdomain: string
 ) {
-  return ctx.db
+  const teacher = await ctx.db
     .query("teachers")
     .withIndex("by_subdomain", (q) => q.eq("subdomain", subdomain))
     .first();
+
+  if (!teacher) return null;
+
+  const logoUrl = teacher.branding?.logoStorageId
+    ? await ctx.storage.getUrl(teacher.branding.logoStorageId)
+    : null;
+  const coverUrl = teacher.branding?.coverStorageId
+    ? await ctx.storage.getUrl(teacher.branding.coverStorageId)
+    : null;
+
+  return {
+    ...teacher,
+    branding: {
+      ...teacher?.branding,
+      logoUrl,
+      coverUrl,
+    },
+  };
 }
 
 export function getByCustomDomain(
   ctx: GenericQueryCtx<DataModel>,
-  customDomain: string,
+  customDomain: string
 ) {
   return ctx.db
     .query("teachers")
@@ -34,7 +52,7 @@ export function getByCustomDomain(
 
 export async function isSubdomainAvailable(
   ctx: GenericQueryCtx<DataModel>,
-  subdomain: string,
+  subdomain: string
 ): Promise<boolean> {
   const existing = await getBySubdomain(ctx, subdomain);
   return existing === null;
@@ -42,7 +60,7 @@ export async function isSubdomainAvailable(
 
 export async function isCustomDomainAvailable(
   ctx: GenericQueryCtx<DataModel>,
-  customDomain: string,
+  customDomain: string
 ): Promise<boolean> {
   const existing = await getByCustomDomain(ctx, customDomain);
   return existing === null;

@@ -1,6 +1,7 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { betterAuth, type BetterAuthOptions } from "better-auth/minimal";
+import { phoneNumber } from "better-auth/plugins";
 import { APIError } from "better-auth/api";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
@@ -37,6 +38,16 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
     },
 
     user: {
+      additionalFields: {
+        teacherId: {
+          type: "string",
+          required: true,
+          input: true,
+        },
+      },
+    },
+
+    session: {
       additionalFields: {
         teacherId: {
           type: "string",
@@ -90,8 +101,65 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
           },
         },
       },
+
+      session: {
+        create: {
+          before: async (session, hookCtx) => {
+            if (!hookCtx) return;
+            if (
+              hookCtx.path !== "/sign-in/email" &&
+              hookCtx.path !== "/sign-up/email"
+            )
+              return;
+
+            const teacherId = (
+              hookCtx.context.session?.user as { teacherId?: string }
+            ).teacherId;
+            console.log(
+              "[StudentAuth] session.create.before - teacherId:",
+              teacherId
+            );
+
+            if (!teacherId) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Teacher ID is required for student session creation",
+              });
+            }
+
+            const existingUserForTenant = await hookCtx.context.adapter.findOne(
+              {
+                model: "user",
+                where: [{ field: "teacherId", value: teacherId }],
+              }
+            );
+
+            if (!existingUserForTenant) {
+              throw new APIError("BAD_REQUEST", {
+                message: "User not found for this storefront",
+              });
+            }
+
+            console.log(
+              "[StudentAuth] session.create.after - session:",
+              session
+            );
+          },
+        },
+      },
     },
     plugins: [
+      phoneNumber({
+        sendOTP: ({ phoneNumber: phone, code }, _ctx) => {
+          console.log(
+            `[StudentAuth] Sending OTP ${code} to phone number ${phone}`
+          );
+        },
+        signUpOnVerification: {
+          getTempEmail: (phone) =>
+            `${phone.replace(/\+/g, "")}@student.korsify.com`,
+          getTempName: (phone) => phone,
+        },
+      }),
       convex({
         authConfig,
         jwks: process.env.JWKS,

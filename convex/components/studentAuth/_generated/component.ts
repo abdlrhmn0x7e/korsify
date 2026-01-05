@@ -36,6 +36,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   emailVerified: boolean;
                   image?: null | string;
                   name: string;
+                  phoneNumber?: null | string;
+                  phoneNumberVerified?: null | boolean;
                   teacherId: string;
                   updatedAt: number;
                   userId?: null | string;
@@ -47,6 +49,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   createdAt: number;
                   expiresAt: number;
                   ipAddress?: null | string;
+                  teacherId: string;
                   token: string;
                   updatedAt: number;
                   userAgent?: null | string;
@@ -112,6 +115,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -148,6 +153,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -301,6 +307,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -337,6 +345,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -555,6 +564,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
+                  phoneNumber?: null | string;
+                  phoneNumberVerified?: null | boolean;
                   teacherId?: string;
                   updatedAt?: number;
                   userId?: null | string;
@@ -568,6 +579,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -598,6 +611,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
+                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -613,6 +627,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"
@@ -790,6 +805,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   emailVerified?: boolean;
                   image?: null | string;
                   name?: string;
+                  phoneNumber?: null | string;
+                  phoneNumberVerified?: null | boolean;
                   teacherId?: string;
                   updatedAt?: number;
                   userId?: null | string;
@@ -803,6 +820,8 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "image"
                     | "createdAt"
                     | "updatedAt"
+                    | "phoneNumber"
+                    | "phoneNumberVerified"
                     | "userId"
                     | "teacherId"
                     | "_id";
@@ -833,6 +852,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                   createdAt?: number;
                   expiresAt?: number;
                   ipAddress?: null | string;
+                  teacherId?: string;
                   token?: string;
                   updatedAt?: number;
                   userAgent?: null | string;
@@ -848,6 +868,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
                     | "ipAddress"
                     | "userAgent"
                     | "userId"
+                    | "teacherId"
                     | "_id";
                   operator?:
                     | "lt"

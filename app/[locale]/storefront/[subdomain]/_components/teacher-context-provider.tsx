@@ -1,14 +1,17 @@
 "use client";
 
-import { Doc } from "@/convex/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
+import { FunctionReturnType } from "convex/server";
 import { createContext, useContext } from "react";
 
 interface TeacherContextProviderProps {
   children: React.ReactNode;
-  teacher: Doc<"teachers">;
+  teacher: FunctionReturnType<typeof api.teachers.queries.getBySubdomain>;
 }
 
-const TeacherContext = createContext<Doc<"teachers"> | null>(null);
+const TeacherContext = createContext<FunctionReturnType<
+  typeof api.teachers.queries.getBySubdomain
+> | null>(null);
 
 export function TeacherContextProvider({
   children,

@@ -1,11 +1,11 @@
 import { v } from "convex/values";
 import { mutation } from "../_generated/server";
 import { db } from "../db";
-import { brandingValidator, paymentInfoValidator } from "../db/teachers/index";
 import { authComponent } from "../auth";
 import { RESERVED_SUBDOMAINS } from "../../lib/subdomain";
 import { ConvexError } from "convex/values";
 import { z } from "zod";
+import { brandingValidator, paymentInfoValidator } from "../db/teachers";
 
 const subdomainSchema = z
   .string()
@@ -29,20 +29,8 @@ const onboardingValidator = v.object({
   email: v.string(),
   subdomain: v.string(),
   phone: v.optional(v.string()),
-  branding: v.optional(
-    v.object({
-      logoStorageId: v.optional(v.string()),
-      coverStorageId: v.optional(v.string()),
-      primaryColor: v.optional(v.string()),
-    })
-  ),
-  paymentInfo: v.optional(
-    v.object({
-      vodafoneCash: v.optional(v.string()),
-      instaPay: v.optional(v.string()),
-      instructions: v.optional(v.string()),
-    })
-  ),
+  branding: v.optional(brandingValidator),
+  paymentInfo: v.optional(paymentInfoValidator),
 });
 
 export const completeOnboarding = mutation({

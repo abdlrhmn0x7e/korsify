@@ -10,7 +10,6 @@ import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { getStaticParams } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
 import { I18nProviderClient } from "@/locales/client";
-import { AnchoredToastProvider, ToastProvider } from "@/components/ui/toast";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -71,11 +70,7 @@ export default async function RootLayout({
       <body className="antialiased">
         <ConvexClientProvider>
           <I18nProviderClient locale={locale}>
-            <ToastProvider>
-              <AnchoredToastProvider>
-                <NuqsAdapter>{children}</NuqsAdapter>
-              </AnchoredToastProvider>
-            </ToastProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
 
             <Toaster richColors />
           </I18nProviderClient>

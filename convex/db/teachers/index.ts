@@ -3,6 +3,11 @@ import { v } from "convex/values";
 
 import * as teachersQueries from "./queries";
 import * as teachersMutations from "./mutations";
+import {
+  brandingValidator,
+  paymentInfoValidator,
+  teacherStatusValidator,
+} from "./validators";
 export {
   brandingValidator,
   paymentInfoValidator,
@@ -17,27 +22,9 @@ export const teachersTable = defineTable({
   subdomain: v.string(),
   customDomain: v.optional(v.string()),
   customDomainVerified: v.optional(v.boolean()),
-  branding: v.optional(
-    v.object({
-      logoUrl: v.optional(v.string()),
-      logoStorageId: v.optional(v.string()),
-      coverImageUrl: v.optional(v.string()),
-      coverStorageId: v.optional(v.string()),
-      primaryColor: v.optional(v.string()),
-    })
-  ),
-  paymentInfo: v.optional(
-    v.object({
-      vodafoneCash: v.optional(v.string()),
-      instaPay: v.optional(v.string()),
-      instructions: v.optional(v.string()),
-    })
-  ),
-  status: v.union(
-    v.literal("pending"),
-    v.literal("active"),
-    v.literal("suspended")
-  ),
+  branding: v.optional(brandingValidator),
+  paymentInfo: v.optional(paymentInfoValidator),
+  status: teacherStatusValidator,
   updatedAt: v.number(),
 })
   .index("by_userId", ["userId"])

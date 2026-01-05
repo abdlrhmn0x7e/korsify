@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@storefront/*": ["./app/[locale]/storefront/[subdomain]/*"]
     }
   },
   "include": [
