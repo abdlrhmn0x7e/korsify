@@ -7,6 +7,10 @@ import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import authConfig from "./auth.config";
 import studentAuthSchema from "./components/studentAuth/schema";
+import {
+  extractSubdomainFromEmail,
+  extractSubdomainFromOrigin,
+} from "../lib/subdomain";
 
 const siteUrl = process.env.SITE_URL!;
 const siteTrustedOrigin = process.env.SITE_TRUSTED_ORIGIN!;
@@ -58,37 +62,35 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
         }
 
         const email = ctx.body?.email as string | undefined;
-        const expectedTeacherId = ctx.body?.teacherId as string | undefined;
-
         if (!email) {
           throw new APIError("BAD_REQUEST", {
             message: "Email is required",
           });
         }
 
-        if (!expectedTeacherId) {
+        const origin = ctx.request?.headers.get("origin");
+        if (!origin) {
           throw new APIError("BAD_REQUEST", {
-            message: "Teacher ID is required",
+            message: "Invalid request",
           });
         }
 
-        const user = await ctx.context.adapter.findOne<{
-          teacherId: string;
-          email: string;
-        }>({
-          model: "user",
-          where: [{ field: "email", value: email }],
-        });
+        const originSubdomain = extractSubdomainFromOrigin(origin);
+        const emailSubdomain = extractSubdomainFromEmail(email);
 
-        if (!user) {
-          throw new APIError("UNAUTHORIZED", {
-            message: "Invalid credentials",
+        console.log("SIGNIN HOOK");
+        console.log("EMAIL", email);
+        console.log("ORIGIN", origin);
+        console.log("ORIGIN SUBDOMAIN", originSubdomain);
+        console.log("EMAIL SUBDOMAIN", emailSubdomain);
+
+        if (!originSubdomain || !emailSubdomain) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Invalid request",
           });
         }
 
-        // SECURITY: Prevent cross-tenant sign-in by validating the user's teacherId
-        // matches the expected tenant context from the request
-        if (user.teacherId !== expectedTeacherId) {
+        if (originSubdomain !== emailSubdomain) {
           throw new APIError("UNAUTHORIZED", {
             message: "Invalid credentials",
           });
@@ -114,7 +116,34 @@ export const createStudentAuthOptions = (ctx: GenericCtx<DataModel>) => {
 
             const email = user.email;
 
-            // Check if user already exists for this teacher
+            const origin = hookCtx.request?.headers.get("origin");
+            if (!origin) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Invalid request",
+              });
+            }
+
+            const originSubdomain = extractSubdomainFromOrigin(origin);
+            const emailSubdomain = extractSubdomainFromEmail(email);
+
+            console.log("SIGNUP HOOK");
+            console.log("EMAIL", email);
+            console.log("ORIGIN", origin);
+            console.log("EMAIL SUBDOMAIN", emailSubdomain);
+            console.log("ORIGIN SUBDOMAIN", originSubdomain);
+
+            if (!originSubdomain || !emailSubdomain) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Invalid request",
+              });
+            }
+
+            if (originSubdomain !== emailSubdomain) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Invalid request",
+              });
+            }
+
             const existingUserForTenant = await hookCtx.context.adapter.findOne(
               {
                 model: "user",

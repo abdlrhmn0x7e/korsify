@@ -6,7 +6,6 @@ import {
   Noto_Kufi_Arabic,
 } from "next/font/google";
 import "../globals.css";
-import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { getStaticParams } from "@/locales/server";
 import { setStaticParamsLocale } from "next-international/server";
 import { I18nProviderClient } from "@/locales/client";
@@ -68,13 +67,10 @@ export default async function RootLayout({
       }
     >
       <body className="antialiased">
-        <ConvexClientProvider>
-          <I18nProviderClient locale={locale}>
-            <NuqsAdapter>{children}</NuqsAdapter>
-
-            <Toaster richColors />
-          </I18nProviderClient>
-        </ConvexClientProvider>
+        <I18nProviderClient locale={locale}>
+          <NuqsAdapter>{children}</NuqsAdapter>
+          <Toaster richColors />
+        </I18nProviderClient>
       </body>
     </html>
   );

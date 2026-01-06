@@ -55,11 +55,6 @@ export function LoginForm() {
       const result = await studentAuthClient.signIn.email({
         email: generateEmail(values.phoneNumber, teacher.subdomain),
         password: values.password,
-        fetchOptions: {
-          body: {
-            teacherId: teacher._id,
-          },
-        },
       });
       if (result.error) {
         throw new Error(result.error.message);

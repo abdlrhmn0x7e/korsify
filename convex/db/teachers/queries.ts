@@ -33,21 +33,39 @@ export async function getBySubdomain(
   return {
     ...teacher,
     branding: {
-      ...teacher?.branding,
+      ...teacher.branding,
       logoUrl,
       coverUrl,
     },
   };
 }
 
-export function getByCustomDomain(
+export async function getByCustomDomain(
   ctx: GenericQueryCtx<DataModel>,
   customDomain: string
 ) {
-  return ctx.db
+  const teacher = await ctx.db
     .query("teachers")
     .withIndex("by_customDomain", (q) => q.eq("customDomain", customDomain))
     .first();
+
+  if (!teacher) return null;
+
+  const logoUrl = teacher.branding?.logoStorageId
+    ? await ctx.storage.getUrl(teacher.branding.logoStorageId)
+    : null;
+  const coverUrl = teacher.branding?.coverStorageId
+    ? await ctx.storage.getUrl(teacher.branding.coverStorageId)
+    : null;
+
+  return {
+    ...teacher,
+    branding: {
+      ...teacher.branding,
+      logoUrl,
+      coverUrl,
+    },
+  };
 }
 
 export async function isSubdomainAvailable(

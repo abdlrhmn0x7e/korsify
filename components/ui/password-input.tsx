@@ -15,7 +15,10 @@ interface PasswordInputProps extends Omit<InputProps, "type"> {
   placeholder?: string;
 }
 
-function PasswordInput({ placeholder = "********", ...props }: PasswordInputProps) {
+function PasswordInput({
+  placeholder = "********",
+  ...props
+}: PasswordInputProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -30,6 +33,7 @@ function PasswordInput({ placeholder = "********", ...props }: PasswordInputProp
           type="button"
           variant="ghost"
           size="xs"
+          tabIndex={-1}
           onClick={() => setIsVisible((prev) => !prev)}
           aria-label={isVisible ? "Hide password" : "Show password"}
         >

@@ -142,3 +142,35 @@ export function isReservedSubdomain(subdomain: string): boolean {
 export function getReservedSubdomains(): ReadonlySet<string> {
   return RESERVED_SUBDOMAINS;
 }
+
+export function extractSubdomainFromOrigin(origin: string): string | null {
+  try {
+    const url = new URL(origin);
+    const hostname = url.hostname;
+
+    // Handle localhost (e.g., teachera.localhost)
+    if (hostname.endsWith(".localhost")) {
+      const subdomain = hostname.replace(".localhost", "");
+      return subdomain || null;
+    }
+
+    // Handle production (e.g., teachera.korsify.com)
+    if (hostname.endsWith(`.${APP_DOMAIN}`)) {
+      const subdomain = hostname.slice(0, -`.${APP_DOMAIN}`.length);
+      return subdomain || null;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function extractSubdomainFromEmail(email: string): string | null {
+  const domain = email.split("@")[1];
+  if (!domain) return null;
+
+  // Extract first part before the dot (subdomain)
+  const subdomain = domain.split(".")[0];
+  return subdomain || null;
+}
