@@ -104,10 +104,10 @@ const heroSectionValidator = v.object({
   ...baseSectionFields,
   type: v.literal("hero"),
   variant: v.union(
-    v.literal("centered"),     // Text centered, optional background image
-    v.literal("split"),        // Image on one side, text on other
-    v.literal("minimal"),      // Just headline and CTA, no image
-    v.literal("video")         // Background video (future)
+    v.literal("centered"), // Text centered, optional background image
+    v.literal("split"), // Image on one side, text on other
+    v.literal("minimal"), // Just headline and CTA, no image
+    v.literal("video") // Background video (future)
   ),
   content: v.object({
     headline: v.string(),
@@ -123,17 +123,17 @@ const coursesSectionValidator = v.object({
   ...baseSectionFields,
   type: v.literal("courses"),
   variant: v.union(
-    v.literal("grid"),         // Card grid (2-3 columns)
-    v.literal("list"),         // Horizontal cards, stacked
-    v.literal("carousel"),     // Swipeable horizontal scroll
-    v.literal("featured")      // One large featured + smaller grid
+    v.literal("grid"), // Card grid (2-3 columns)
+    v.literal("list"), // Horizontal cards, stacked
+    v.literal("carousel"), // Swipeable horizontal scroll
+    v.literal("featured") // One large featured + smaller grid
   ),
   content: v.object({
     title: v.string(),
     subtitle: v.optional(v.string()),
     showPrice: v.boolean(),
     showDuration: v.boolean(),
-    limit: v.optional(v.number()),        // Max courses to show (default: 3-6)
+    limit: v.optional(v.number()), // Max courses to show (default: 3-6)
     viewAllLink: v.optional(v.boolean()), // Show "View All Courses" link to /courses
   }),
 });
@@ -144,8 +144,8 @@ const aboutSectionValidator = v.object({
   type: v.literal("about"),
   variant: v.union(
     v.literal("side-by-side"), // Image left, text right (or RTL flipped)
-    v.literal("centered"),     // Image above, text below centered
-    v.literal("stats-focus")   // Minimal text, prominent stats cards
+    v.literal("centered"), // Image above, text below centered
+    v.literal("stats-focus") // Minimal text, prominent stats cards
   ),
   content: v.object({
     title: v.string(),
@@ -159,9 +159,9 @@ const testimonialsSectionValidator = v.object({
   ...baseSectionFields,
   type: v.literal("testimonials"),
   variant: v.union(
-    v.literal("cards"),        // Card grid
-    v.literal("carousel"),     // Swipeable testimonials
-    v.literal("quotes")        // Large quote style, one at a time
+    v.literal("cards"), // Card grid
+    v.literal("carousel"), // Swipeable testimonials
+    v.literal("quotes") // Large quote style, one at a time
   ),
   content: v.object({
     title: v.string(),
@@ -183,8 +183,8 @@ const faqSectionValidator = v.object({
   ...baseSectionFields,
   type: v.literal("faq"),
   variant: v.union(
-    v.literal("accordion"),    // Collapsible accordion
-    v.literal("two-column")    // Q&A in two columns
+    v.literal("accordion"), // Collapsible accordion
+    v.literal("two-column") // Q&A in two columns
   ),
   content: v.object({
     title: v.string(),
@@ -203,9 +203,9 @@ const ctaSectionValidator = v.object({
   ...baseSectionFields,
   type: v.literal("cta"),
   variant: v.union(
-    v.literal("simple"),       // Solid background, centered text
-    v.literal("gradient"),     // Gradient background
-    v.literal("image")         // Background image with overlay
+    v.literal("simple"), // Solid background, centered text
+    v.literal("gradient"), // Gradient background
+    v.literal("image") // Background image with overlay
   ),
   content: v.object({
     headline: v.string(),
@@ -232,14 +232,14 @@ export type StorefrontSection = Infer<typeof storefrontSectionValidator>;
 
 ### 1.4 Variant Summary Table
 
-| Section Type   | Variants                                      |
-| -------------- | --------------------------------------------- |
-| Hero           | centered, split, minimal, video               |
-| Courses        | grid, list, carousel, featured                |
-| About          | side-by-side, centered, stats-focus           |
-| Testimonials   | cards, carousel, quotes                       |
-| FAQ            | accordion, two-column                         |
-| CTA            | simple, gradient, image                       |
+| Section Type | Variants                            |
+| ------------ | ----------------------------------- |
+| Hero         | centered, split, minimal, video     |
+| Courses      | grid, list, carousel, featured      |
+| About        | side-by-side, centered, stats-focus |
+| Testimonials | cards, carousel, quotes             |
+| FAQ          | accordion, two-column               |
+| CTA          | simple, gradient, image             |
 
 ### 1.5 Starter Templates
 
@@ -418,6 +418,7 @@ The teacher table stores identity and branding data: name, email, subdomain, log
 The storefront table stores presentation config: theme, global style (fonts, buttons, radius), and the sections array with per-section variants and content.
 
 During homepage rendering:
+
 - Navbar and Footer read from `teacher.branding` for logo, social links, and footer text
 - About section reads bio from `teacher.branding.bio`
 - CTA section reads WhatsApp from `teacher.branding.whatsappNumber` when `showWhatsApp` is true
@@ -443,22 +444,22 @@ convex/
 
 ### 2.2 Queries
 
-| Function           | Arguments       | Returns                              | Purpose                         |
-| ------------------ | --------------- | ------------------------------------ | ------------------------------- |
-| `getByTeacherId`   | `{ teacherId }` | `{ storefront, branding }` with URLs | For builder and public render   |
+| Function         | Arguments       | Returns                              | Purpose                       |
+| ---------------- | --------------- | ------------------------------------ | ----------------------------- |
+| `getByTeacherId` | `{ teacherId }` | `{ storefront, branding }` with URLs | For builder and public render |
 
 ### 2.3 Mutations
 
-| Function                  | Arguments                                   | Returns             | Purpose                           |
-| ------------------------- | ------------------------------------------- | ------------------- | --------------------------------- |
-| `createFromTemplate`      | `{ starterTemplateId }`                     | `Id<"storefronts">` | Initialize from starter template  |
-| `updateStyle`             | `{ theme?, style? }`                        | `null`              | Update global style settings      |
-| `updateSection`           | `{ sectionId, variant?, content? }`         | `null`              | Update section variant or content |
-| `reorderSections`         | `{ sectionIds[] }`                          | `null`              | Change section order              |
-| `toggleSectionVisibility` | `{ sectionId, visible }`                    | `null`              | Show/hide section                 |
-| `addSection`              | `{ type, variant, afterSectionId? }`        | `null`              | Add new section                   |
-| `removeSection`           | `{ sectionId }`                             | `null`              | Delete section                    |
-| `updateCssVariables`      | `{ cssVariables }`                          | `null`              | Update advanced CSS overrides     |
+| Function                  | Arguments                            | Returns             | Purpose                           |
+| ------------------------- | ------------------------------------ | ------------------- | --------------------------------- |
+| `createFromTemplate`      | `{ starterTemplateId }`              | `Id<"storefronts">` | Initialize from starter template  |
+| `updateStyle`             | `{ theme?, style? }`                 | `null`              | Update global style settings      |
+| `updateSection`           | `{ sectionId, variant?, content? }`  | `null`              | Update section variant or content |
+| `reorderSections`         | `{ sectionIds[] }`                   | `null`              | Change section order              |
+| `toggleSectionVisibility` | `{ sectionId, visible }`             | `null`              | Show/hide section                 |
+| `addSection`              | `{ type, variant, afterSectionId? }` | `null`              | Add new section                   |
+| `removeSection`           | `{ sectionId }`                      | `null`              | Delete section                    |
+| `updateCssVariables`      | `{ cssVariables }`                   | `null`              | Update advanced CSS overrides     |
 
 ---
 
@@ -596,21 +597,23 @@ When a button is clicked, the sidebar slides to show the configuration form:
 
 **APPEARANCE Section:**
 
-| Button | Configuration Form |
-|--------|-------------------|
-| Template | Grid of starter templates. Warning if storefront exists. Selecting applies template. |
-| Theme | Radio group: Light / Dark / Soft |
-| Typography | Font pair dropdown with preview text showing heading + body fonts |
-| Buttons | Button style toggle (Rounded / Sharp) + Border radius slider (0 to 1.5rem) |
+| Button     | Configuration Form                                                                   |
+| ---------- | ------------------------------------------------------------------------------------ |
+| Template   | Grid of starter templates. Warning if storefront exists. Selecting applies template. |
+| Theme      | Radio group: Light / Dark / Soft                                                     |
+| Typography | Font pair dropdown with preview text showing heading + body fonts                    |
+| Buttons    | Button style toggle (Rounded / Sharp) + Border radius slider (0 to 1.5rem)           |
 
 **SECTIONS Section:**
 
 Shows list of current sections in order. Each section button shows:
+
 - Section type name
 - Current variant in muted text
 - Eye icon indicating visibility (filled = visible, outline = hidden)
 
 Clicking a section opens its configuration form:
+
 - Visibility toggle at top
 - Variant selector (visual cards or segmented control)
 - Content fields specific to section type
@@ -622,8 +625,8 @@ Sections can be reordered via drag handles (visible on hover).
 
 **ADVANCED Section:**
 
-| Button | Configuration Form |
-|--------|-------------------|
+| Button        | Configuration Form                                                          |
+| ------------- | --------------------------------------------------------------------------- |
 | CSS Variables | Grouped inputs for color overrides, spacing, etc. Reset to Defaults button. |
 
 ### 3.5 Configuration Form Behavior
@@ -640,6 +643,7 @@ Each configuration form follows the same pattern:
 ### 3.6 Section Editor Forms
 
 **Hero Section:**
+
 - Visibility toggle
 - Variant selector: Centered | Split | Minimal | Video
 - Headline (text input)
@@ -649,6 +653,7 @@ Each configuration form follows the same pattern:
 - Background Image (upload with preview)
 
 **Courses Section:**
+
 - Visibility toggle
 - Variant selector: Grid | List | Carousel | Featured
 - Section Title (text input)
@@ -659,6 +664,7 @@ Each configuration form follows the same pattern:
 - Show "View All" Link toggle
 
 **About Section:**
+
 - Visibility toggle
 - Variant selector: Side-by-side | Centered | Stats Focus
 - Section Title (text input)
@@ -667,6 +673,7 @@ Each configuration form follows the same pattern:
 - Note: Bio text comes from teacher.branding.bio (link to Settings)
 
 **Testimonials Section:**
+
 - Visibility toggle
 - Variant selector: Cards | Carousel | Quotes
 - Section Title (text input)
@@ -674,6 +681,7 @@ Each configuration form follows the same pattern:
   - Each item: Name, Role (optional), Content, Avatar (optional), Rating (optional)
 
 **FAQ Section:**
+
 - Visibility toggle
 - Variant selector: Accordion | Two-column
 - Section Title (text input)
@@ -681,6 +689,7 @@ Each configuration form follows the same pattern:
   - Each item: Question, Answer
 
 **CTA Section:**
+
 - Visibility toggle
 - Variant selector: Simple | Gradient | Image
 - Headline (text input)
@@ -699,6 +708,7 @@ Each configuration form follows the same pattern:
 The storefront layout fetches both the storefront config and teacher branding in a single query. It generates CSS variables from the combined data (branding colors + storefront style + custom overrides) and wraps the page in a theme provider.
 
 **Shared layout elements:**
+
 - Navbar (logo, navigation links)
 - Footer (social links, footer text)
 - Theme provider with CSS variables
@@ -709,6 +719,7 @@ The storefront layout fetches both the storefront config and teacher branding in
 The homepage maps over the visible sections and renders each through a DynamicSection component. This component uses a type-safe switch statement on `section.type` to select the section component, then another switch on `section.variant` within each section type to select the specific variant component.
 
 Example flow for a hero section with "split" variant:
+
 1. DynamicSection receives `{ type: "hero", variant: "split", content: {...} }`
 2. Switches on type, matches "hero"
 3. Passes to HeroSection component
@@ -718,6 +729,7 @@ Example flow for a hero section with "split" variant:
 ### 4.3 Homepage - Section Components
 
 Each section type has a folder containing variant components:
+
 - `hero/hero-centered.tsx`, `hero/hero-split.tsx`, etc.
 - All variants share the same content props interface
 - Variants only differ in layout and styling
@@ -727,6 +739,7 @@ The parent section component (e.g., `HeroSection`) handles the variant switching
 ### 4.4 Courses Section Behavior
 
 The courses section on the homepage is a **preview/showcase** of recent courses:
+
 - Fetches recent published courses from the database (ordered by createdAt desc)
 - Respects `limit` from content (default: 4-6 courses)
 - Shows "View All Courses" link when `viewAllLink` is true, linking to `/courses`
@@ -739,6 +752,7 @@ The courses section on the homepage is a **preview/showcase** of recent courses:
 Each starter template includes contextual placeholder content in both English and Arabic.
 
 **Hero placeholders vary by variant:**
+
 - Centered: "Transform Your Skills with Expert-Led Courses" / "طوّر مهاراتك مع دورات يقودها خبراء"
 - Split: "Learn From The Best, Become The Best" / "تعلم من الأفضل، كن الأفضل"
 - Minimal: "Start Learning Today" / "ابدأ التعلم اليوم"

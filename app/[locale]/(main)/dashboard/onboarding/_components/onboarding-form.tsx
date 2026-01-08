@@ -19,6 +19,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { RESERVED_SUBDOMAINS } from "@/lib/subdomain";
 import { useScopedI18n } from "@/locales/client";
 
@@ -205,8 +206,8 @@ export function OnboardingForm({ onSuccess }: OnboardingFormProps) {
       phone: values.phone || undefined,
       subdomain: values.subdomain.toLowerCase().trim(),
       branding: {
-        logoStorageId: values.logoStorageId,
-        coverStorageId: values.coverStorageId,
+        logoStorageId: values.logoStorageId as Id<"_storage"> | undefined,
+        coverStorageId: values.coverStorageId as Id<"_storage"> | undefined,
         primaryColor: values.primaryColor,
       },
       paymentInfo: {
