@@ -128,65 +128,63 @@ bun dev
 
 #### Student Auth Component (Convex Component)
 
-The student authentication is handled by a dedicated Convex component (`studentAuth`) that is completely isolated from the teacher auth (Better Auth). This enables:
+The student authentication is handled by a dedicated Convex component (`studentAuth`) using Better Auth, completely isolated from the teacher auth. This enables:
 
-- **Per-teacher phone uniqueness** - Same phone can exist under different teachers
+- **Per-teacher phone uniqueness** - Same phone can exist under different teachers (via generated emails: `{phone}@{subdomain}.korsify.com`)
 - **White-label experience** - Students never see Korsify branding
-- **Proper session management** - DB-backed sessions with revocation support
-- **Phone verification via WhatsApp OTP** - Using Twilio WhatsApp API
+- **Proper session management** - DB-backed sessions via Better Auth with httpOnly cookies
+- **Subdomain-based access control** - Hooks validate that students can only sign in/up on their teacher's subdomain
 
 Component Structure
 
-- [ ] Create `convex/components/studentAuth/` directory
-- [ ] Create `convex.config.ts` defining the studentAuth component
-- [ ] Register component in `convex/convex.config.ts` with `app.use(studentAuth)`
+- [x] Create `convex/components/studentAuth/` directory
+- [x] Create `convex.config.ts` defining the studentAuth component
+- [x] Register component in `convex/convex.config.ts` with `app.use(studentAuth)`
 
-Schema (Isolated Tables)
+Schema (Isolated Tables via Better Auth)
 
-- [ ] Create `student` table (teacherId, phone, phoneVerified, passwordHash, name, status, blockReason, createdAt, updatedAt)
-- [ ] Add indexes: by_teacherId, by_teacherId_phone (unique per teacher), by_teacherId_status
-- [ ] Create `studentSession` table (studentId, token, expiresAt, ipAddress, userAgent, createdAt)
-- [ ] Add indexes: by_token, by_studentId, by_expiresAt
-- [ ] Create `studentVerification` table (phone, teacherId, code, expiresAt, attempts, createdAt)
-- [ ] Add indexes: by_phone_teacherId, by_expiresAt
+- [x] Use Better Auth's generated schema (user, session, account, verification, jwks tables)
+- [x] Add custom user fields: `teacherId`, `phoneNumber`
+- [x] Add indexes: `by_teacherId`, `by_teacherId_email`, `by_teacherId_phoneNumber`
 
-Auth Mutations
+Auth Configuration
 
-- [ ] Create `sendOtp` mutation (generates 6-digit code, stores in verification table, calls Twilio WhatsApp action)
-- [ ] Create `verifyOtp` mutation (validates code, marks phone as verified, handles brute force protection)
-- [ ] Create `signUp` mutation (validates phone verified, hashes password with argon2, creates student)
-- [ ] Create `signIn` mutation (verifies credentials, checks blocked status, creates session, returns token)
-- [ ] Create `signOut` mutation (invalidates session by token)
-- [ ] Create `refreshSession` mutation (extends session expiry if valid)
+- [x] Create `convex/studentAuth.ts` with Better Auth configuration
+- [x] Configure email/password authentication
+- [x] Add subdomain validation hooks for sign-in (validates email subdomain matches request origin)
+- [x] Add database hooks for sign-up (enforces teacherId, validates subdomain, checks uniqueness per teacher)
+- [x] Configure cookie prefix (`student-auth`) to avoid conflicts with teacher auth
 
 Auth Queries
 
-- [ ] Create `getSession` query (validates token, returns student + session if valid)
-- [ ] Create `getStudent` query (returns student by ID)
-- [ ] Create `getCurrentStudent` query (uses session token from context)
-
-Twilio WhatsApp Integration
-
-- [ ] Create Convex action `sendWhatsAppOtp` (calls Twilio API to send OTP via WhatsApp)
-- [ ] Add TWILIO_ACCOUNT_SID to environment variables
-- [ ] Add TWILIO_AUTH_TOKEN to environment variables
-- [ ] Add TWILIO_WHATSAPP_FROM to environment variables (e.g., "whatsapp:+14155238886")
-- [ ] Create OTP message template (Arabic + English)
+- [x] Create `getCurrentStudent` query (uses Better Auth's `safeGetAuthUser`)
 
 Client Wrapper
 
-- [ ] Create `StudentAuthClient` class wrapping component API
-- [ ] Implement `signUp()`, `signIn()`, `signOut()`, `sendOtp()`, `verifyOtp()` methods
-- [ ] Handle session token storage (httpOnly cookie via API route)
-- [ ] Create `useStudentSession()` React hook
-- [ ] Create `StudentAuthProvider` context provider
+- [x] Create `lib/student-auth-client.ts` with Better Auth React client
+- [x] Create `generateEmail()` helper function (`{phone}@{subdomain}.korsify.com`)
+- [x] Configure with `convexClient()` plugin for Convex integration
 
-Session Middleware
+Server Helpers
 
-- [ ] Create `getStudentSession()` helper for server components
-- [ ] Create middleware pattern for storefront protected routes
-- [ ] Handle session cookie parsing and validation
-- [ ] Implement automatic session refresh on valid requests
+- [x] Create `lib/student-auth-server.ts` with Next.js server utilities
+- [x] Implement `studentAuthHandler` for API routes
+- [x] Implement `getCurrentStudent()` server function
+- [x] Implement `getTeacherFromHeaders()` helper for storefront context
+- [x] Add `fetchStudentAuthQuery`, `fetchStudentAuthMutation`, `fetchStudentAuthAction` helpers
+
+API Routes
+
+- [x] Create `/api/student-auth/[...all]/route.ts` for Better Auth endpoints
+
+Storefront Integration
+
+- [x] Create `StudentAuthProvider` component wrapping `ConvexBetterAuthProvider`
+- [x] Integrate provider in storefront layout
+- [x] Build login form component using `studentAuthClient.signIn.email`
+- [x] Build signup form component using `studentAuthClient.signUp.email`
+- [x] Add auth state checks in storefront pages (redirect if authenticated/unauthenticated)
+- [x] Build profile dropdown with sign-out functionality
 
 #### Enrollment & Payments Database
 
@@ -199,10 +197,10 @@ Session Middleware
 
 #### Student Storefront Pages
 
-- [ ] Create storefront layout (loads teacher branding, no Korsify branding)
-- [ ] Build student signup page (phone input → OTP verification → password + name)
-- [ ] Build student login page (phone + password)
-- [ ] Create StudentContext provider (wraps useStudentSession)
+- [x] Create storefront layout (loads teacher branding, no Korsify branding)
+- [x] Build student signup page (phone + password + name, email generated from phone)
+- [x] Build student login page (phone + password)
+- [x] Create StudentAuthProvider (wraps ConvexBetterAuthProvider)
 - [ ] Build course catalog page (shows published courses)
 - [ ] Build course detail page (title, description, price, lesson count)
 - [ ] Show payment instructions (teacher's Vodafone/InstaPay info)
@@ -394,9 +392,6 @@ The playback backend uses the `studentAuth` component to validate sessions and r
 - [x] Add MUX_TOKEN_SECRET to environment variables
 - [x] Add MUX_SIGNING_KEY_ID to environment variables (for signed URLs)
 - [x] Add MUX_SIGNING_KEY_PRIVATE to environment variables (for signed URLs)
-- [ ] Add TWILIO_ACCOUNT_SID to environment variables
-- [ ] Add TWILIO_AUTH_TOKEN to environment variables
-- [ ] Add TWILIO_WHATSAPP_FROM to environment variables
 - [ ] Configure Vercel for wildcard subdomain (\*.korsify.com)
 - [x] Set up Mux webhook URL in Mux dashboard
 - [ ] Test subdomain routing in production
