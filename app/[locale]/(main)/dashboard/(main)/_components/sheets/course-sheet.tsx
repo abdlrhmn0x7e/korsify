@@ -67,7 +67,7 @@ export function CourseSheet() {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="h-full overflow-y-auto px-4 mt-12 pb-12">
+        <div className="h-full overflow-y-auto mt-12 pb-12">
           {params.slug && (
             <MotionConfig transition={{ duration: 0.2, ease: "easeOut" }}>
               <AnimatePresence mode="popLayout" initial={false}>
@@ -78,6 +78,7 @@ export function CourseSheet() {
                     initial="enterFromRight"
                     animate="center"
                     exit="exitToRight"
+                    className="p-2"
                   >
                     <LessonDetails
                       lessonId={params.lessonId as Id<"lessons">}

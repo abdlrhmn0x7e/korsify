@@ -133,8 +133,8 @@ export function CourseSections({ courseId }: { courseId: Id<"courses"> }) {
   }
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
+    <div>
+      <div className="flex items-center justify-between py-3 px-3.5 border-b">
         <h5>{t("title")}</h5>
         <CreateSectionButton courseId={courseId} />
       </div>
@@ -300,7 +300,7 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
   return (
     <div ref={setNodeRef} style={style}>
       <AccordionItem value={section._id}>
-        <AccordionHeader className="flex items-center gap-2 py-1 px-2 text-sm rounded-sm">
+        <AccordionHeader className="flex items-center gap-2 text-sm py-2 pl-1 pr-4 border-b">
           <Button variant="ghost" {...listeners} {...attributes}>
             <IconGripVertical />
           </Button>
@@ -374,7 +374,7 @@ function SectionAccordionItem({ section }: { section: Doc<"sections"> }) {
           </div>
         </AccordionHeader>
 
-        <AccordionContent className="pl-4">
+        <AccordionContent className="pl-4 pt-2 border-b">
           {lessons === undefined ? (
             <div className="py-4 flex justify-center">
               <Spinner />

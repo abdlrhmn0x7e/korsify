@@ -48,8 +48,8 @@ export function CourseDetails({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex gap-4">
+    <div className="divide-y">
+      <div className="flex gap-4 p-4">
         <AspectRatio
           ratio={16 / 9}
           className="relative h-32 shrink-0 overflow-hidden rounded-md border"
@@ -109,7 +109,7 @@ export function CourseDetails({ slug }: { slug: string }) {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 p-4">
         <h5>{t("details.description")}</h5>
         <div className="h-full max-h-60 overflow-y-auto">
           {course.description && course.description.content.length > 0 ? (
