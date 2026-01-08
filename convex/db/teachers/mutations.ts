@@ -41,11 +41,7 @@ export async function create(
   });
 }
 
-export type UpdateTeacherData = {
-  name?: string;
-  phone?: string;
-  email?: string;
-};
+export type UpdateTeacherData = Omit<Partial<CreateTeacherData>, "userId">;
 
 export async function update(
   ctx: GenericMutationCtx<DataModel>,

@@ -118,7 +118,13 @@ export const create = mutation({
 });
 
 export const update = mutation({
-  args: onboardingValidator,
+  args: v.object({
+    name: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    email: v.optional(v.string()),
+    branding: v.optional(brandingValidator),
+    paymentInfo: v.optional(paymentInfoValidator),
+  }),
   handler: async (ctx, args) => {
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) {

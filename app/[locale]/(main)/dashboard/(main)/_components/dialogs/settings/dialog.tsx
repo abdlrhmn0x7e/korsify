@@ -21,6 +21,7 @@ import { SettingsFormValues } from "./types";
 import { Spinner } from "@/components/ui/spinner";
 import { useDialog } from "@/hooks/use-dialog";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
+import { Id } from "@/convex/_generated/dataModel";
 
 export function SettingsDialog({
   teacher,
@@ -46,7 +47,25 @@ export function SettingsDialog({
   });
 
   function onSubmit(values: SettingsFormValues) {
-    updateTeacher.mutate(values);
+    updateTeacher.mutate({
+      name: values.name,
+      phone: values.phone,
+      email: values.email,
+      branding: values.branding
+        ? {
+            logoStorageId: values.branding.logoStorageId as Id<"_storage">,
+            coverStorageId: values.branding.coverStorageId as Id<"_storage">,
+            primaryColor: values.branding.primaryColor,
+          }
+        : undefined,
+      paymentInfo: values.paymentInfo
+        ? {
+            vodafoneCash: values.paymentInfo.vodafoneCash,
+            instaPay: values.paymentInfo.instaPay,
+            instructions: values.paymentInfo.instructions,
+          }
+        : undefined,
+    });
   }
 
   return (
