@@ -89,9 +89,9 @@ function DesktopPreview({ subdomain }: { subdomain?: string }) {
   return (
     <AspectRatio
       ratio={16 / 9}
-      className="@container w-full mx-auto border bg-background rounded-lg overflow-hidden"
+      className="@container w-full mx-auto border bg-muted rounded-lg overflow-hidden"
     >
-      <header className="flex items-center px-3 py-2 bg-muted border-b sticky top-0 z-50">
+      <header className="flex items-center px-3 py-2 bg-muted sticky top-0 z-50">
         <div className="flex gap-1.5 items-center justify-center">
           <div className="size-3 bg-red-500 rounded-full" />
           <div className="size-3 bg-yellow-500 rounded-full" />

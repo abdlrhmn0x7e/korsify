@@ -18,7 +18,10 @@ export function PreviewArea() {
 
   return (
     <TeacherContextProvider teacher={teacher}>
-      <ScrollArea className="h-full overflow-y-auto" viewportRef={container}>
+      <ScrollArea
+        className="h-full overflow-y-auto bg-background"
+        viewportRef={container}
+      >
         <Navbar className="pointer-events-none" container={container} />
 
         {storefront.sections

@@ -7,6 +7,7 @@ import { HeroEditor } from "./editors/hero-editor";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+  IconBorderCorners,
   IconEye,
   IconEyeOff,
   IconGripVertical,
@@ -28,67 +29,74 @@ function SectionListView() {
   return (
     <div className="flex flex-col h-full">
       <ScrollArea className="flex-1">
-        <div className="p-4 space-y-2">
-          {storefront?.sections.map((section) => (
-            <div
-              key={section.id}
-              className={cn(
-                "group flex items-center gap-2 p-3 rounded-lg border bg-card transition-colors hover:border-primary/50 cursor-pointer"
-              )}
-              onClick={() => setActiveSectionId(section.id)}
+        <div className="flex flex-col h-full">
+          <div className="h-9 border-b px-3 py-1 bg-background flex items-center gap-2">
+            <IconBorderCorners className="size-4" />
+            <p className="text-sm">Sections</p>
+          </div>
+
+          <div className="p-2 space-y-2 bg-muted flex-1">
+            {storefront?.sections.map((section) => (
+              <div
+                key={section.id}
+                className={cn(
+                  "group flex items-center gap-2 p-3 rounded-lg border bg-card transition-colors hover:border-primary/50 cursor-pointer"
+                )}
+                onClick={() => setActiveSectionId(section.id)}
+              >
+                <div className="cursor-grab text-muted-foreground hover:text-foreground">
+                  <IconGripVertical className="h-4 w-4" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm capitalize truncate">
+                    {section.type} Section
+                  </div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {section.variant || "Default"}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSectionVisibility(section.id, !section.visible);
+                    }}
+                  >
+                    {section.visible ? (
+                      <IconEye className="h-3.5 w-3.5" />
+                    ) : (
+                      <IconEyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    className="hover:text-destructive hover:bg-destructive/10"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeSection(section.id);
+                    }}
+                  >
+                    <IconTrash className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+
+            <Button
+              variant="outline"
+              className="w-full border-dashed"
+              onClick={() => setActiveSectionId("add-new")}
             >
-              <div className="cursor-grab text-muted-foreground hover:text-foreground">
-                <IconGripVertical className="h-4 w-4" />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm capitalize truncate">
-                  {section.type} Section
-                </div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {section.variant || "Default"}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSectionVisibility(section.id, !section.visible);
-                  }}
-                >
-                  {section.visible ? (
-                    <IconEye className="h-3.5 w-3.5" />
-                  ) : (
-                    <IconEyeOff className="h-3.5 w-3.5 text-muted-foreground" />
-                  )}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  className="hover:text-destructive hover:bg-destructive/10"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeSection(section.id);
-                  }}
-                >
-                  <IconTrash className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
-
-          <Button
-            variant="outline"
-            className="w-full border-dashed"
-            onClick={() => setActiveSectionId("add-new")}
-          >
-            <IconPlug />
-            Add Section
-          </Button>
+              <IconPlug />
+              Add Section
+            </Button>
+          </div>
         </div>
       </ScrollArea>
 
@@ -131,7 +139,7 @@ export function Sidebar() {
             size="icon"
             onClick={() => setActiveSectionId(null)}
           >
-            <DirectedArrow />
+            <DirectedArrow inverse />
           </Button>
           <span className="font-semibold">Add Section</span>
         </div>
@@ -159,22 +167,20 @@ export function Sidebar() {
   if (activeSection) {
     return (
       <div className="flex flex-col h-full">
-        <div className="p-4 border-b flex items-center justify-between bg-background z-10">
+        <div className="h-9 px-2 py-1 border-b flex items-center justify-between bg-background z-10">
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
-              size="icon"
+              size="icon-sm"
               onClick={() => setActiveSectionId(null)}
             >
-              <DirectedArrow />
+              <DirectedArrow inverse />
             </Button>
-            <span className="font-semibold capitalize">
-              {activeSection.type}
-            </span>
+            <span className="text-sm capitalize">{activeSection.type}</span>
           </div>
           <Button
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             className="text-destructive hover:bg-destructive/10"
             onClick={() => removeSection(activeSection.id)}
           >
