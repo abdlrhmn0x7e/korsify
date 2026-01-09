@@ -85,7 +85,7 @@ export function AppSidebar({ data, secondary, ...props }: AppSidebarProps) {
       </SidebarContent>
       <SidebarRail />
 
-      <SidebarFooter className="px-4 pt-4 pb-3 border-t">
+      <SidebarFooter className="border-t">
         <SidebarMenu>
           {secondary?.map((item) => (
             <SidebarMenuItem key={item.title}>

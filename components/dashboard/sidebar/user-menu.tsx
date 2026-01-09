@@ -67,7 +67,8 @@ export function NavUser() {
               variant="outline"
               className={buttonVariants({
                 variant: "outline",
-                className: "h-9 px-1 justify-start",
+                className:
+                  "h-9 px-1 justify-start group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:items-center! group-data-[collapsible=icon]:justify-center!",
               })}
             />
           }
@@ -80,7 +81,7 @@ export function NavUser() {
             />
             <AvatarFallback>{data.user.name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div className="flex items-center justify-between w-full pe-2">
+          <div className="flex items-center justify-between w-full pe-2 group-data-[collapsible=icon]:hidden">
             <span className="truncate font-medium text-xs">
               {data.user.name}
             </span>

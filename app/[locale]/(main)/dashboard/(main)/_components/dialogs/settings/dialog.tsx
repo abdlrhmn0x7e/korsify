@@ -22,6 +22,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useDialog } from "@/hooks/use-dialog";
 import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { Id } from "@/convex/_generated/dataModel";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 
 export function SettingsDialog({
   teacher,
@@ -72,7 +73,7 @@ export function SettingsDialog({
     <Dialog {...dialog.props}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="sm" className="w-full justify-start" />
+          <SidebarMenuButton size="sm" className="w-full justify-start" />
         }
       >
         <IconSettings />
