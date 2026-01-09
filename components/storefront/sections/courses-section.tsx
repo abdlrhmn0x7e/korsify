@@ -42,10 +42,10 @@ export function CoursesSection({ content, courses }: CoursesSectionProps) {
   const displayCourses = courses.slice(0, limit);
 
   return (
-    <section className="py-16 px-4 md:px-8">
+    <section className="py-16 px-4 @3xl:px-8">
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
+          <h2 className="text-3xl @3xl:text-4xl font-bold">{title}</h2>
           {subtitle && (
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {subtitle}
@@ -53,7 +53,7 @@ export function CoursesSection({ content, courses }: CoursesSectionProps) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 @3xl:grid-cols-2 @5xl:grid-cols-3 gap-8">
           {displayCourses.map((course) => (
             <Card
               key={course._id}

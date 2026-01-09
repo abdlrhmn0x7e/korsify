@@ -13,9 +13,9 @@ export function HeroSection({ content, variant }: HeroSectionProps) {
 
   if (variant === "minimal") {
     return (
-      <section className="py-16 px-4 md:px-8">
+      <section className="py-16 px-4 @3xl:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
+          <h1 className="text-3xl @3xl:text-5xl font-bold tracking-tight">
             {headline}
           </h1>
           <p className="text-lg text-muted-foreground">
@@ -33,10 +33,10 @@ export function HeroSection({ content, variant }: HeroSectionProps) {
 
   if (variant === "split") {
     return (
-      <section className="py-16 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="py-16 px-4 @3xl:px-8">
+        <div className="max-w-7xl mx-auto grid @3xl:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-4xl @3xl:text-6xl font-bold tracking-tight">
               {headline}
             </h1>
             <p className="text-xl text-muted-foreground">
@@ -72,11 +72,11 @@ export function HeroSection({ content, variant }: HeroSectionProps) {
   return (
     <LazyBackgroundImage
       storageId={backgroundImageStorageId}
-      className="relative py-20 px-4 md:px-8 overflow-hidden"
+      className="relative py-20 px-4 @3xl:px-8 overflow-hidden"
       fallbackClassName="bg-muted/30"
     >
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+        <h1 className="text-4xl @3xl:text-6xl font-bold tracking-tight">
           {headline}
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

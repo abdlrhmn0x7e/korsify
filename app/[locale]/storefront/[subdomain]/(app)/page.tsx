@@ -42,7 +42,7 @@ export default async function StorefrontHomePage() {
 
   if (storefrontData?.sections && storefrontData.sections.length > 0) {
     return (
-      <div className="flex flex-col">
+      <div className="@container flex flex-col">
         {storefrontData.sections.map((section) => (
           <DynamicSection
             key={section.id}

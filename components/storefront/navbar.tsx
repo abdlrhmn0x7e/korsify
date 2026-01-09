@@ -16,8 +16,10 @@ import { StorefrontLogo } from "./storefront-logo";
 
 export function Navbar({
   container,
+  className,
 }: {
   container?: React.RefObject<HTMLElement | null>;
+  className?: string;
 }) {
   const scrolled = useScroll(0, { container });
   const student = useQuery(api.studentAuth.getCurrentStudent);
@@ -31,7 +33,8 @@ export function Navbar({
     <header
       className={cn(
         "sticky top-0 z-50 mx-px transition-all duration-300",
-        scrolled && "bg-background/90 backdrop-blur-sm"
+        scrolled && "bg-background/90 backdrop-blur-sm",
+        className
       )}
     >
       {/* Bottom border when scrolled */}

@@ -11,7 +11,7 @@ export function AboutSection({ content, variant }: AboutSectionProps) {
 
   if (variant === "centered") {
     return (
-      <section className="py-20 px-4 md:px-8 bg-muted/30">
+      <section className="py-20 px-4 @3xl:px-8 bg-muted/30">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {imageStorageId && (
             <div className="mx-auto w-32 h-32 rounded-full overflow-hidden">
@@ -22,7 +22,7 @@ export function AboutSection({ content, variant }: AboutSectionProps) {
               />
             </div>
           )}
-          <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
+          <h2 className="text-3xl @3xl:text-4xl font-bold">{title}</h2>
           <div className="prose dark:prose-invert mx-auto">
             <p className="text-lg text-muted-foreground">
               Passionate about teaching and helping students succeed. With years of experience
@@ -53,25 +53,25 @@ export function AboutSection({ content, variant }: AboutSectionProps) {
 
   if (variant === "stats-focus") {
     return (
-      <section className="py-20 px-4 md:px-8 bg-primary text-primary-foreground">
+      <section className="py-20 px-4 @3xl:px-8 bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto space-y-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-center">{title}</h2>
+          <h2 className="text-3xl @3xl:text-4xl font-bold text-center">{title}</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 @3xl:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold">50+</div>
+              <div className="text-4xl @3xl:text-5xl font-bold">50+</div>
               <div className="text-sm opacity-80">Courses</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold">10k+</div>
+              <div className="text-4xl @3xl:text-5xl font-bold">10k+</div>
               <div className="text-sm opacity-80">Students</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold">4.9</div>
+              <div className="text-4xl @3xl:text-5xl font-bold">4.9</div>
               <div className="text-sm opacity-80">Rating</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold">100%</div>
+              <div className="text-4xl @3xl:text-5xl font-bold">100%</div>
               <div className="text-sm opacity-80">Satisfaction</div>
             </div>
           </div>
@@ -81,10 +81,10 @@ export function AboutSection({ content, variant }: AboutSectionProps) {
   }
 
   return (
-    <section className="py-20 px-4 md:px-8 bg-muted/30">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <section className="py-20 px-4 @3xl:px-8 bg-muted/30">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 @3xl:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
+          <h2 className="text-3xl @3xl:text-4xl font-bold">{title}</h2>
           <div className="prose dark:prose-invert">
             <p className="text-lg text-muted-foreground">
               Passionate about teaching and helping students succeed. With years of experience

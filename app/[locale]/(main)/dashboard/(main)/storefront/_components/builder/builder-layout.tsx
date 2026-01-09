@@ -16,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import React from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { MockPhone } from "@/components/mock-phone";
 
 export function BuilderLayout({ subdomain }: { subdomain?: string }) {
   const { isLoading } = useStorefront();
@@ -66,8 +67,9 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
-        <div className="absolute inset-x-12 bottom-0 top-24">
+        <div className="absolute inset-x-12 bottom-4 top-12 overflow-hidden">
           {device === "desktop" && <DesktopPreview subdomain={subdomain} />}
+          {device === "mobile" && <MobilePreview />}
         </div>
       </div>
     </div>
@@ -78,7 +80,7 @@ function DesktopPreview({ subdomain }: { subdomain?: string }) {
   return (
     <AspectRatio
       ratio={16 / 9}
-      className="w-full mx-auto border bg-background rounded-lg overflow-hidden"
+      className="@container w-full mx-auto border bg-background rounded-lg overflow-hidden"
     >
       <header className="flex items-center px-3 py-2 bg-muted border-b sticky top-0 z-50">
         <div className="flex gap-1.5 items-center justify-center">
@@ -97,5 +99,15 @@ function DesktopPreview({ subdomain }: { subdomain?: string }) {
 
       <PreviewArea />
     </AspectRatio>
+  );
+}
+
+function MobilePreview() {
+  return (
+    <MockPhone className="h-full" screenClassName="@container">
+      <ScrollArea className="h-full">
+        <PreviewArea />
+      </ScrollArea>
+    </MockPhone>
   );
 }

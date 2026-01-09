@@ -11,14 +11,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function PreviewArea() {
   const container = useRef<HTMLDivElement>(null);
-  const { storefront, teacher, activeSectionId, setActiveSectionId } = useStorefront();
+  const { storefront, teacher, activeSectionId, setActiveSectionId } =
+    useStorefront();
 
   if (!storefront || !teacher) return null;
 
   return (
     <TeacherContextProvider teacher={teacher}>
       <ScrollArea className="h-full overflow-y-auto" viewportRef={container}>
-        <Navbar container={container} />
+        <Navbar className="pointer-events-none" container={container} />
 
         {storefront.sections
           .filter((s) => s.visible)
