@@ -1,7 +1,11 @@
 "use client";
 
 import { useStorefront } from "./storefront-context";
-import { Sidebar } from "./sidebar";
+import {
+  BuilderSidebar,
+  BuilderSidebarProvider,
+  BuilderSidebarTrigger,
+} from "./sidebar";
 import { PreviewArea } from "./preview-area";
 import { WholePageSpinner } from "@/components/whole-page-spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,9 +23,11 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { MockPhone } from "@/components/mock-phone";
 import { cn } from "@/lib/utils";
 import { MockTablet } from "@/components/mock-tablet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function BuilderLayout({ subdomain }: { subdomain?: string }) {
   const { isLoading } = useStorefront();
+  const isMobile = useIsMobile();
   const [device, setDevice] = React.useState<"desktop" | "tablet" | "mobile">(
     "desktop"
   );
@@ -32,56 +38,62 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
   }
 
   return (
-    <div className="flex h-full overflow-hidden bg-background">
-      <div className="w-80 border-r bg-muted/10 shrink-0 overflow-y-auto">
-        <Sidebar />
-      </div>
+    <BuilderSidebarProvider>
+      <div className="flex h-full overflow-hidden">
+        <div className="flex-1 relative bg-muted/20 overflow-hidden">
+          <Grid cellSize={24} />
+          <div className="absolute z-10 end-4 top-4 flex items-center gap-3">
+            <ToggleGroup
+              variant="outline"
+              value={[theme]}
+              onValueChange={(val) => setTheme(val[0] ?? "light")}
+            >
+              <ToggleGroupItem value="light" aria-label="Light Mode">
+                <IconSun />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="dark">
+                <IconMoon />
+              </ToggleGroupItem>
+            </ToggleGroup>
 
-      <div className="size-full relative bg-muted/20">
-        <Grid cellSize={24} />
-        <div className="absolute z-10 end-4 top-4 flex items-center gap-3">
-          <ToggleGroup
-            variant="outline"
-            value={[theme]}
-            onValueChange={(val) => setTheme(val[0] ?? "light")}
-          >
-            <ToggleGroupItem value="light" aria-label="Light Mode">
-              <IconSun />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="dark">
-              <IconMoon />
-            </ToggleGroupItem>
-          </ToggleGroup>
+            <ToggleGroup
+              variant="outline"
+              value={[device]}
+              onValueChange={(val) => setDevice(val[0] ?? "desktop")}
+              className="hidden sm:flex"
+            >
+              <ToggleGroupItem value="desktop" aria-label="Desktop View">
+                <IconDeviceImac />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="tablet" aria-label="Tablet View">
+                <IconDeviceTablet />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="mobile" aria-label="Mobile View">
+                <IconDeviceMobile />
+              </ToggleGroupItem>
+            </ToggleGroup>
 
-          <ToggleGroup
-            variant="outline"
-            value={[device]}
-            onValueChange={(val) => setDevice(val[0] ?? "desktop")}
+            <BuilderSidebarTrigger />
+          </div>
+
+          <div
+            className={cn(
+              "absolute inset-x-4 max-w-[75svw] mx-auto sm:inset-x-12 bottom-4 top-18",
+              device === "mobile" && "top-12 w-xs",
+              theme === "dark" && "dark"
+            )}
           >
-            <ToggleGroupItem value="desktop" aria-label="Desktop View">
-              <IconDeviceImac />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="tablet" aria-label="Tablet View">
-              <IconDeviceTablet />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="mobile" aria-label="Mobile View">
-              <IconDeviceMobile />
-            </ToggleGroupItem>
-          </ToggleGroup>
+            {device === "desktop" && !isMobile && (
+              <DesktopPreview subdomain={subdomain} />
+            )}
+            {(device === "mobile" || isMobile) && <MobilePreview />}
+            {device === "tablet" && !isMobile && <TabletPreview />}
+          </div>
         </div>
-        <div
-          className={cn(
-            "absolute inset-x-12 bottom-4 top-18 overflow-hidden",
-            device === "mobile" && "top-12",
-            theme === "dark" && "dark"
-          )}
-        >
-          {device === "desktop" && <DesktopPreview subdomain={subdomain} />}
-          {device === "mobile" && <MobilePreview />}
-          {device === "tablet" && <TabletPreview />}
-        </div>
+
+        <BuilderSidebar />
       </div>
-    </div>
+    </BuilderSidebarProvider>
   );
 }
 

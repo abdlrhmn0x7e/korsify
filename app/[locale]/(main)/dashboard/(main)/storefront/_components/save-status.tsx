@@ -9,7 +9,7 @@ export function SaveStatus() {
 
   if (isSaving) {
     return (
-      <div className="flex items-center text-xs text-muted-foreground">
+      <div className="sm:flex items-center text-xs text-muted-foreground hidden">
         <Spinner />
         Saving...
       </div>
@@ -18,7 +18,7 @@ export function SaveStatus() {
 
   if (hasUnsavedChanges) {
     return (
-      <div className="flex items-center text-xs text-yellow-600">
+      <div className="hidden sm:flex items-center text-xs text-yellow-600">
         <div className="mr-1 h-2 w-2 rounded-full bg-yellow-600" />
         Unsaved changes
       </div>
@@ -26,7 +26,7 @@ export function SaveStatus() {
   }
 
   return (
-    <div className="flex items-center text-xs text-green-600">
+    <div className="hidden sm:flex items-center text-xs text-green-600">
       <IconCheck className="mr-1 h-3 w-3" />
       All changes saved
     </div>
