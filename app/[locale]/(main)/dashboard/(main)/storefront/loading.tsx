@@ -7,10 +7,7 @@ import { WholePageSpinner } from "@/components/whole-page-spinner";
 export default function CoursesPageLoading() {
   return (
     <PageLayout>
-      <PageHeader
-        title="Customize your storefront homepage"
-        Icon={IconBuildingStore}
-      >
+      <PageHeader title="Customize storefront" Icon={IconBuildingStore}>
         <Skeleton className="h-8 w-24" />
       </PageHeader>
 
