@@ -22,7 +22,7 @@ export default function StorefrontBuilderLoading() {
 
       <div className="flex-1 bg-muted/30 p-6">
         <div className="mx-auto max-w-5xl">
-          <Skeleton className="h-[600px] w-full rounded-lg" />
+          <Skeleton className="h-150 w-full rounded-lg" />
         </div>
       </div>
     </div>

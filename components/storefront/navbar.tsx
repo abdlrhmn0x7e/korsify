@@ -14,8 +14,12 @@ import { useScopedI18n } from "@/locales/client";
 import { useTeacher } from "./teacher-context-provider";
 import { StorefrontLogo } from "./storefront-logo";
 
-export function Navbar() {
-  const scrolled = useScroll(0);
+export function Navbar({
+  container,
+}: {
+  container?: React.RefObject<HTMLElement | null>;
+}) {
+  const scrolled = useScroll(0, { container });
   const student = useQuery(api.studentAuth.getCurrentStudent);
   const teacher = useTeacher();
 
@@ -26,7 +30,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-10 mx-px transition-all duration-300",
+        "sticky top-0 z-50 mx-px transition-all duration-300",
         scrolled && "bg-background/90 backdrop-blur-sm"
       )}
     >

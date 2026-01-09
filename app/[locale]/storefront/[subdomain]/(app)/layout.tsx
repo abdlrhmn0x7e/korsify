@@ -1,4 +1,4 @@
-import { Navbar } from "@storefront/_components/navbar";
+import { Navbar } from "@/components/storefront/navbar";
 
 export default function StorefrontAppLayout({
   children,

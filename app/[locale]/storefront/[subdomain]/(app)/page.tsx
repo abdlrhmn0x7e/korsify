@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { DynamicSection } from "../_components/sections/dynamic-section";
+import { DynamicSection } from "@/components/storefront/sections/dynamic-section";
 
 const STOREFRONT_HEADER = "x-storefront-subdomain";
 const CUSTOM_DOMAIN_HEADER = "x-custom-domain";
@@ -32,15 +32,23 @@ export default async function StorefrontHomePage() {
   }
 
   const [storefrontData, courses] = await Promise.all([
-    fetchQuery(api.storefront.queries.getStorefront, { teacherId: teacher._id }).catch(() => null),
-    fetchQuery(api.storefront.queries.getPublishedCourses, { teacherId: teacher._id }),
+    fetchQuery(api.storefront.queries.getStorefront, {
+      teacherId: teacher._id,
+    }).catch(() => null),
+    fetchQuery(api.storefront.queries.getPublishedCourses, {
+      teacherId: teacher._id,
+    }),
   ]);
 
   if (storefrontData?.sections && storefrontData.sections.length > 0) {
     return (
       <div className="flex flex-col">
-        {storefrontData.sections.map((section: Parameters<typeof DynamicSection>[0]["section"]) => (
-          <DynamicSection key={section.id} section={section} courses={courses} />
+        {storefrontData.sections.map((section) => (
+          <DynamicSection
+            key={section.id}
+            section={section}
+            courses={courses}
+          />
         ))}
       </div>
     );
@@ -59,20 +67,32 @@ export default async function StorefrontHomePage() {
         <h2 className="text-2xl font-semibold">Available Courses</h2>
         {courses.length > 0 ? (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course: { _id: string; title: string; description?: string; price?: number }) => (
-              <div key={course._id} className="rounded-lg border p-6">
-                <div className="aspect-video w-full mb-4 bg-muted rounded-md flex items-center justify-center">
-                  <span className="text-muted-foreground">Thumbnail</span>
+            {courses.map(
+              (course: {
+                _id: string;
+                title: string;
+                description?: string;
+                price?: number;
+              }) => (
+                <div key={course._id} className="rounded-lg border p-6">
+                  <div className="aspect-video w-full mb-4 bg-muted rounded-md flex items-center justify-center">
+                    <span className="text-muted-foreground">Thumbnail</span>
+                  </div>
+                  <h3 className="font-semibold text-lg">{course.title}</h3>
+                  <p className="text-muted-foreground mt-2 line-clamp-2">
+                    {course.description}
+                  </p>
+                  <div className="mt-4 font-bold">
+                    {course.price != null
+                      ? new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(course.price)
+                      : "Free"}
+                  </div>
                 </div>
-                <h3 className="font-semibold text-lg">{course.title}</h3>
-                <p className="text-muted-foreground mt-2 line-clamp-2">{course.description}</p>
-                <div className="mt-4 font-bold">
-                  {course.price != null
-                    ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(course.price)
-                    : "Free"}
-                </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

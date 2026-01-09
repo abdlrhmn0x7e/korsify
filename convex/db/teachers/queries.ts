@@ -5,11 +5,32 @@ export function getAll(ctx: GenericQueryCtx<DataModel>) {
   return ctx.db.query("teachers").collect();
 }
 
-export function getByUserId(ctx: GenericQueryCtx<DataModel>, userId: string) {
-  return ctx.db
+export async function getByUserId(
+  ctx: GenericQueryCtx<DataModel>,
+  userId: string
+) {
+  const teacher = await ctx.db
     .query("teachers")
     .withIndex("by_userId", (q) => q.eq("userId", userId))
     .first();
+
+  if (!teacher) return null;
+
+  const logoUrl = teacher.branding?.logoStorageId
+    ? await ctx.storage.getUrl(teacher.branding.logoStorageId)
+    : null;
+  const coverUrl = teacher.branding?.coverStorageId
+    ? await ctx.storage.getUrl(teacher.branding.coverStorageId)
+    : null;
+
+  return {
+    ...teacher,
+    branding: {
+      ...teacher.branding,
+      logoUrl,
+      coverUrl,
+    },
+  };
 }
 
 export async function getBySubdomain(

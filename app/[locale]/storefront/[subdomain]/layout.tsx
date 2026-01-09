@@ -5,7 +5,7 @@ import {
   getTeacherFromHeaders,
   getStudentToken,
 } from "@/lib/student-auth-server";
-import { TeacherContextProvider } from "./_components/teacher-context-provider";
+import { TeacherContextProvider } from "@/components/storefront/teacher-context-provider";
 import { StudentAuthProvider } from "./_components/student-auth-provider";
 import { FONT_PAIRS } from "@/convex/db/storefronts/templates";
 

@@ -1,7 +1,16 @@
-import type { CoursesContent, CoursesVariant } from "@/convex/db/storefronts/validators";
+import type {
+  CoursesContent,
+  CoursesVariant,
+} from "@/convex/db/storefronts/validators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 interface Course {
@@ -20,9 +29,16 @@ interface CoursesSectionProps {
   courses: Array<Course>;
 }
 
-export function CoursesSection({ content, variant, courses }: CoursesSectionProps) {
-  const { title, subtitle, showPrice, showDuration, limit = 6, viewAllLink } = content;
-  
+export function CoursesSection({ content, courses }: CoursesSectionProps) {
+  const {
+    title,
+    subtitle,
+    showPrice,
+    showDuration,
+    limit = 6,
+    viewAllLink,
+  } = content;
+
   const displayCourses = courses.slice(0, limit);
 
   return (
@@ -39,11 +55,14 @@ export function CoursesSection({ content, variant, courses }: CoursesSectionProp
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayCourses.map((course) => (
-            <Card key={course._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card
+              key={course._id}
+              className="overflow-hidden hover:shadow-lg transition-shadow"
+            >
               {course.imageUrl && (
                 <div className="aspect-video relative">
-                  <img 
-                    src={course.imageUrl} 
+                  <img
+                    src={course.imageUrl}
                     alt={course.title}
                     className="object-cover w-full h-full"
                   />
@@ -54,15 +73,17 @@ export function CoursesSection({ content, variant, courses }: CoursesSectionProp
                   <CardTitle className="line-clamp-2">{course.title}</CardTitle>
                   {showPrice && (
                     <Badge variant="secondary" className="shrink-0">
-                      {course.price && course.price > 0 ? `$${course.price}` : "Free"}
+                      {course.price && course.price > 0
+                        ? `$${course.price}`
+                        : "Free"}
                     </Badge>
                   )}
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+                {/*<p className="text-sm text-muted-foreground line-clamp-3 mb-4">
                   {course.description}
-                </p>
+                </p>*/}
                 {showDuration && course.duration && (
                   <div className="text-xs text-muted-foreground flex items-center gap-1">
                     <span>{Math.round(course.duration / 60)} mins</span>
@@ -70,7 +91,10 @@ export function CoursesSection({ content, variant, courses }: CoursesSectionProp
                 )}
               </CardContent>
               <CardFooter>
-                <Button className="w-full" render={<Link href={`/courses/${course.slug}`} />}>
+                <Button
+                  className="w-full"
+                  render={<Link href={`/courses/${course.slug}`} />}
+                >
                   View Course
                 </Button>
               </CardFooter>
@@ -86,7 +110,11 @@ export function CoursesSection({ content, variant, courses }: CoursesSectionProp
 
         {viewAllLink && displayCourses.length > 0 && (
           <div className="text-center pt-8">
-            <Button variant="outline" size="lg" render={<Link href="/courses" />}>
+            <Button
+              variant="outline"
+              size="lg"
+              render={<Link href="/courses" />}
+            >
               View All Courses
             </Button>
           </div>

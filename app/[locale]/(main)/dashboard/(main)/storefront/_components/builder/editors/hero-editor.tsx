@@ -32,17 +32,17 @@ export function HeroEditor({ section }: HeroEditorProps) {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Headline</Label>
-        <Input 
-          value={content.headline} 
-          onChange={(e) => handleChange("headline", e.target.value)} 
+        <Input
+          value={content.headline}
+          onChange={(e) => handleChange("headline", e.target.value)}
         />
       </div>
-      
+
       <div className="space-y-2">
         <Label>Subheadline</Label>
-        <Textarea 
-          value={content.subheadline} 
-          onChange={(e) => handleChange("subheadline", e.target.value)} 
+        <Textarea
+          value={content.subheadline}
+          onChange={(e) => handleChange("subheadline", e.target.value)}
           rows={3}
         />
       </div>
@@ -50,16 +50,16 @@ export function HeroEditor({ section }: HeroEditorProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Button Text</Label>
-          <Input 
-            value={content.ctaText} 
-            onChange={(e) => handleChange("ctaText", e.target.value)} 
+          <Input
+            value={content.ctaText}
+            onChange={(e) => handleChange("ctaText", e.target.value)}
           />
         </div>
         <div className="space-y-2">
           <Label>Button Link</Label>
-          <Input 
-            value={content.ctaLink} 
-            onChange={(e) => handleChange("ctaLink", e.target.value)} 
+          <Input
+            value={content.ctaLink}
+            onChange={(e) => handleChange("ctaLink", e.target.value)}
           />
         </div>
       </div>

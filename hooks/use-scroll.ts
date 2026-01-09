@@ -7,6 +7,10 @@ export function useScroll(
   const [scrolled, setScrolled] = useState(false);
 
   const onScroll = useCallback(() => {
+    console.log(
+      "scrolling container",
+      container?.current && container.current.scrollTop
+    );
     setScrolled(
       (container?.current ? container.current.scrollTop : window.scrollY) >
         threshold
