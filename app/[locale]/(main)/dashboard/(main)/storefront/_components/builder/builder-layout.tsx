@@ -43,7 +43,7 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
           <ToggleGroup
             variant="outline"
             value={[theme]}
-            onValueChange={(val) => setTheme(val[0])}
+            onValueChange={(val) => setTheme(val[0] ?? "light")}
           >
             <ToggleGroupItem value="light" aria-label="Light Mode">
               <IconSun />
@@ -56,7 +56,7 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
           <ToggleGroup
             variant="outline"
             value={[device]}
-            onValueChange={(val) => setDevice(val[0])}
+            onValueChange={(val) => setDevice(val[0] ?? "desktop")}
           >
             <ToggleGroupItem value="desktop" aria-label="Desktop View">
               <IconDeviceImac />
@@ -72,7 +72,8 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
         <div
           className={cn(
             "absolute inset-x-12 bottom-4 top-18 overflow-hidden",
-            device === "mobile" && "top-12"
+            device === "mobile" && "top-12",
+            theme === "dark" && "dark"
           )}
         >
           {device === "desktop" && <DesktopPreview subdomain={subdomain} />}
