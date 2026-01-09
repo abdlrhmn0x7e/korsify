@@ -17,6 +17,8 @@ import {
 import React from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { MockPhone } from "@/components/mock-phone";
+import { cn } from "@/lib/utils";
+import { MockTablet } from "@/components/mock-tablet";
 
 export function BuilderLayout({ subdomain }: { subdomain?: string }) {
   const { isLoading } = useStorefront();
@@ -67,9 +69,15 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
-        <div className="absolute inset-x-12 bottom-4 top-12 overflow-hidden">
+        <div
+          className={cn(
+            "absolute inset-x-12 bottom-4 top-18 overflow-hidden",
+            device === "mobile" && "top-12"
+          )}
+        >
           {device === "desktop" && <DesktopPreview subdomain={subdomain} />}
           {device === "mobile" && <MobilePreview />}
+          {device === "tablet" && <TabletPreview />}
         </div>
       </div>
     </div>
@@ -109,5 +117,15 @@ function MobilePreview() {
         <PreviewArea />
       </ScrollArea>
     </MockPhone>
+  );
+}
+
+function TabletPreview() {
+  return (
+    <MockTablet className="size-full" screenClassName="@container">
+      <ScrollArea className="size-full">
+        <PreviewArea />
+      </ScrollArea>
+    </MockTablet>
   );
 }
