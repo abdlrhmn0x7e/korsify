@@ -7,7 +7,9 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { Preloaded } from "convex/react";
+import { useMutation } from "convex/react";
+import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import {
   StorefrontSection,
@@ -15,6 +17,11 @@ import {
   StorefrontStyle,
 } from "@/convex/db/storefronts/validators";
 import { toast } from "sonner";
+import { FunctionReturnType } from "convex/server";
+
+type TeacherWithBranding = NonNullable<
+  FunctionReturnType<typeof api.teachers.queries.getTeacher>
+>;
 
 interface StorefrontContextType {
   storefront: {
@@ -23,6 +30,7 @@ interface StorefrontContextType {
     style: StorefrontStyle;
     sections: Array<StorefrontSection>;
   } | null | undefined;
+  teacher: TeacherWithBranding | null | undefined;
   isLoading: boolean;
   activeSectionId: string | null;
   setActiveSectionId: (id: string | null) => void;
@@ -46,8 +54,19 @@ const StorefrontContext = createContext<StorefrontContextType | undefined>(
   undefined
 );
 
-export function StorefrontProvider({ children }: { children: ReactNode }) {
-  const storefront = useQuery(api.teachers.storefront.get);
+interface StorefrontProviderProps {
+  children: ReactNode;
+  preloadedStorefront: Preloaded<typeof api.teachers.storefront.get>;
+  preloadedTeacher: Preloaded<typeof api.teachers.queries.getTeacher>;
+}
+
+export function StorefrontProvider({
+  children,
+  preloadedStorefront,
+  preloadedTeacher,
+}: StorefrontProviderProps) {
+  const storefront = usePreloadedAuthQuery(preloadedStorefront);
+  const teacher = usePreloadedAuthQuery(preloadedTeacher);
 
   const createFromTemplate = useMutation(
     api.teachers.storefront.createFromTemplate
@@ -174,6 +193,7 @@ export function StorefrontProvider({ children }: { children: ReactNode }) {
     <StorefrontContext.Provider
       value={{
         storefront,
+        teacher,
         isLoading: storefront === undefined,
         activeSectionId,
         setActiveSectionId,

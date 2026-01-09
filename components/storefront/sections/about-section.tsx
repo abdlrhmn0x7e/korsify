@@ -1,23 +1,24 @@
 import type { AboutContent, AboutVariant } from "@/convex/db/storefronts/validators";
+import { LazyStorageImage } from "@/components/lazy-storage-image";
 
 interface AboutSectionProps {
-  content: AboutContent & { imageUrl?: string };
+  content: AboutContent;
   variant: AboutVariant;
 }
 
 export function AboutSection({ content, variant }: AboutSectionProps) {
-  const { title, showStats, imageUrl } = content;
+  const { title, showStats, imageStorageId } = content;
 
   if (variant === "centered") {
     return (
       <section className="py-20 px-4 md:px-8 bg-muted/30">
         <div className="max-w-4xl mx-auto text-center space-y-8">
-          {imageUrl && (
+          {imageStorageId && (
             <div className="mx-auto w-32 h-32 rounded-full overflow-hidden">
-              <img 
-                src={imageUrl} 
+              <LazyStorageImage
+                storageId={imageStorageId}
                 alt={title}
-                className="object-cover w-full h-full"
+                className="w-full h-full"
               />
             </div>
           )}
@@ -79,7 +80,6 @@ export function AboutSection({ content, variant }: AboutSectionProps) {
     );
   }
 
-  // Default: side-by-side
   return (
     <section className="py-20 px-4 md:px-8 bg-muted/30">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -115,19 +115,16 @@ export function AboutSection({ content, variant }: AboutSectionProps) {
         </div>
 
         <div className="relative">
-          {imageUrl ? (
-             <div className="aspect-square rounded-2xl overflow-hidden shadow-xl">
-               <img 
-                 src={imageUrl} 
-                 alt={title}
-                 className="object-cover w-full h-full"
-               />
-             </div>
-          ) : (
-            <div className="aspect-square rounded-2xl bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground">No image selected</span>
-            </div>
-          )}
+          <LazyStorageImage
+            storageId={imageStorageId}
+            alt={title}
+            className="aspect-square rounded-2xl shadow-xl"
+            fallback={
+              <div className="aspect-square rounded-2xl bg-muted flex items-center justify-center">
+                <span className="text-muted-foreground">No image selected</span>
+              </div>
+            }
+          />
         </div>
       </div>
     </section>

@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import parsePhoneNumber from "libphonenumber-js";
-import { useTeacher } from "../../../_components/teacher-context-provider";
+import { useTeacher } from "@/components/storefront/teacher-context-provider";
 
 export function LoginForm() {
   const t = useScopedI18n("storefront.auth.login");

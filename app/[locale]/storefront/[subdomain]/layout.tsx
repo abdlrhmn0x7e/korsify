@@ -13,7 +13,7 @@ interface StorefrontLayoutProps {
   children: React.ReactNode;
 }
 
-function getThemeColors(theme: "light" | "dark" | "soft") {
+function getThemeColors(theme: "light" | "dark" | "soft"): Record<string, string> {
   switch (theme) {
     case "dark":
       return {

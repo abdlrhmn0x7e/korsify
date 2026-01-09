@@ -6,15 +6,12 @@ import { cn } from "@/lib/utils";
 import { IconEdit } from "@tabler/icons-react";
 import { Navbar } from "@/components/storefront/navbar";
 import { TeacherContextProvider } from "@/components/storefront/teacher-context-provider";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function PreviewArea() {
   const container = useRef<HTMLDivElement>(null);
-  const teacher = useQuery(api.teachers.queries.getTeacher);
-  const { storefront, activeSectionId, setActiveSectionId } = useStorefront();
+  const { storefront, teacher, activeSectionId, setActiveSectionId } = useStorefront();
 
   if (!storefront || !teacher) return null;
 

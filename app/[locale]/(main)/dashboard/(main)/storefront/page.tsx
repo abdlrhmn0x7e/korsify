@@ -1,4 +1,4 @@
-import { fetchAuthQuery } from "@/lib/auth-server";
+import { fetchAuthQuery, preloadAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { redirect } from "next/navigation";
 import { getStaticParams } from "@/locales/server";
@@ -26,8 +26,16 @@ export default async function StorefrontBuilderPage({
   const teacher = await fetchAuthQuery(api.teachers.queries.getTeacher);
   if (!teacher) return redirect("/dashboard/onboarding");
 
+  const [preloadedStorefront, preloadedTeacher] = await Promise.all([
+    preloadAuthQuery(api.teachers.storefront.get, {}),
+    preloadAuthQuery(api.teachers.queries.getTeacher, {}),
+  ]);
+
   return (
-    <StorefrontProvider>
+    <StorefrontProvider
+      preloadedStorefront={preloadedStorefront}
+      preloadedTeacher={preloadedTeacher}
+    >
       <PageLayout>
         <PageHeader
           Icon={IconBuildingStore}

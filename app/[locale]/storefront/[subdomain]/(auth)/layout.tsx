@@ -2,9 +2,9 @@
 
 import { Container } from "@/components/ui/container";
 import { TopGrid } from "@/components/top-grid";
-import { useTeacher } from "../_components/teacher-context-provider";
+import { useTeacher } from "@/components/storefront/teacher-context-provider";
 import Link from "next/link";
-import { StorefrontLogo } from "../_components/storefront-logo";
+import { StorefrontLogo } from "@/components/storefront/storefront-logo";
 
 interface StorefrontAuthLayoutProps {
   children: React.ReactNode;

@@ -4,14 +4,16 @@ import { api } from "@/convex/_generated/api";
 import { FunctionReturnType } from "convex/server";
 import { createContext, useContext } from "react";
 
+type TeacherWithBranding = NonNullable<
+  FunctionReturnType<typeof api.teachers.queries.getBySubdomain>
+>;
+
 interface TeacherContextProviderProps {
   children: React.ReactNode;
-  teacher: FunctionReturnType<typeof api.teachers.queries.getBySubdomain>;
+  teacher: TeacherWithBranding;
 }
 
-const TeacherContext = createContext<FunctionReturnType<
-  typeof api.teachers.queries.getBySubdomain
-> | null>(null);
+const TeacherContext = createContext<TeacherWithBranding | null>(null);
 
 export function TeacherContextProvider({
   children,

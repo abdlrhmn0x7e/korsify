@@ -1,14 +1,15 @@
 import type { CtaContent, CtaVariant } from "@/convex/db/storefronts/validators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { LazyBackgroundImage } from "@/components/lazy-storage-image";
 
 interface CtaSectionProps {
-  content: CtaContent & { backgroundImageUrl?: string };
+  content: CtaContent;
   variant: CtaVariant;
 }
 
 export function CtaSection({ content, variant }: CtaSectionProps) {
-  const { headline, subheadline, buttonText, buttonLink, showWhatsApp, backgroundImageUrl } = content;
+  const { headline, subheadline, buttonText, buttonLink, showWhatsApp, backgroundImageStorageId } = content;
 
   if (variant === "simple") {
     return (
@@ -47,12 +48,10 @@ export function CtaSection({ content, variant }: CtaSectionProps) {
   if (variant === "image") {
     return (
       <section className="relative py-24 px-4 md:px-8 overflow-hidden">
-        {backgroundImageUrl && (
-          <div 
-            className="absolute inset-0 bg-cover bg-center z-0"
-            style={{ backgroundImage: `url(${backgroundImageUrl})` }}
-          />
-        )}
+        <LazyBackgroundImage
+          storageId={backgroundImageStorageId}
+          className="absolute inset-0 z-0"
+        />
         <div className="absolute inset-0 bg-black/60 z-0" />
         
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
@@ -93,12 +92,10 @@ export function CtaSection({ content, variant }: CtaSectionProps) {
 
   return (
     <section className="relative py-24 px-4 md:px-8 bg-primary overflow-hidden">
-      {backgroundImageUrl && (
-        <div 
-          className="absolute inset-0 bg-cover bg-center z-0 opacity-10 mix-blend-overlay"
-          style={{ backgroundImage: `url(${backgroundImageUrl})` }}
-        />
-      )}
+      <LazyBackgroundImage
+        storageId={backgroundImageStorageId}
+        className="absolute inset-0 z-0 opacity-10 mix-blend-overlay"
+      />
       
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">

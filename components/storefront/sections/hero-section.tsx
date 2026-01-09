@@ -1,6 +1,7 @@
 import type { HeroContent, HeroVariant } from "@/convex/db/storefronts/validators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { LazyStorageImage, LazyBackgroundImage } from "@/components/lazy-storage-image";
 
 interface HeroSectionProps {
   content: HeroContent;
@@ -8,7 +9,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ content, variant }: HeroSectionProps) {
-  const { headline, subheadline, ctaText, ctaLink } = content;
+  const { headline, subheadline, ctaText, ctaLink, backgroundImageStorageId } = content;
 
   if (variant === "minimal") {
     return (
@@ -47,16 +48,33 @@ export function HeroSection({ content, variant }: HeroSectionProps) {
               </Button>
             </div>
           </div>
-          <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
-            <span className="text-muted-foreground">Image placeholder</span>
-          </div>
+          {backgroundImageStorageId ? (
+            <LazyStorageImage
+              storageId={backgroundImageStorageId}
+              alt={headline}
+              className="rounded-lg aspect-video"
+              fallback={
+                <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
+                  <span className="text-muted-foreground">Image placeholder</span>
+                </div>
+              }
+            />
+          ) : (
+            <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
+              <span className="text-muted-foreground">Image placeholder</span>
+            </div>
+          )}
         </div>
       </section>
     );
   }
 
   return (
-    <section className="relative py-20 px-4 md:px-8 bg-muted/30 overflow-hidden">
+    <LazyBackgroundImage
+      storageId={backgroundImageStorageId}
+      className="relative py-20 px-4 md:px-8 overflow-hidden"
+      fallbackClassName="bg-muted/30"
+    >
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
           {headline}
@@ -70,6 +88,6 @@ export function HeroSection({ content, variant }: HeroSectionProps) {
           </Button>
         </div>
       </div>
-    </section>
+    </LazyBackgroundImage>
   );
 }

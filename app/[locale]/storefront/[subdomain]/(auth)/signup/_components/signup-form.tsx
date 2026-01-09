@@ -15,7 +15,7 @@ import { useScopedI18n } from "@/locales/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useTeacher } from "../../../_components/teacher-context-provider";
+import { useTeacher } from "@/components/storefront/teacher-context-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";

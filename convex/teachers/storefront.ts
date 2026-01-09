@@ -3,13 +3,28 @@ import { mutation, query } from "../_generated/server";
 import { db } from "../db";
 import { authComponent } from "../auth";
 import {
+  storefrontSectionValidator,
   storefrontStyleValidator,
   storefrontThemeValidator,
 } from "../db/storefronts";
 
+const storefrontReturnValidator = v.union(
+  v.object({
+    _id: v.id("storefronts"),
+    _creationTime: v.number(),
+    teacherId: v.id("teachers"),
+    theme: storefrontThemeValidator,
+    style: storefrontStyleValidator,
+    sections: v.array(storefrontSectionValidator),
+    cssVariables: v.optional(v.record(v.string(), v.string())),
+    updatedAt: v.number(),
+  }),
+  v.null()
+);
+
 export const get = query({
   args: {},
-  returns: v.any(),
+  returns: storefrontReturnValidator,
   handler: async (ctx) => {
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new ConvexError("Unauthorized");
@@ -17,7 +32,20 @@ export const get = query({
     const teacher = await db.teachers.queries.getByUserId(ctx, user._id);
     if (!teacher) throw new ConvexError("Teacher profile not found");
 
-    return db.storefronts.queries.getByTeacherId(ctx, teacher._id);
+    return db.storefronts.queries.getByTeacherIdLite(ctx, teacher._id);
+  },
+});
+
+export const getStorageUrl = query({
+  args: {
+    storageId: v.id("_storage"),
+  },
+  returns: v.union(v.string(), v.null()),
+  handler: async (ctx, args) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) throw new ConvexError("Unauthorized");
+
+    return ctx.storage.getUrl(args.storageId);
   },
 });
 
@@ -78,6 +106,8 @@ export const updateSection = mutation({
   args: {
     sectionId: v.string(),
     variant: v.optional(v.string()),
+    // Content is v.any() because it can be partial updates of any section content type
+    // (HeroContent, AboutContent, CtaContent, etc.). Runtime validation happens in the mutation.
     content: v.optional(v.any()),
     visible: v.optional(v.boolean()),
   },

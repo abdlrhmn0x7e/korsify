@@ -81,3 +81,18 @@ export async function existsForTeacher(
     .first();
   return storefront !== null;
 }
+
+/**
+ * Lightweight version of getByTeacherId that returns storefront data
+ * WITHOUT resolving storage URLs. URLs should be loaded lazily on the client
+ * using getStorageUrl when sections become visible.
+ */
+export async function getByTeacherIdLite(
+  ctx: GenericQueryCtx<DataModel>,
+  teacherId: Id<"teachers">
+) {
+  return ctx.db
+    .query("storefronts")
+    .withIndex("by_teacherId", (q) => q.eq("teacherId", teacherId))
+    .first();
+}
