@@ -42,7 +42,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddLessonDialog } from "./add-lesson-dialog";
@@ -488,7 +487,6 @@ interface LessonsListProps {
   lessons: Array<{
     _id: Id<"lessons">;
     title: string;
-    isFree: boolean;
   }>;
   courseId: Id<"courses">;
   sectionId: Id<"sections">;
@@ -496,7 +494,6 @@ interface LessonsListProps {
 
 function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
   const [, setParams] = useCourseSearchParams();
-  const t = useScopedI18n("dashboard.courses.sections.lessons");
 
   function handleLessonClick(lessonId: Id<"lessons">) {
     void setParams((prev) => ({ ...prev, lessonId }));
@@ -524,11 +521,6 @@ function LessonsList({ lessons, courseId, sectionId }: LessonsListProps) {
                 className="text-muted-foreground shrink-0"
               />
               <span className="flex-1 truncate">{lesson.title}</span>
-              {lesson.isFree && (
-                <Badge variant="secondary" className="shrink-0 text-xs">
-                  {t("free")}
-                </Badge>
-              )}
               <IconChevronRight
                 size={14}
                 className="text-muted-foreground opacity-0

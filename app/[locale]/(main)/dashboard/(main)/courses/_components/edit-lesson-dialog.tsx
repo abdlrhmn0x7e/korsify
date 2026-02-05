@@ -11,26 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { useConvexMutation } from "@convex-dev/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useScopedI18n } from "@/locales/client";
 import { LessonForm } from "./lesson-form";
 import type { LessonFormValues } from "./lesson-form-types";
-import { type JSONContent } from "@tiptap/react";
-
-interface Lesson {
-  _id: Id<"lessons">;
-  title: string;
-  description: JSONContent;
-  videoId: Id<"muxAssets">;
-  pdfStorageIds: Array<Id<"_storage">>;
-  isFree: boolean;
-}
 
 interface EditLessonDialogProps {
-  lesson: Lesson;
+  lesson: Doc<"lessons">;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -66,9 +56,8 @@ export function EditLessonDialog({
       lessonId: lesson._id,
       title: values.title,
       description: values.description,
-      videoId: values.videoId as Id<"muxAssets">,
+      hosting: values.hosting as Doc<"lessons">["hosting"],
       pdfStorageIds: values.pdfStorageIds as Array<Id<"_storage">>,
-      isFree: values.isFree,
     });
 
     options?.onSuccess?.();
@@ -88,9 +77,8 @@ export function EditLessonDialog({
             defaultValues={{
               title: lesson.title,
               description: lesson.description,
-              videoId: lesson.videoId,
+              hosting: lesson.hosting,
               pdfStorageIds: lesson.pdfStorageIds.map(String),
-              isFree: lesson.isFree,
             }}
           />
         </ScrollArea>

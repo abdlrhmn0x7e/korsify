@@ -163,16 +163,21 @@ export const courses = {
       titlePlaceholder: "e.g. Introduction to Variables",
       titleDescription: "A clear, descriptive title for this lesson.",
       titleRequired: "Title must be at least 3 characters",
-      isFree: "Free Preview",
-      isFreeDescription:
-        "Allow non-enrolled students to preview this lesson for free.",
       description: "Description (Optional)",
       descriptionDescription:
         "Add details about what students will learn in this lesson.",
+      hostingMode: "Video Hosting",
+      hostingModeDescription: "Choose how to host this lesson's video.",
+      hostingMux: "Upload Video (Paid)",
+      hostingYoutube: "YouTube Link (Free)",
       video: "Lesson Video",
       videoDescription:
         "Upload the video for this lesson. Video is required before saving.",
       videoRequired: "Video is required",
+      youtubeUrl: "YouTube URL",
+      youtubeUrlDescription:
+        "Paste a YouTube video URL (preferably unlisted).",
+      youtubeUrlPlaceholder: "https://www.youtube.com/watch?v=...",
       attachments: "PDF Attachments (Optional)",
       attachmentsDescription: "Add downloadable PDF resources for this lesson.",
       attachmentsEmpty: "Drag and drop PDF files here, or click to select",

@@ -14,10 +14,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { VideoUploader } from "@/components/video/video-uploader";
 import { useUploadFiles, type FileUploadState } from "@/hooks/use-upload-files";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useScopedI18n } from "@/locales/client";
 
 import {
@@ -43,7 +44,7 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
   });
 
   const { setValue, watch } = form;
-  const videoId = watch("videoId");
+  const hosting = watch("hosting");
   const pdfStorageIds = watch("pdfStorageIds");
 
   const handlePdfUploadSuccess = useCallback(
@@ -86,13 +87,25 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
 
   const handleVideoReady = useCallback(
     (muxAssetId: Id<"muxAssets">) => {
-      setValue("videoId", muxAssetId);
+      setValue("hosting.videoId", muxAssetId);
+    },
+    [setValue]
+  );
+
+  const handleHostingModeChange = useCallback(
+    (value: string) => {
+      const mode = value as Doc<"lessons">["hosting"]["type"];
+      setValue("hosting.type", mode);
+      setValue("hosting.videoId", "");
+      setValue("hosting.youtubeUrl", "");
     },
     [setValue]
   );
 
   function handleFormSubmit(values: LessonFormValues) {
     if (isPdfUploading || !isVideoReady) return;
+
+    console.log("Form values:", values);
 
     onSubmit(values, {
       onSuccess: () => {
@@ -102,7 +115,8 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
     });
   }
 
-  const isVideoReady = !!videoId;
+  const isVideoReady =
+    hosting.type === "mux" ? !!hosting.videoId : !!hosting.youtubeUrl;
 
   const existingFileStates: Array<FileUploadState> = pdfStorageIds
     .filter((id) => !storageIds.includes(id))
@@ -144,24 +158,6 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
         />
 
         <Controller
-          name="isFree"
-          control={form.control}
-          render={({ field }) => (
-            <Field orientation="horizontal">
-              <FieldContent>
-                <FieldLabel htmlFor="isFree">{t("isFree")}</FieldLabel>
-                <FieldDescription>{t("isFreeDescription")}</FieldDescription>
-              </FieldContent>
-              <Switch
-                id="isFree"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </Field>
-          )}
-        />
-
-        <Controller
           name="description"
           control={form.control}
           render={({ fieldState }) => (
@@ -187,23 +183,90 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
         />
 
         <Controller
-          name="videoId"
+          name="hosting.type"
           control={form.control}
-          render={({ fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
+          render={({ field }) => (
+            <Field>
               <FieldContent>
-                <FieldLabel>{t("video")}</FieldLabel>
-                <FieldDescription>{t("videoDescription")}</FieldDescription>
+                <FieldLabel>{t("hostingMode")}</FieldLabel>
+                <FieldDescription>
+                  {t("hostingModeDescription")}
+                </FieldDescription>
               </FieldContent>
-              <VideoUploader
-                initialVideoId={defaultValues?.videoId as Id<"muxAssets"> | undefined}
-                onVideoReady={handleVideoReady}
-                className="mt-2"
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              <RadioGroup
+                value={field.value}
+                onValueChange={handleHostingModeChange}
+                className="flex gap-6 mt-2"
+              >
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="mux" id="hosting-mux" />
+                  <Label htmlFor="hosting-mux" className="cursor-pointer">
+                    {t("hostingMux")}
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="youtube" id="hosting-youtube" />
+                  <Label htmlFor="hosting-youtube" className="cursor-pointer">
+                    {t("hostingYoutube")}
+                  </Label>
+                </div>
+              </RadioGroup>
             </Field>
           )}
         />
+
+        {hosting.type === "mux" ? (
+          <Controller
+            name="hosting.videoId"
+            control={form.control}
+            render={({ fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldContent>
+                  <FieldLabel>{t("video")}</FieldLabel>
+                  <FieldDescription>{t("videoDescription")}</FieldDescription>
+                </FieldContent>
+                <VideoUploader
+                  initialVideoId={
+                    defaultValues?.hosting?.type === "mux"
+                      ? (defaultValues.hosting.videoId as Id<"muxAssets">)
+                      : undefined
+                  }
+                  onVideoReady={handleVideoReady}
+                  className="mt-2"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        ) : (
+          <Controller
+            name="hosting.youtubeUrl"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldContent>
+                  <FieldLabel htmlFor={field.name}>
+                    {t("youtubeUrl")}
+                  </FieldLabel>
+                  <FieldDescription>
+                    {t("youtubeUrlDescription")}
+                  </FieldDescription>
+                </FieldContent>
+                <Input
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                  placeholder={t("youtubeUrlPlaceholder")}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        )}
 
         <Field>
           <FieldContent>

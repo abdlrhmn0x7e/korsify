@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
-import { teacherMutation } from "../../utils";
+import { teacherMutation, TeacherMutationCtx } from "../../utils";
 import { db } from "../../db";
+import { Id } from "../../_generated/dataModel";
 
 export const create = teacherMutation({
   args: {
@@ -9,8 +10,16 @@ export const create = teacherMutation({
     title: v.string(),
     description: v.optional(v.any()),
     pdfStorageIds: v.optional(v.array(v.id("_storage"))),
-    videoId: v.id("muxAssets"),
-    isFree: v.optional(v.boolean()),
+    hosting: v.union(
+      v.object({
+        type: v.literal("mux"),
+        videoId: v.id("muxAssets"),
+      }),
+      v.object({
+        type: v.literal("youtube"),
+        youtubeUrl: v.string(),
+      })
+    ),
   },
   handler: async (ctx, args) => {
     const section = await db.sections.queries.getById(ctx, args.sectionId);
@@ -19,15 +28,7 @@ export const create = teacherMutation({
       throw new ConvexError("Section not found");
     }
 
-    const muxAsset = await db.muxAssets.queries.getById(ctx, args.videoId);
-
-    if (!muxAsset || muxAsset.teacherId !== ctx.teacherId) {
-      throw new ConvexError("Video not found");
-    }
-
-    if (muxAsset.status !== "ready") {
-      throw new ConvexError("Video is not ready");
-    }
+    await checkHostingValidity(ctx, args.hosting);
 
     const maxOrder = await db.lessons.queries.getMaxOrderBySectionId(
       ctx,
@@ -41,9 +42,8 @@ export const create = teacherMutation({
       title: args.title,
       description: args.description ?? null,
       pdfStorageIds: args.pdfStorageIds ?? [],
-      videoId: args.videoId,
+      hosting: args.hosting,
       order: maxOrder + 1,
-      isFree: args.isFree ?? false,
     });
   },
 });
@@ -54,12 +54,22 @@ export const update = teacherMutation({
     title: v.optional(v.string()),
     description: v.optional(v.nullable(v.any())),
     pdfStorageIds: v.optional(v.array(v.id("_storage"))),
-    videoId: v.optional(v.id("muxAssets")),
-    isFree: v.optional(v.boolean()),
+    hosting: v.optional(
+      v.union(
+        v.object({
+          type: v.literal("mux"),
+          videoId: v.id("muxAssets"),
+        }),
+        v.object({
+          type: v.literal("youtube"),
+          youtubeUrl: v.string(),
+        })
+      )
+    ),
     sectionId: v.optional(v.id("sections")),
   },
   handler: async (ctx, args) => {
-    const { lessonId, sectionId, videoId, ...updateData } = args;
+    const { lessonId, sectionId, hosting, ...updateData } = args;
     const lesson = await db.lessons.queries.getById(ctx, lessonId);
 
     if (!lesson || lesson.teacherId !== ctx.teacherId) {
@@ -78,22 +88,14 @@ export const update = teacherMutation({
       }
     }
 
-    if (videoId) {
-      const muxAsset = await db.muxAssets.queries.getById(ctx, videoId);
-
-      if (!muxAsset || muxAsset.teacherId !== ctx.teacherId) {
-        throw new ConvexError("Video not found");
-      }
-
-      if (muxAsset.status !== "ready") {
-        throw new ConvexError("Video is not ready");
-      }
+    if (hosting) {
+      await checkHostingValidity(ctx, hosting);
     }
 
     return db.lessons.mutations.update(ctx, lessonId, {
       ...updateData,
       ...(sectionId && { sectionId }),
-      ...(videoId && { videoId }),
+      ...(hosting && { hosting }),
     });
   },
 });
@@ -142,3 +144,37 @@ export const remove = teacherMutation({
     return db.lessons.mutations.remove(ctx, args.lessonId);
   },
 });
+
+async function checkHostingValidity(
+  ctx: TeacherMutationCtx,
+  hosting:
+    | {
+        type: "mux";
+        videoId: Id<"muxAssets">;
+      }
+    | {
+        type: "youtube";
+        youtubeUrl: string;
+      }
+) {
+  if (hosting.type === "mux") {
+    const muxAsset = await db.muxAssets.queries.getById(ctx, hosting.videoId);
+
+    if (!muxAsset || muxAsset.teacherId !== ctx.teacherId) {
+      throw new ConvexError("Video not found");
+    }
+
+    if (muxAsset.status !== "ready") {
+      throw new ConvexError("Video is not ready");
+    }
+  }
+
+  if (hosting.type === "youtube") {
+    const YOUTUBE_URL_REGEX =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)[\w-]{11}(?:\?.*)?$/;
+
+    if (!YOUTUBE_URL_REGEX.test(hosting.youtubeUrl)) {
+      throw new ConvexError("Invalid YouTube URL");
+    }
+  }
+}

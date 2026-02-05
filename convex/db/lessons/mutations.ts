@@ -2,6 +2,8 @@ import { DataModel, Id } from "../../_generated/dataModel";
 import { type JSONContent } from "@tiptap/react";
 import { GenericMutationCtx } from "convex/server";
 
+export type HostingMode = "mux" | "youtube";
+
 export type CreateLessonData = {
   courseId: Id<"courses">;
   sectionId: Id<"sections">;
@@ -10,10 +12,18 @@ export type CreateLessonData = {
   title: string;
   description: JSONContent | null;
   pdfStorageIds: Array<Id<"_storage">>;
-  videoId: Id<"muxAssets">;
+
+  hosting:
+    | {
+        type: "mux";
+        videoId: Id<"muxAssets">;
+      }
+    | {
+        type: "youtube";
+        youtubeUrl: string;
+      };
 
   order: number;
-  isFree: boolean;
 };
 
 export async function create(
@@ -30,10 +40,10 @@ export async function create(
     title: data.title,
     description: data.description,
     pdfStorageIds: data.pdfStorageIds,
-    videoId: data.videoId,
+
+    hosting: data.hosting,
 
     order: data.order,
-    isFree: data.isFree,
 
     updatedAt: now,
   });
@@ -43,8 +53,15 @@ export type UpdateLessonData = {
   title?: string;
   description?: JSONContent | null;
   pdfStorageIds?: Array<Id<"_storage">>;
-  videoId?: Id<"muxAssets">;
-  isFree?: boolean;
+  hosting?:
+    | {
+        type: "mux";
+        videoId: Id<"muxAssets">;
+      }
+    | {
+        type: "youtube";
+        youtubeUrl: string;
+      };
   sectionId?: Id<"sections">;
 };
 

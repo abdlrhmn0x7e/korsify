@@ -8,7 +8,7 @@ import { useConvexMutation } from "@convex-dev/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 
 import { LessonForm } from "./lesson-form";
 import type { LessonFormValues } from "./lesson-form-types";
@@ -65,9 +65,8 @@ export function AddLessonDialog({
       sectionId,
       title: values.title,
       description: values.description,
-      videoId: values.videoId as Id<"muxAssets">,
+      hosting: values.hosting as Doc<"lessons">["hosting"],
       pdfStorageIds: values.pdfStorageIds as Array<Id<"_storage">>,
-      isFree: values.isFree,
     });
 
     options?.onSuccess?.();

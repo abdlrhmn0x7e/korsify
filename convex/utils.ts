@@ -2,6 +2,7 @@ import {
   customQuery,
   customCtx,
   customMutation,
+  CustomCtx,
 } from "convex-helpers/server/customFunctions";
 import {
   mutation as rawMutation,
@@ -17,7 +18,7 @@ import { triggers } from "./triggers";
 const mutation = customMutation(rawMutation, customCtx(triggers.wrapDB));
 export const internalMutation = customMutation(
   rawInternalMutation,
-  customCtx(triggers.wrapDB),
+  customCtx(triggers.wrapDB)
 );
 
 export const adminQuery = customQuery(
@@ -30,7 +31,7 @@ export const adminQuery = customQuery(
     }
 
     return { user }; // Injected into the function's ctx
-  }),
+  })
 );
 
 export const adminMutation = customMutation(
@@ -43,7 +44,7 @@ export const adminMutation = customMutation(
     }
 
     return { user }; // Injected into the function's ctx
-  }),
+  })
 );
 
 export const teacherQuery = customQuery(
@@ -62,7 +63,7 @@ export const teacherQuery = customQuery(
     }
 
     return { teacherId: teacher._id };
-  }),
+  })
 );
 
 export const teacherMutation = customMutation(
@@ -81,5 +82,11 @@ export const teacherMutation = customMutation(
     }
 
     return { teacherId: teacher._id };
-  }),
+  })
 );
+
+export type AdminQueryCtx = CustomCtx<typeof adminQuery>;
+export type AdminMutationCtx = CustomCtx<typeof adminMutation>;
+
+export type TeacherQueryCtx = CustomCtx<typeof teacherQuery>;
+export type TeacherMutationCtx = CustomCtx<typeof teacherMutation>;

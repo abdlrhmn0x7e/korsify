@@ -20,7 +20,6 @@ import { useCourseSearchParams } from "../../_hooks/use-course-search-params";
 import { CourseDetails } from "../../courses/_components/course-details";
 import { LessonDetails } from "../../courses/_components/lesson-details";
 import { Id } from "@/convex/_generated/dataModel";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const slideVariants: Variants = {
   enterFromRight: { x: "100%", opacity: 0 },

@@ -13,11 +13,18 @@ export const lessonsTable = defineTable({
   description: v.nullable(v.any()),
   pdfStorageIds: v.array(v.id("_storage")),
 
-  videoId: v.id("muxAssets"),
+  hosting: v.union(
+    v.object({
+      type: v.literal("mux"),
+      videoId: v.id("muxAssets"),
+    }),
+    v.object({
+      type: v.literal("youtube"),
+      youtubeUrl: v.string(),
+    })
+  ),
 
   order: v.number(),
-  isFree: v.boolean(),
-
   updatedAt: v.number(),
 })
   .index("by_sectionId_order", ["sectionId", "order"])

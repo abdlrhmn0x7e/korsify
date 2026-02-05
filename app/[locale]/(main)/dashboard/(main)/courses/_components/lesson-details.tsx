@@ -9,13 +9,11 @@ import {
   IconFileDescription,
   IconX,
   IconDownload,
-  IconEye,
   IconAlertCircle,
   IconEdit,
   IconTrash,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { TiptapViewer } from "@/components/editor/viewer";
 import {
   Empty,
@@ -58,7 +56,8 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
   const t = useScopedI18n("dashboard.courses.lessonDetails");
   const isPending = lesson === undefined;
 
-  const { props: deleteDialogProps, dismiss: dismissDeleteDialog } = useDialog();
+  const { props: deleteDialogProps, dismiss: dismissDeleteDialog } =
+    useDialog();
 
   const removeLessonMutation = useMutation({
     mutationFn: useConvexMutation(api.teachers.lessons.mutations.remove),
@@ -97,12 +96,18 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
           {t("back")}
         </Button>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsEditDialogOpen(true)}
+          >
             <IconEdit className="size-4" />
             {t("edit")}
           </Button>
           <AlertDialog {...deleteDialogProps}>
-            <AlertDialogTrigger render={<Button variant="destructive" size="sm" />}>
+            <AlertDialogTrigger
+              render={<Button variant="destructive" size="sm" />}
+            >
               <IconTrash className="size-4" />
               {t("delete")}
             </AlertDialogTrigger>
@@ -114,12 +119,18 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>{t("deleteConfirm.cancel")}</AlertDialogCancel>
+                <AlertDialogCancel>
+                  {t("deleteConfirm.cancel")}
+                </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDeleteLesson}
                   disabled={removeLessonMutation.isPending}
                 >
-                  {removeLessonMutation.isPending ? <Spinner /> : t("deleteConfirm.confirm")}
+                  {removeLessonMutation.isPending ? (
+                    <Spinner />
+                  ) : (
+                    t("deleteConfirm.confirm")
+                  )}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -128,15 +139,9 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
       </div>
 
       <div className="space-y-4 px-2">
-        <VideoPreview videoId={lesson.videoId} title={lesson.title} />
+        <VideoPreview hosting={lesson.hosting} title={lesson.title} />
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-xl capitalize font-semibold">{lesson.title}</h3>
-          {lesson.isFree && (
-            <Badge variant="secondary" className="shrink-0">
-              <IconEye className="size-3 mr-1" />
-              {t("freePreview")}
-            </Badge>
-          )}
         </div>
 
         <div className="space-y-1">
@@ -194,17 +199,81 @@ export function LessonDetails({ lessonId, onBack }: LessonDetailsProps) {
   );
 }
 
-function VideoPreview({
+function extractYoutubeVideoId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+interface VideoPreviewProps {
+  hosting:
+    | {
+        type: "mux";
+        videoId: Id<"muxAssets">;
+      }
+    | {
+        type: "youtube";
+        youtubeUrl: string;
+      };
+  title: string;
+}
+
+function VideoPreview({ hosting, title }: VideoPreviewProps) {
+  const t = useScopedI18n("dashboard.courses.lessonDetails.video");
+
+  if (hosting.type === "youtube") {
+    const youtubeVideoId = extractYoutubeVideoId(hosting.youtubeUrl);
+    if (!youtubeVideoId) {
+      return (
+        <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
+          <IconAlertCircle className="size-8 text-destructive" />
+          <p className="text-sm text-destructive">{t("failed")}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="aspect-video w-full rounded-lg overflow-hidden">
+        <iframe
+          src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full"
+        />
+      </div>
+    );
+  }
+
+  return <MuxVideoPreview videoId={hosting.videoId} title={title} />;
+}
+
+function MuxVideoPreview({
   videoId,
   title,
 }: {
-  videoId: Id<"muxAssets">;
+  videoId?: Id<"muxAssets">;
   title: string;
 }) {
   const t = useScopedI18n("dashboard.courses.lessonDetails.video");
-  const muxAsset = useQuery(api.teachers.mux.queries.getVideo, {
-    muxAssetId: videoId,
-  });
+  const muxAsset = useQuery(
+    api.teachers.mux.queries.getVideo,
+    videoId ? { muxAssetId: videoId } : "skip"
+  );
+
+  if (!videoId) {
+    return (
+      <div className="aspect-video w-full rounded-lg bg-muted flex flex-col items-center justify-center gap-2">
+        <IconAlertCircle className="size-8 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">{t("notAvailable")}</p>
+      </div>
+    );
+  }
 
   if (muxAsset === undefined) {
     return (

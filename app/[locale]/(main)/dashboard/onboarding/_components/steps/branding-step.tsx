@@ -39,7 +39,7 @@ export function BrandingStep() {
       logoUpload.handleChange(e);
       setLogoObjectUrl(URL.createObjectURL(file));
     },
-    [logoUpload],
+    [logoUpload]
   );
 
   const [coverObjectUrl, setCoverObjectUrl] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export function BrandingStep() {
       coverUpload.handleChange(e);
       setCoverObjectUrl(URL.createObjectURL(file));
     },
-    [coverUpload],
+    [coverUpload]
   );
 
   return (

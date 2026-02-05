@@ -19,7 +19,6 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TiptapViewer } from "@/components/editor/viewer";
 import { JSONContent } from "@tiptap/react";
 import { formatPrice } from "@/lib/format-price";
