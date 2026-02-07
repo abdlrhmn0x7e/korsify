@@ -50,6 +50,7 @@ import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/acces
 import type * as earlyAccess_admin_requests from "../earlyAccess/admin/requests.js";
 import type * as earlyAccess_requests from "../earlyAccess/requests.js";
 import type * as http from "../http.js";
+import type * as lib_limits from "../lib/limits.js";
 import type * as mux_actions from "../mux/actions.js";
 import type * as mux_internal from "../mux/internal.js";
 import type * as paymob_actions from "../paymob/actions.js";
@@ -123,6 +124,7 @@ declare const fullApi: ApiFromModules<{
   "earlyAccess/admin/requests": typeof earlyAccess_admin_requests;
   "earlyAccess/requests": typeof earlyAccess_requests;
   http: typeof http;
+  "lib/limits": typeof lib_limits;
   "mux/actions": typeof mux_actions;
   "mux/internal": typeof mux_internal;
   "paymob/actions": typeof paymob_actions;

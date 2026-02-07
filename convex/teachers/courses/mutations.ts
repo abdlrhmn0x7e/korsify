@@ -6,6 +6,7 @@ import {
   courseStatusValidator,
 } from "../../db/courses/validators";
 import { db } from "../../db";
+import { assertCanCreateCourse } from "../../lib/limits";
 import z from "zod";
 
 const slugSchema = z
@@ -36,6 +37,8 @@ export const create = teacherMutation({
     seo: v.nullable(courseSeoValidator),
   },
   handler: async (ctx, args) => {
+    await assertCanCreateCourse(ctx, ctx.teacherId);
+
     const normalizedSlug = validateSlug(args.slug);
 
     const isSlugAvailable = await db.courses.queries.isSlugAvailable(

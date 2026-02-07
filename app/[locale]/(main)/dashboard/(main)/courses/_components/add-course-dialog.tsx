@@ -14,6 +14,12 @@ import { CourseFormOnSubmit, slugify } from "./course-form-types";
 import { Id } from "@/convex/_generated/dataModel";
 import { useDialog } from "@/hooks/use-dialog";
 import { useScopedI18n } from "@/locales/client";
+import { usePlanLimits } from "@/hooks/use-plan-limits";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AddCourseDialogProps {
   variant?: "default" | "outline" | "ghost";
@@ -22,6 +28,7 @@ interface AddCourseDialogProps {
 export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
   const t = useScopedI18n("dashboard.courses");
   const { props, dismiss } = useDialog();
+  const { canCreateCourse, limits, usage } = usePlanLimits();
 
   const { mutateAsync: createCourse, isPending } = useMutation({
     mutationFn: useConvexMutation(api.teachers.courses.mutations.create),
@@ -63,6 +70,24 @@ export function AddCourseDialog({ variant = "outline" }: AddCourseDialogProps) {
     options?.onSuccess?.();
     dismiss();
   };
+
+  if (!canCreateCourse) {
+    return (
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button variant={variant} disabled>
+              {t("addCourse")}
+              <IconPlus />
+            </Button>
+          }
+        />
+        <TooltipContent>
+          {t("limits.maxCoursesReached")}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
 
   return (
     <Dialog {...props}>

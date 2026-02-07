@@ -179,6 +179,10 @@ export const courses = {
       attachmentsEmpty: "اسحب وأفلت ملفات PDF هنا، أو انقر للاختيار",
     },
   },
+  limits: {
+    maxCoursesReached: "لقد وصلت إلى الحد الأقصى لعدد الدورات في الخطة المجانية. قم بالترقية لإنشاء المزيد.",
+    muxHostingUpgrade: "رفع الفيديو يتطلب خطة مدفوعة. الخطة المجانية تدعم روابط يوتيوب فقط.",
+  },
   lessonDetails: {
     back: "رجوع",
     edit: "تعديل",

@@ -20,6 +20,7 @@ import { VideoUploader } from "@/components/video/video-uploader";
 import { useUploadFiles, type FileUploadState } from "@/hooks/use-upload-files";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useScopedI18n } from "@/locales/client";
+import { cn } from "@/lib/utils";
 
 import {
   DEFAULT_LESSON_FORM_VALUES,
@@ -27,6 +28,7 @@ import {
   type LessonFormOnSubmit,
   type LessonFormValues,
 } from "./lesson-form-types";
+import { usePlanLimits } from "@/hooks/use-plan-limits";
 
 interface LessonFormProps {
   isPending: boolean;
@@ -37,9 +39,21 @@ interface LessonFormProps {
 
 export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
   const t = useScopedI18n("dashboard.courses.lessonForm.fields");
+  const tLimits = useScopedI18n("dashboard.courses.limits");
+  const { canUseMuxHosting } = usePlanLimits();
+
+  // Free-tier teachers must use YouTube hosting
+  const resolvedDefaults = {
+    ...DEFAULT_LESSON_FORM_VALUES,
+    ...defaultValues,
+    ...(!canUseMuxHosting && !defaultValues?.hosting
+      ? { hosting: { type: "youtube" as const, youtubeUrl: "" } }
+      : {}),
+  };
+
   const form = useForm<LessonFormValues>({
     resolver: zodResolver(lessonFormSchema),
-    defaultValues: { ...DEFAULT_LESSON_FORM_VALUES, ...defaultValues },
+    defaultValues: resolvedDefaults,
     mode: "onChange",
   });
 
@@ -199,8 +213,18 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
                 className="flex gap-6 mt-2"
               >
                 <div className="flex items-center gap-2">
-                  <RadioGroupItem value="mux" id="hosting-mux" />
-                  <Label htmlFor="hosting-mux" className="cursor-pointer">
+                  <RadioGroupItem
+                    value="mux"
+                    id="hosting-mux"
+                    disabled={!canUseMuxHosting}
+                  />
+                  <Label
+                    htmlFor="hosting-mux"
+                    className={cn(
+                      "cursor-pointer",
+                      !canUseMuxHosting && "opacity-50 cursor-not-allowed"
+                    )}
+                  >
                     {t("hostingMux")}
                   </Label>
                 </div>
@@ -211,6 +235,11 @@ export function LessonForm({ onSubmit, defaultValues }: LessonFormProps) {
                   </Label>
                 </div>
               </RadioGroup>
+              {!canUseMuxHosting && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {tLimits("muxHostingUpgrade")}
+                </p>
+              )}
             </Field>
           )}
         />

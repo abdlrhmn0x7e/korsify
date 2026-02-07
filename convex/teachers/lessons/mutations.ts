@@ -2,6 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { teacherMutation, TeacherMutationCtx } from "../../utils";
 import { db } from "../../db";
 import { Id } from "../../_generated/dataModel";
+import { assertCanUseMuxHosting } from "../../lib/limits";
 
 export const create = teacherMutation({
   args: {
@@ -26,6 +27,10 @@ export const create = teacherMutation({
 
     if (!section || section.teacherId !== ctx.teacherId) {
       throw new ConvexError("Section not found");
+    }
+
+    if (args.hosting.type === "mux") {
+      await assertCanUseMuxHosting(ctx, ctx.teacherId);
     }
 
     await checkHostingValidity(ctx, args.hosting);
@@ -89,6 +94,9 @@ export const update = teacherMutation({
     }
 
     if (hosting) {
+      if (hosting.type === "mux") {
+        await assertCanUseMuxHosting(ctx, ctx.teacherId);
+      }
       await checkHostingValidity(ctx, hosting);
     }
 

@@ -183,6 +183,10 @@ export const courses = {
       attachmentsEmpty: "Drag and drop PDF files here, or click to select",
     },
   },
+  limits: {
+    maxCoursesReached: "You've reached the maximum number of courses on the free plan. Upgrade to create more.",
+    muxHostingUpgrade: "Video uploads require a paid plan. Free plan only supports YouTube links.",
+  },
   lessonDetails: {
     back: "Back",
     edit: "Edit",
