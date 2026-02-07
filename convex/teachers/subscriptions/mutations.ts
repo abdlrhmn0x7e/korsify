@@ -7,7 +7,6 @@ export const create = internalMutation({
   args: {
     teacherId: v.id("teachers"),
     status: subscriptionStatusValidator,
-    paymobSubscriptionPlanId: v.number(),
     paymobSubscriptionId: v.number(),
     lastRenewalDate: v.number(),
     currentPeriodEnd: v.number(),

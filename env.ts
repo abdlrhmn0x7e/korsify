@@ -16,6 +16,7 @@ export const env = createEnv({
     PAYMOB_API_KEY: z.string(),
     PAYMOB_HMAC: z.string(),
     PAYMOB_SECRET_KEY: z.string(),
+    PAYMOB_INTEGRATION_ID: z.number(),
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.url(),
@@ -27,6 +28,7 @@ export const env = createEnv({
   runtimeEnv: {
     CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    PAYMOB_INTEGRATION_ID: Number(process.env.PAYMOB_INTEGRATION_ID),
 
     // Mux
     MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,

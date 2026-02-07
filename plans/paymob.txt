@@ -1,0 +1,811 @@
+1. Create a subscription plan
+
+- get auth token 
+
+req: curl --location 'https://accept.paymob.com/api/auth/tokens' \
+--header 'Content-Type: application/json' \
+--data '{
+  "api_key": "ZXlKaGJHY2lPaUpJVXpVexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}'
+
+res: {
+  "profile": {
+    "id": 1052880,
+    "user": {
+      "id": 1984325,
+      "username": "01025350661",
+      "first_name": "Mahmoud",
+      "last_name": "Omiesh",
+      "date_joined": "2025-06-14T20:14:21.395239",
+      "email": "",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "last_login": null,
+      "user_permissions": [
+        128,
+        129,
+        130,
+        131,
+        259,
+        133,
+        258,
+        135,
+        136,
+        137,
+        266,
+        139,
+        140,
+        138,
+        134,
+        146,
+        277,
+        132,
+        160,
+        1059,
+        185,
+        186,
+        571,
+        1468,
+        190,
+        1470,
+        1471,
+        1090,
+        454,
+        455,
+        203,
+        204,
+        205,
+        206,
+        213,
+        604,
+        1649,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ],
+      "groups": []
+    },
+    "created_at": "2025-06-14T20:14:21.406866",
+    "active": true,
+    "profile_type": "Merchant",
+    "phones": [
+      "+201025350661"
+    ],
+    "company_emails": null,
+    "company_name": "dev",
+    "state": "",
+    "country": "EGY",
+    "city": "Cairo",
+    "postal_code": "",
+    "street": "",
+    "email_notification": false,
+    "order_retrieval_endpoint": null,
+    "delivery_update_endpoint": null,
+    "logo_url": null,
+    "is_mobadra": false,
+    "sector": "other",
+    "is_2fa_enabled": false,
+    "otp_sent_to": "01025350661",
+    "dashboard_merchant_status": "In the Onboarding Process",
+    "activation_method": 1,
+    "signed_up_through": 0,
+    "failed_attempts": 0,
+    "custom_export_columns": [],
+    "server_IP": [],
+    "username": null,
+    "primary_phone_number": "+201025350661",
+    "primary_phone_verified": true,
+    "is_temp_password": false,
+    "otp_2fa_sent_at": null,
+    "otp_2fa_attempt": null,
+    "otp_sent_at": "2026-02-05T20:06:20.887437",
+    "otp_validated_at": null,
+    "awb_banner": null,
+    "email_banner": null,
+    "identification_number": null,
+    "delivery_status_callback": "",
+    "merchant_external_link": null,
+    "merchant_status": 0,
+    "deactivated_by_bank": false,
+    "bank_deactivation_reason": null,
+    "bank_merchant_status": 0,
+    "national_id": null,
+    "super_agent": null,
+    "wallet_limit_profile": null,
+    "address": null,
+    "commercial_registration": null,
+    "commercial_registration_area": null,
+    "distributor_code": null,
+    "distributor_branch_code": null,
+    "allow_terminal_order_id": false,
+    "allow_encryption_bypass": false,
+    "wallet_phone_number": null,
+    "suspicious": 0,
+    "latitude": null,
+    "longitude": null,
+    "bank_staffs": {},
+    "bank_rejection_reason": null,
+    "bank_received_documents": false,
+    "bank_merchant_digital_status": 0,
+    "bank_digital_rejection_reason": null,
+    "filled_business_data": true,
+    "day_start_time": "00:00:00",
+    "day_end_time": null,
+    "withhold_transfers": false,
+    "manual_settlement": false,
+    "sms_sender_name": "PayMob",
+    "withhold_transfers_reason": null,
+    "withhold_transfers_notes": null,
+    "can_bill_deposit_with_card": false,
+    "can_topup_merchants": false,
+    "topup_transfer_id": null,
+    "referral_eligible": false,
+    "is_eligible_to_be_ranger": false,
+    "eligible_for_manual_refunds": false,
+    "is_ranger": false,
+    "is_poaching": false,
+    "paymob_app_merchant": false,
+    "settlement_frequency": null,
+    "day_of_the_week": null,
+    "day_of_the_month": null,
+    "allow_transaction_notifications": false,
+    "allow_transfer_notifications": false,
+    "sallefny_amount_whole": 0,
+    "sallefny_fees_whole": 0,
+    "paymob_app_first_login": null,
+    "paymob_app_last_activity": null,
+    "payout_enabled": false,
+    "payout_terms": false,
+    "is_bills_new": false,
+    "can_process_multiple_refunds": false,
+    "settlement_classification": 0,
+    "vat_classification": 1,
+    "instant_settlement_enabled": false,
+    "instant_settlement_transaction_otp_verified": false,
+    "preferred_language": null,
+    "ignore_flash_callbacks": true,
+    "receive_callback_card_info": false,
+    "onboarding_freshdesk_ticket_id": null,
+    "paymob_event": false,
+    "acq_partner": null,
+    "dom": null,
+    "bank_related": null,
+    "settlement_classification_profile": null,
+    "permissions": []
+  },
+  "token": "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRBMU1qZzRNQ3dpY0doaGMyZ2lPaUprWmpSbVpUSTVZV0kyT0Roak5XRXhPVEF3WkRkalpqazFNbUppTkdKaE16UmxabUZpTXpkbFpqTXlOREZoT1RkbU0ySmlPVEppTnpsbFpHRXdObVU0SWl3aVpYaHdJam94Tnpjd016ZzVNRFEyZlEuTmo4bEpxN21QZ1E2LUdkZnpfaVBGY3VLUjJpVk9zZU1lOEtpbmZHVGN2N1NVVnctbjIwckJmYlZXLTNUUkNDRmFyQXJGZGlVRU1fU3JVVkRxd3Ayd2c="
+}
+
+
+- create plan
+
+req: curl --location 'https://accept.paymob.com/api/acceptance/subscription-plans' \
+--header 'Authorization: Bearer auth_token' \
+--header 'Content-Type: application/json' \
+--data '{
+  "frequency": 7,
+  "name": "testing",
+  "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+  "reminder_days": "3",
+  "retrial_days": "3",
+  "plan_type": "rent",
+  "amount_cents": 50000,
+  "integration": 5140140
+}'
+
+res: {
+  "id": 8280,
+  "frequency": 7,
+  "created_at": "2026-02-06T16:29:30.480236",
+  "updated_at": "2026-02-06T16:29:30.480250",
+  "name": "testing",
+  "reminder_days": 3,
+  "retrial_days": 3,
+  "plan_type": "rent",
+  "number_of_deductions": null,
+  "amount_cents": 50000,
+  "use_transaction_amount": false,
+  "is_active": true,
+  "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+  "integration": 5140140,
+  "fee": null
+}
+
+
+2. subscribe to the plan
+
+- make intention
+
+req: curl --location 'https://accept.paymob.com/v1/intention/' \
+--header 'Authorization: Token secret_key' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "amount": 100,
+  "subscription_plan_id": 8280,
+  "currency": "EGP",
+  "payment_methods": [
+    5140140
+  ],
+  "items": [
+    {
+      "name": "Card Validation Fees",
+      "amount": 100
+    }
+  ],
+  "billing_data": {
+    "first_name": "mahmoud",
+    "last_name": "omiesh",
+    "phone_number": "+201025350661",
+    "email": "mahmoudomiesh12005@gmail.com"
+  },
+  "special_reference": "teacher_id"
+}'
+
+res: {
+  "payment_keys": [
+    {
+      "integration": 5140140,
+      "key": "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SjFjMlZ5WDJsa0lqb3hPVGcwTXpJMUxDSmhiVzkxYm5SZlkyVnVkSE1pT2pFd01Dd2lZM1Z5Y21WdVkza2lPaUpGUjFBaUxDSnBiblJsWjNKaGRHbHZibDlwWkNJNk5URTBNREUwTUN3aWIzSmtaWEpmYVdRaU9qUTJOVEEyTWpVd01pd2lZbWxzYkdsdVoxOWtZWFJoSWpwN0ltWnBjbk4wWDI1aGJXVWlPaUp0WVdodGIzVmtJaXdpYkdGemRGOXVZVzFsSWpvaWIyMXBaWE5vSWl3aWMzUnlaV1YwSWpvaVRrRWlMQ0ppZFdsc1pHbHVaeUk2SWs1Qklpd2labXh2YjNJaU9pSk9RU0lzSW1Gd1lYSjBiV1Z1ZENJNklrNUJJaXdpWTJsMGVTSTZJazVCSWl3aWMzUmhkR1VpT2lKT1FTSXNJbU52ZFc1MGNua2lPaUpPUVNJc0ltVnRZV2xzSWpvaWJXRm9iVzkxWkc5dGFXVnphREV5TURBMVFHZHRZV2xzTG1OdmJTSXNJbkJvYjI1bFgyNTFiV0psY2lJNklpc3lNREV3TWpVek5UQTJOakVpTENKd2IzTjBZV3hmWTI5a1pTSTZJazVCSWl3aVpYaDBjbUZmWkdWelkzSnBjSFJwYjI0aU9pSk9RU0o5TENKc2IyTnJYMjl5WkdWeVgzZG9aVzVmY0dGcFpDSTZabUZzYzJVc0luTjFZbk5qY21sd2RHbHZibDl3YkdGdVgybGtJam9pT0RJNE1DSXNJbVY0ZEhKaElqcDdJbTFsY21Ob1lXNTBYMjl5WkdWeVgybGtJam9pZEdWaFkyaGxjbDlwWkNKOUxDSnphVzVuYkdWZmNHRjViV1Z1ZEY5aGRIUmxiWEIwSWpwbVlXeHpaU3dpWTNKbFlYUmxaRjlpZVNJNk1UazRORE15TlN3aWFYTmZjR0Z5ZEc1bGNpSTZabUZzYzJVc0ltNWxlSFJmY0dGNWJXVnVkRjlwYm5SbGJuUnBiMjRpT2lKd2FWOTBaWE4wWHpoaU5qWm1NVFl3TURrd05UUXdaV1k0WldabE5qTmpNVEF4Wm1NNVpUQmxJbjAuZkZpSmJ0NHBIMHZhdjYtSkstVVBQSXp4VURrUW5sdkZrYXBUOTBDQzkySUtqay1kMm9yemwwYVVrbTVZMENHMDRqSjJvc2VlU0lDMl93NmdTWmI5V3c=",
+      "gateway_type": "MIGS",
+      "iframe_id": null,
+      "order_id": 465062502,
+      "redirection_url": "https://gorgeous-polecat-gentle.ngrok-free.app/api/paymob/response",
+      "save_card": false
+    }
+  ],
+  "intention_order_id": 465062502,
+  "split_payment_methods": [],
+  "id": "pi_test_8b66f160090540ef8efe63c101fc9e0e",
+  "intention_detail": {
+    "amount": 100,
+    "items": [
+      {
+        "name": "Card Validation Fees",
+        "amount": 100,
+        "description": null,
+        "quantity": null,
+        "image": null
+      }
+    ],
+    "currency": "EGP",
+    "billing_data": {
+      "apartment": "",
+      "floor": "",
+      "first_name": "mahmoud",
+      "last_name": "omiesh",
+      "street": "",
+      "building": "",
+      "phone_number": "+201025350661",
+      "shipping_method": "",
+      "city": "",
+      "country": "",
+      "state": "",
+      "email": "mahmoudomiesh12005@gmail.com",
+      "postal_code": ""
+    }
+  },
+  "client_secret": "egy_csk_test_d8ae26aabb433f348cf4b7d59c84b0bb",
+  "payment_methods": [
+    {
+      "integration_id": 5140140,
+      "alias": null,
+      "name": "card",
+      "method_type": "online",
+      "currency": "EGP",
+      "live": false,
+      "use_cvc_with_moto": false
+    }
+  ],
+  "special_reference": "teacher_id",
+  "extras": {
+    "creation_extras": null,
+    "confirmation_extras": null
+  },
+  "confirmed": false,
+  "status": "intended",
+  "created": "2026-02-06T16:35:09.008251",
+  "card_detail": null,
+  "card_tokens": [],
+  "object": "paymentintention"
+}
+
+
+- go to url and verify card
+url: https://accept.paymob.com/unifiedcheckout/?publicKey=<add your public key here>&clientSecret=<add your client secret key here>
+
+- webhook post:
+{"subscription_data": {"id": 8334, "client_info": {"email": "mahmoudomiesh12005@gmail.com", "full_name": "mahmoud omiesh", "phone_number": "201025350661"}, "frequency": 7, "created_at": "2026-02-06T16:42:32.195886", "updated_at": "2026-02-06T16:42:32.195900", "name": "testing", "reminder_days": 3, "retrial_days": 3, "plan_id": 8280, "state": "active", "amount_cents": 50000, "starts_at": "2026-02-06", "next_billing": "2026-02-13", "reminder_date": "2026-02-10", "ends_at": null, "resumed_at": null, "suspended_at": null, "reactivated_at": null, "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0", "integration": 5140140, "initial_transaction": 409501076}, "transaction_id": 409501076, "trigger_type": "Subscription Created", "hmac": "0035a17a6c9b8142b7d79f87c9557230a926722690465b8a2de3a37a2e49f8d3decf8542f36ba740fa33f61ede680b608211cce9d90b3d75b51c0a7b5d26ff8d", "paymob_request_id": "1e5c0c8c-eb27-45da-b703-77530a39120e", "card_data": {"token": "7e0414681bd7a2643303d38cff1a4b999bdab2fcead54018c47eff3b", "masked_pan": "xxxx-xxxx-xxxx-2346"}}
+
+
+
+
+other
+
+- List plans
+
+req: curl --location 'https://accept.paymob.com/api/acceptance/subscription-plans' \
+--header 'Authorization: Bearer auth_token' \
+--header 'Content-Type: application/json'
+
+res: {
+  "next": "https://accept.paymob.com/api/acceptance/subscription-plans?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 8272,
+      "frequency": 7,
+      "created_at": "2026-02-05T22:52:28.166305",
+      "updated_at": "2026-02-05T22:52:28.166319",
+      "name": "Testplan 3",
+      "reminder_days": 0,
+      "retrial_days": 3,
+      "plan_type": "rent",
+      "number_of_deductions": 0,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/xxxxxxxxxxxxxxxxxxxx",
+      "integration": 5140140,
+      "fee": null
+    },
+    {
+      "id": 8273,
+      "frequency": 7,
+      "created_at": "2026-02-05T23:25:34.229555",
+      "updated_at": "2026-02-05T23:25:34.229622",
+      "name": "Testplan 3",
+      "reminder_days": 0,
+      "retrial_days": 3,
+      "plan_type": "rent",
+      "number_of_deductions": 0,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/xxxxxxxxxxxxxxxxxxxx",
+      "integration": 5140140,
+      "fee": null
+    },
+    {
+      "id": 8274,
+      "frequency": 7,
+      "created_at": "2026-02-05T23:47:06.025673",
+      "updated_at": "2026-02-05T23:47:06.025689",
+      "name": "testingggg",
+      "reminder_days": 2,
+      "retrial_days": 2,
+      "plan_type": "rent",
+      "number_of_deductions": 0,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/xxxxxxxxxxxxxxxxxxxx",
+      "integration": 5140140,
+      "fee": null
+    },
+    {
+      "id": 8277,
+      "frequency": 7,
+      "created_at": "2026-02-06T16:25:07.602150",
+      "updated_at": "2026-02-06T16:25:07.602164",
+      "name": "testing",
+      "reminder_days": 3,
+      "retrial_days": 3,
+      "plan_type": "rent",
+      "number_of_deductions": 0,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/xxxxxxxxxxxxxxxxxxxx",
+      "integration": 5140140,
+      "fee": null
+    },
+    {
+      "id": 8279,
+      "frequency": 7,
+      "created_at": "2026-02-06T16:29:07.554050",
+      "updated_at": "2026-02-06T16:29:07.554064",
+      "name": "testing",
+      "reminder_days": 3,
+      "retrial_days": 3,
+      "plan_type": "rent",
+      "number_of_deductions": null,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+      "integration": 5140140,
+      "fee": null
+    },
+    {
+      "id": 8278,
+      "frequency": 7,
+      "created_at": "2026-02-06T16:26:18.562728",
+      "updated_at": "2026-02-06T16:26:18.562743",
+      "name": "testing",
+      "reminder_days": 3,
+      "retrial_days": 3,
+      "plan_type": "rent",
+      "number_of_deductions": null,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/xxxxxxxxxxxxxxxxxxxx",
+      "integration": 5140140,
+      "fee": null
+    },
+    {
+      "id": 8280,
+      "frequency": 7,
+      "created_at": "2026-02-06T16:29:30.480236",
+      "updated_at": "2026-02-06T16:29:30.480250",
+      "name": "testing",
+      "reminder_days": 3,
+      "retrial_days": 3,
+      "plan_type": "rent",
+      "number_of_deductions": null,
+      "amount_cents": 50000,
+      "use_transaction_amount": false,
+      "is_active": true,
+      "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+      "integration": 5140140,
+      "fee": null
+    }
+  ]
+}
+
+
+- list subscription details
+
+req: curl --location 'https://accept.paymob.com/api/acceptance/subscriptions/8334' \
+--header 'Authorization: Bearer auth_token' \
+--header 'Content-Type: application/json'
+
+res: {
+  "id": 8334,
+  "client_info": {
+    "email": "mahmoudomiesh12005@gmail.com",
+    "full_name": "mahmoud omiesh",
+    "phone_number": "201025350661"
+  },
+  "frequency": 7,
+  "created_at": "2026-02-06T16:42:32.195886",
+  "updated_at": "2026-02-06T16:42:32.195900",
+  "name": "testing",
+  "reminder_days": 3,
+  "retrial_days": 3,
+  "plan_id": 8280,
+  "state": "active",
+  "amount_cents": 50000,
+  "starts_at": "2026-02-06",
+  "next_billing": "2026-02-13",
+  "reminder_date": "2026-02-10",
+  "ends_at": null,
+  "resumed_at": null,
+  "suspended_at": null,
+  "reactivated_at": null,
+  "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+  "integration": 5140140,
+  "initial_transaction": 409501076
+}
+
+
+- suspend subscription
+
+req: curl --location --request POST 'https://accept.paymob.com/api/acceptance/subscriptions/8334/suspend' \
+--header 'Authorization: Bearer auth_token' \
+--header 'Content-Type: application/json'
+
+res: {
+  "id": 8334,
+  "client_info": {
+    "email": "mahmoudomiesh12005@gmail.com",
+    "full_name": "mahmoud omiesh",
+    "phone_number": "201025350661"
+  },
+  "frequency": 7,
+  "created_at": "2026-02-06T16:42:32.195886",
+  "updated_at": "2026-02-06T16:42:32.195900",
+  "name": "testing",
+  "reminder_days": 3,
+  "retrial_days": 3,
+  "plan_id": 8280,
+  "state": "suspended",
+  "amount_cents": 50000,
+  "starts_at": "2026-02-06",
+  "next_billing": "2026-02-13",
+  "reminder_date": "2026-02-10",
+  "ends_at": null,
+  "resumed_at": null,
+  "suspended_at": "2026-02-06",
+  "reactivated_at": null,
+  "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+  "integration": 5140140,
+  "initial_transaction": 409501076
+}
+
+webhook: {"paymob_request_id": "643b2610-2d47-4310-9850-216bb66af8de", "subscription_data": {"id": 8342, "client_info": {"email": "mahmoudomiesh12005@gmail.com", "full_name": "mahmoud omiesh", "phone_number": "201025350661"}, "frequency": 7, "created_at": "2026-02-07T14:42:08.988265", "updated_at": "2026-02-07T14:42:08.988278", "name": "testing", "reminder_days": 3, "retrial_days": 3, "plan_id": 8280, "state": "suspended", "amount_cents": 50000, "starts_at": "2026-02-07", "next_billing": "2026-02-14", "reminder_date": "2026-02-11", "ends_at": null, "resumed_at": null, "suspended_at": "2026-02-07", "reactivated_at": null, "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0", "integration": 5140140, "initial_transaction": 410018398}, "trigger_type": "suspended", "hmac": "311d0a07e3481b1700b1d9bb7c1e1b439df03f77b96a88966c313fc6b8ad14346e2d1bd5c2c0fb159793d11a2c17ac74c3908ed6fd3348cb160db7828c7966e7"}
+
+
+- resume subscription
+
+req: curl --location --request POST 'https://accept.paymob.com/api/acceptance/subscriptions/8334/resume' \
+--header 'Authorization: Bearer auth_token' \
+--header 'Content-Type: application/json'
+
+res: {
+  "id": 8334,
+  "client_info": {
+    "email": "mahmoudomiesh12005@gmail.com",
+    "full_name": "mahmoud omiesh",
+    "phone_number": "201025350661"
+  },
+  "frequency": 7,
+  "created_at": "2026-02-06T16:42:32.195886",
+  "updated_at": "2026-02-06T16:42:32.195900",
+  "name": "testing",
+  "reminder_days": 3,
+  "retrial_days": 3,
+  "plan_id": 8280,
+  "state": "active",
+  "amount_cents": 50000,
+  "starts_at": "2026-02-06",
+  "next_billing": "2026-02-13",
+  "reminder_date": "2026-02-10",
+  "ends_at": null,
+  "resumed_at": "2026-02-06",
+  "suspended_at": "2026-02-06",
+  "reactivated_at": null,
+  "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+  "integration": 5140140,
+  "initial_transaction": 409501076
+}
+
+webhook post: {"paymob_request_id": "a5d1acec-054a-4f3b-ab66-1433f1d0691b", "subscription_data": {"id": 8334, "client_info": {"email": "mahmoudomiesh12005@gmail.com", "full_name": "mahmoud omiesh", "phone_number": "201025350661"}, "frequency": 7, "created_at": "2026-02-06T16:42:32.195886", "updated_at": "2026-02-06T16:42:32.195900", "name": "testing", "reminder_days": 3, "retrial_days": 3, "plan_id": 8280, "state": "active", "amount_cents": 50000, "starts_at": "2026-02-06", "next_billing": "2026-02-13", "reminder_date": "2026-02-10", "ends_at": null, "resumed_at": "2026-02-06", "suspended_at": "2026-02-06", "reactivated_at": null, "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0", "integration": 5140140, "initial_transaction": 409501076}, "trigger_type": "resumed", "hmac": "19ccad87555a50e45b25977e826477ccb042a7703621fc1bc61b63b82bdf58de3d0f33914d721d17c2468a2760b6ea9facb1b84a0c30b945c2fd994328ba9166"}
+
+
+- cancel subscription
+
+req: curl --location --request POST 'https://accept.paymob.com/api/acceptance/subscriptions/8334/cancel' \
+--header 'Authorization: Bearer auth_token' \
+--header 'Content-Type: application/json'
+
+res: {
+  "id": 8334,
+  "client_info": {
+    "email": "mahmoudomiesh12005@gmail.com",
+    "full_name": "mahmoud omiesh",
+    "phone_number": "201025350661"
+  },
+  "frequency": 7,
+  "created_at": "2026-02-06T16:42:32.195886",
+  "updated_at": "2026-02-06T16:42:32.195900",
+  "name": "testing",
+  "reminder_days": 3,
+  "retrial_days": 3,
+  "plan_id": 8280,
+  "state": "canceled",
+  "amount_cents": 50000,
+  "starts_at": "2026-02-06",
+  "next_billing": "2026-02-13",
+  "reminder_date": "2026-02-10",
+  "ends_at": null,
+  "resumed_at": "2026-02-06",
+  "suspended_at": "2026-02-06",
+  "reactivated_at": null,
+  "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0",
+  "integration": 5140140,
+  "initial_transaction": 409501076
+}
+
+webhook post: {"paymob_request_id": "21e51e3f-8d39-45d4-be72-6eec42521437", "subscription_data": {"id": 8334, "client_info": {"email": "mahmoudomiesh12005@gmail.com", "full_name": "mahmoud omiesh", "phone_number": "201025350661"}, "frequency": 7, "created_at": "2026-02-06T16:42:32.195886", "updated_at": "2026-02-06T16:42:32.195900", "name": "testing", "reminder_days": 3, "retrial_days": 3, "plan_id": 8280, "state": "canceled", "amount_cents": 50000, "starts_at": "2026-02-06", "next_billing": "2026-02-13", "reminder_date": "2026-02-10", "ends_at": null, "resumed_at": "2026-02-06", "suspended_at": "2026-02-06", "reactivated_at": null, "webhook_url": "https://webhook.site/fdbfac3c-1f85-4cc8-9868-71487f0627a0", "integration": 5140140, "initial_transaction": 409501076}, "trigger_type": "canceled", "hmac": "e7ced25203c45b32a554f77ce5af7557ea5891448e5b6a2e3e3c2bc3c2626b4b7c5d53cf91df4c635fc88f48bb8a23d9896d700f9cc607b7f826f42cf7f3cc9e"}
+
+once a subscription is cancelled it can't be reenabled
+
+
+- list subscription cards
+
+req: curl --location 'https://accept.paymob.com/api/acceptance/subscriptions/8334/transactions' \
+--header 'Authorization: Bearer auth_token=' \
+--header 'Content-Type: application/json'
+
+res: {
+  "next": "https://accept.paymob.com/api/acceptance/subscriptions/8334/transactions?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 409501407,
+      "pending": true,
+      "amount_cents": 50000,
+      "success": false,
+      "is_auth": false,
+      "is_capture": false,
+      "is_standalone_payment": true,
+      "is_voided": false,
+      "is_refunded": false,
+      "is_3d_secure": true,
+      "integration_id": 5140140,
+      "terminal_id": null,
+      "terminal_branch_id": "-",
+      "has_parent_transaction": false,
+      "created_at": "2026-02-06T16:42:32.370410",
+      "paid_at": null,
+      "currency": "EGP",
+      "source_data": {
+        "pan": "2346",
+        "type": "card",
+        "tenure": null,
+        "sub_type": "MasterCard"
+      },
+      "api_source": "SUBSCRIPTION",
+      "is_void": false,
+      "is_refund": false,
+      "is_cashout": false,
+      "data": {
+        "html": "<div id=\"initiate3dsSimpleRedirect\" xmlns=\"http://www.w3.org/1999/html\"> <iframe id=\"methodFrame\" name=\"methodFrame\" height=\"100\" width=\"200\" > </iframe> <form id =\"initiate3dsSimpleRedirectForm\" method=\"POST\" action=\"https://ap.gateway.mastercard.com/acs/mastercard/v2/method\" target=\"methodFrame\"> <input type=\"hidden\" name=\"threeDSMethodData\" value=\"eyJ0aHJlZURTTWV0aG9kTm90aWZpY2F0aW9uVVJMIjoiaHR0cHM6Ly9hcC5nYXRld2F5Lm1hc3RlcmNhcmQuY29tL2NhbGxiYWNrSW50ZXJmYWNlL2dhdGV3YXkvNmExZDQ1NjJhOWE4MDliMWYwNWM5OTcwNWUzMDIwYTczODliYWZjNzhkMDY0NTc5YjhiZDVmZTYyNTA2ODJiMyIsInRocmVlRFNTZXJ2ZXJUcmFuc0lEIjoiYzYxYTAyOTYtNjhhOS00OWQyLWEyOGItZTI3YTY4ZTMyZjNmIn0=\" /> </form> <script id=\"initiate-authentication-script\"> var e=document.getElementById(\"initiate3dsSimpleRedirectForm\"); if (e) { e.submit(); if (e.parentNode !== null) { e.parentNode.removeChild(e); } } </script> </div>",
+        "message": "Pending 3DS Authorization"
+      },
+      "is_hidden": false,
+      "error_occured": false,
+      "is_live": false,
+      "other_endpoint_reference": null,
+      "refunded_amount_cents": 0,
+      "source_id": 8334,
+      "is_captured": false,
+      "captured_amount": 0,
+      "merchant_staff_tag": null,
+      "paymob_date": null,
+      "value_date": null,
+      "updated_at": "2026-02-06T16:42:35.240533",
+      "is_settled": false,
+      "bill_balanced": false,
+      "is_bill": false,
+      "is_reconciled": false,
+      "cogs": 0,
+      "reconciliation_id": null,
+      "owner": 1984325,
+      "order": 465067432,
+      "parent_transaction": null
+    }
+  ]
+}
+
+
+- last transaction subscription
+
+req: curl --location 'https://accept.paymob.com/api/acceptance/subscriptions/8334/last-transaction' \
+--header 'Authorization: Bearer auth_token=' \
+--header 'Content-Type: application/json'
+
+res: {
+  "id": 409501407,
+  "pending": true,
+  "amount_cents": 50000,
+  "success": false,
+  "is_auth": false,
+  "is_capture": false,
+  "is_standalone_payment": true,
+  "is_voided": false,
+  "is_refunded": false,
+  "is_3d_secure": true,
+  "integration_id": 5140140,
+  "terminal_id": null,
+  "terminal_branch_id": "-",
+  "has_parent_transaction": false,
+  "created_at": "2026-02-06T16:42:32.370410",
+  "paid_at": null,
+  "currency": "EGP",
+  "source_data": {
+    "pan": "2346",
+    "type": "card",
+    "tenure": null,
+    "sub_type": "MasterCard"
+  },
+  "api_source": "SUBSCRIPTION",
+  "is_void": false,
+  "is_refund": false,
+  "is_cashout": false,
+  "data": {
+    "html": "<div id=\"initiate3dsSimpleRedirect\" xmlns=\"http://www.w3.org/1999/html\"> <iframe id=\"methodFrame\" name=\"methodFrame\" height=\"100\" width=\"200\" > </iframe> <form id =\"initiate3dsSimpleRedirectForm\" method=\"POST\" action=\"https://ap.gateway.mastercard.com/acs/mastercard/v2/method\" target=\"methodFrame\"> <input type=\"hidden\" name=\"threeDSMethodData\" value=\"eyJ0aHJlZURTTWV0aG9kTm90aWZpY2F0aW9uVVJMIjoiaHR0cHM6Ly9hcC5nYXRld2F5Lm1hc3RlcmNhcmQuY29tL2NhbGxiYWNrSW50ZXJmYWNlL2dhdGV3YXkvNmExZDQ1NjJhOWE4MDliMWYwNWM5OTcwNWUzMDIwYTczODliYWZjNzhkMDY0NTc5YjhiZDVmZTYyNTA2ODJiMyIsInRocmVlRFNTZXJ2ZXJUcmFuc0lEIjoiYzYxYTAyOTYtNjhhOS00OWQyLWEyOGItZTI3YTY4ZTMyZjNmIn0=\" /> </form> <script id=\"initiate-authentication-script\"> var e=document.getElementById(\"initiate3dsSimpleRedirectForm\"); if (e) { e.submit(); if (e.parentNode !== null) { e.parentNode.removeChild(e); } } </script> </div>",
+    "message": "Pending 3DS Authorization"
+  },
+  "is_hidden": false,
+  "error_occured": false,
+  "is_live": false,
+  "other_endpoint_reference": null,
+  "refunded_amount_cents": 0,
+  "source_id": 8334,
+  "is_captured": false,
+  "captured_amount": 0,
+  "merchant_staff_tag": null,
+  "paymob_date": null,
+  "value_date": null,
+  "updated_at": "2026-02-06T16:42:35.240533",
+  "is_settled": false,
+  "bill_balanced": false,
+  "is_bill": false,
+  "is_reconciled": false,
+  "cogs": 0,
+  "reconciliation_id": null,
+  "owner": 1984325,
+  "order": 465067432,
+  "parent_transaction": null
+}
+
+
+- list subscription transaction
+
+req: curl --location 'https://accept.paymob.com/api/acceptance/subscriptions/8334/transactions' \
+--header 'Authorization: Bearer auth_token=' \
+--header 'Content-Type: application/json'
+
+res: {
+  "next": "https://accept.paymob.com/api/acceptance/subscriptions/8334/transactions?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 409501407,
+      "pending": true,
+      "amount_cents": 50000,
+      "success": false,
+      "is_auth": false,
+      "is_capture": false,
+      "is_standalone_payment": true,
+      "is_voided": false,
+      "is_refunded": false,
+      "is_3d_secure": true,
+      "integration_id": 5140140,
+      "terminal_id": null,
+      "terminal_branch_id": "-",
+      "has_parent_transaction": false,
+      "created_at": "2026-02-06T16:42:32.370410",
+      "paid_at": null,
+      "currency": "EGP",
+      "source_data": {
+        "pan": "2346",
+        "type": "card",
+        "tenure": null,
+        "sub_type": "MasterCard"
+      },
+      "api_source": "SUBSCRIPTION",
+      "is_void": false,
+      "is_refund": false,
+      "is_cashout": false,
+      "data": {
+        "html": "<div id=\"initiate3dsSimpleRedirect\" xmlns=\"http://www.w3.org/1999/html\"> <iframe id=\"methodFrame\" name=\"methodFrame\" height=\"100\" width=\"200\" > </iframe> <form id =\"initiate3dsSimpleRedirectForm\" method=\"POST\" action=\"https://ap.gateway.mastercard.com/acs/mastercard/v2/method\" target=\"methodFrame\"> <input type=\"hidden\" name=\"threeDSMethodData\" value=\"eyJ0aHJlZURTTWV0aG9kTm90aWZpY2F0aW9uVVJMIjoiaHR0cHM6Ly9hcC5nYXRld2F5Lm1hc3RlcmNhcmQuY29tL2NhbGxiYWNrSW50ZXJmYWNlL2dhdGV3YXkvNmExZDQ1NjJhOWE4MDliMWYwNWM5OTcwNWUzMDIwYTczODliYWZjNzhkMDY0NTc5YjhiZDVmZTYyNTA2ODJiMyIsInRocmVlRFNTZXJ2ZXJUcmFuc0lEIjoiYzYxYTAyOTYtNjhhOS00OWQyLWEyOGItZTI3YTY4ZTMyZjNmIn0=\" /> </form> <script id=\"initiate-authentication-script\"> var e=document.getElementById(\"initiate3dsSimpleRedirectForm\"); if (e) { e.submit(); if (e.parentNode !== null) { e.parentNode.removeChild(e); } } </script> </div>",
+        "message": "Pending 3DS Authorization"
+      },
+      "is_hidden": false,
+      "error_occured": false,
+      "is_live": false,
+      "other_endpoint_reference": null,
+      "refunded_amount_cents": 0,
+      "source_id": 8334,
+      "is_captured": false,
+      "captured_amount": 0,
+      "merchant_staff_tag": null,
+      "paymob_date": null,
+      "value_date": null,
+      "updated_at": "2026-02-06T16:42:35.240533",
+      "is_settled": false,
+      "bill_balanced": false,
+      "is_bill": false,
+      "is_reconciled": false,
+      "cogs": 0,
+      "reconciliation_id": null,
+      "owner": 1984325,
+      "order": 465067432,
+      "parent_transaction": null
+    }
+  ]
+}

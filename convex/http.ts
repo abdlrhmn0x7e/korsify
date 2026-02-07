@@ -4,6 +4,21 @@ import { internal } from "./_generated/api";
 import { authComponent, createAuth } from "./auth";
 import { createStudentAuth, studentAuthComponent } from "./studentAuth";
 
+async function computeHMAC(data: string, secret: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-512" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(data));
+  return Array.from(new Uint8Array(signature))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 const http = httpRouter();
 
 authComponent.registerRoutes(http, createAuth);
@@ -67,6 +82,42 @@ http.route({
         break;
       }
     }
+
+    return new Response("OK", { status: 200 });
+  }),
+});
+
+// ============================================
+// Paymob Subscription Webhook Handler
+// ============================================
+http.route({
+  path: "/paymob-subscription-webhook",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const payload = await request.json();
+    console.log("Paymob subscription webhook payload:", payload);
+    const hmacSecret = process.env.PAYMOB_HMAC!;
+
+    // Verify HMAC: computed over the JSON-stringified subscription_data
+    const subscriptionData = payload.subscription_data;
+    if (!subscriptionData) {
+      console.error("Missing subscription_data in webhook payload");
+      return new Response("Invalid payload", { status: 400 });
+    }
+
+    const computed = await computeHMAC(
+      `${payload.trigger_type}for${payload.subscription_data.id}`,
+      hmacSecret
+    );
+
+    if (computed !== payload.hmac) {
+      console.error("Invalid HMAC signature for Paymob subscription webhook");
+      return new Response("Invalid signature", { status: 401 });
+    }
+
+    await ctx.runAction(internal.paymob.internal.fulfillSubscription, {
+      payload,
+    });
 
     return new Response("OK", { status: 200 });
   }),
