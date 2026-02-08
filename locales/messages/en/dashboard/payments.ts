@@ -80,6 +80,7 @@ export const payments = {
     cta: "Cancel Subscription",
     confirm: "Yes, Cancel",
     back: "Keep Subscription",
+    success: "Subscription cancelled successfully",
   },
   redirect: {
     success: {

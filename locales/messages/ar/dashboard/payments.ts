@@ -79,6 +79,7 @@ export const payments = {
     cta: "إلغاء الاشتراك",
     confirm: "نعم، إلغاء",
     back: "الإبقاء على الاشتراك",
+    success: "تم إلغاء الاشتراك بنجاح",
   },
   redirect: {
     success: {

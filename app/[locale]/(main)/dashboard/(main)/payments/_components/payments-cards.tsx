@@ -52,13 +52,13 @@ import {
   IconReceipt,
   IconBan,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
 import { useScopedI18n } from "@/locales/client";
 import { useDialog } from "@/hooks/use-dialog";
 
 import type { CardInfo, MappedTransaction } from "./payments-types";
 import { format } from "date-fns";
 import { formatCurrency, getTransactionStatus } from "./payments-utils";
+import { Spinner } from "@/components/ui/spinner";
 
 type PaymentsT = ReturnType<typeof useScopedI18n<"dashboard.payments">>;
 type DialogReturn = ReturnType<typeof useDialog>;
@@ -200,7 +200,7 @@ export function SubscribeCard({
               className="w-32"
             >
               {checkoutLoading ? (
-                <IconLoader2 className="size-4 animate-spin" />
+                <Spinner />
               ) : (
                 t("subscribe.termsDialog.accept")
               )}
@@ -359,7 +359,15 @@ export function TransactionsCard({
   );
 }
 
-export function CancelCard({ t }: { t: PaymentsT }) {
+export function CancelCard({
+  t,
+  onCancel,
+  cancelLoading,
+}: {
+  t: PaymentsT;
+  onCancel: () => void;
+  cancelLoading: boolean;
+}) {
   return (
     <Card className="border-destructive/20">
       <CardHeader>
@@ -387,11 +395,11 @@ export function CancelCard({ t }: { t: PaymentsT }) {
               <AlertDialogCancel>{t("cancel.back")}</AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
-                onClick={() => {
-                  toast.info("Cancellation is not available yet.");
-                }}
+                disabled={cancelLoading}
+                className="w-32"
+                onClick={onCancel}
               >
-                {t("cancel.confirm")}
+                {cancelLoading ? <Spinner /> : t("cancel.confirm")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

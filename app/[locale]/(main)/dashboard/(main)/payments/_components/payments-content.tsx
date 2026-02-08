@@ -30,6 +30,7 @@ export function PaymentsContent() {
   const { isLoaded, plan, limits, usage } = usePlanLimits();
 
   const checkoutAction = useAction(api.paymob.actions.checkout);
+  const cancelAction = useAction(api.paymob.actions.cancelSubscription);
   const getDetailsAction = useAction(
     api.teachers.subscriptions.actions.getDetails
   );
@@ -53,6 +54,20 @@ export function PaymentsContent() {
     },
     onError: () => {
       toast.error("Failed to checkout");
+    },
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: cancelAction,
+    onSuccess: () => {
+      refetchDetails();
+      router.push("/");
+      toast.success(t("cancel.success"));
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to cancel subscription"
+      );
     },
   });
 
@@ -97,7 +112,11 @@ export function PaymentsContent() {
               t={t}
             />
             <TransactionsCard transactions={details.transactions} t={t} />
-            <CancelCard t={t} />
+            <CancelCard
+              t={t}
+              onCancel={() => cancelMutation.mutate({})}
+              cancelLoading={cancelMutation.isPending}
+            />
           </>
         ) : (
           <SubscribeCard

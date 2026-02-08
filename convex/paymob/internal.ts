@@ -244,18 +244,13 @@ export const fulfillSubscription = internalAction({
         );
 
         if (subscription) {
+          // Cancellation is permanent — remove the subscription from DB
           await ctx.runMutation(
-            internal.teachers.subscriptions.mutations.update,
-            {
-              subscriptionId: subscription._id,
-              status: "inactive" as const,
-              // Keep existing dates — subscription won't renew
-              lastRenewalDate: subscription.lastRenewalDate,
-              currentPeriodEnd: subscription.currentPeriodEnd,
-            }
+            internal.teachers.subscriptions.mutations.remove,
+            { subscriptionId: subscription._id }
           );
           console.log(
-            `[Paymob Webhook] Canceled subscription=${subscription._id} ` +
+            `[Paymob Webhook] Canceled and removed subscription=${subscription._id} ` +
               `(permanent — cannot be reactivated)`
           );
         } else {

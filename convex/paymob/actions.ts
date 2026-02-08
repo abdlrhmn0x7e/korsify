@@ -1,6 +1,6 @@
 import { v, ConvexError } from "convex/values";
 import { action } from "../_generated/server";
-import { api } from "../_generated/api";
+import { api, internal } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
 
 const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY!;
@@ -105,6 +105,52 @@ async function getPaymobAuthToken() {
   const data = await response.json();
   return data.token as string;
 }
+
+export const cancelSubscription = action({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const teacher = await ctx.runQuery(api.teachers.queries.getTeacher, {});
+    if (!teacher) {
+      throw new ConvexError("Teacher not found");
+    }
+
+    const subscription = await ctx.runQuery(
+      api.teachers.subscriptions.queries.get,
+      {}
+    );
+    if (!subscription) {
+      throw new ConvexError("No active subscription found");
+    }
+
+    // Cancel the subscription on Paymob
+    const authToken = await getPaymobAuthToken();
+
+    const response = await fetch(
+      `${PAYMOB_API_URL}/acceptance/subscriptions/${subscription.paymobSubscriptionId}/cancel`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Paymob cancel subscription error:", errorText);
+      throw new ConvexError("Failed to cancel subscription");
+    }
+
+    // Remove subscription from DB (cancellation is permanent)
+    await ctx.runMutation(internal.teachers.subscriptions.mutations.remove, {
+      subscriptionId: subscription._id,
+    });
+
+    return null;
+  },
+});
 
 async function createSubscriptionPlan({
   teacher,
