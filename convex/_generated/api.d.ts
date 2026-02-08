@@ -70,6 +70,7 @@ import type * as teachers_queries from "../teachers/queries.js";
 import type * as teachers_sections_mutations from "../teachers/sections/mutations.js";
 import type * as teachers_sections_queries from "../teachers/sections/queries.js";
 import type * as teachers_storefront from "../teachers/storefront.js";
+import type * as teachers_subscriptions_actions from "../teachers/subscriptions/actions.js";
 import type * as teachers_subscriptions_mutations from "../teachers/subscriptions/mutations.js";
 import type * as teachers_subscriptions_queries from "../teachers/subscriptions/queries.js";
 import type * as triggers from "../triggers.js";
@@ -144,6 +145,7 @@ declare const fullApi: ApiFromModules<{
   "teachers/sections/mutations": typeof teachers_sections_mutations;
   "teachers/sections/queries": typeof teachers_sections_queries;
   "teachers/storefront": typeof teachers_storefront;
+  "teachers/subscriptions/actions": typeof teachers_subscriptions_actions;
   "teachers/subscriptions/mutations": typeof teachers_subscriptions_mutations;
   "teachers/subscriptions/queries": typeof teachers_subscriptions_queries;
   triggers: typeof triggers;

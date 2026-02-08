@@ -1,4 +1,5 @@
 import { courses } from "./courses";
+import { payments } from "./payments";
 import { settings } from "./settings";
 
 export const dashboard = {
@@ -12,6 +13,7 @@ export const dashboard = {
     settings: "Settings",
   },
   courses,
+  payments,
   settings,
   home: {
     title: "Welcome back",

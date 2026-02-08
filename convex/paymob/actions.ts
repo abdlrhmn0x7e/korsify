@@ -6,10 +6,13 @@ import { Id } from "../_generated/dataModel";
 const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY!;
 const PAYMOB_SECRET_KEY = process.env.PAYMOB_SECRET_KEY!;
 const PAYMOB_INTEGRATION_ID = Number(process.env.PAYMOB_INTEGRATION_ID!);
+
 const PAYMOB_API_URL = "https://accept.paymob.com/api";
 const PAYMOB_REDIRECTION_URL = `${process.env.SITE_URL!}/dashboard/payments/redirect`;
 const PAYMOB_SUBSCRIPTION_WEBHOOK_URL =
   "https://grand-rabbit-635.convex.site/paymob-subscription-webhook";
+const PAYMOB_INTENTION_WEBHOOK_URL =
+  "https://grand-rabbit-635.convex.site/paymob-intention-webhook";
 
 const AMOUNT_CENTS = 50000; // 500 EGP
 const PLAN_FREQUENCY = 30; // Monthly
@@ -70,7 +73,7 @@ export const checkout = action({
         extras: {
           teacherId: teacher._id,
         },
-        notification_url: PAYMOB_SUBSCRIPTION_WEBHOOK_URL,
+        notification_url: PAYMOB_INTENTION_WEBHOOK_URL,
         redirection_url: PAYMOB_REDIRECTION_URL,
       }),
     });

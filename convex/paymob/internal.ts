@@ -1,7 +1,10 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { internalAction } from "../_generated/server";
 import { internal } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
+
+const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY!;
+const PAYMOB_API_URL = "https://accept.paymob.com/api";
 
 interface SubscriptionWebhookPayload {
   paymob_request_id: string;
@@ -394,5 +397,161 @@ export const fulfillSubscription = internalAction({
     }
 
     return null;
+  },
+});
+
+// ---------------------------------------------------------------------------
+// Paymob transaction type from the API
+// ---------------------------------------------------------------------------
+
+interface PaymobTransaction {
+  id: number;
+  pending: boolean;
+  amount_cents: number;
+  success: boolean;
+  created_at: string;
+  paid_at: string | null;
+  currency: string;
+  source_data: {
+    pan: string;
+    type: string;
+    tenure: number | null;
+    sub_type: string;
+  };
+  error_occured: boolean;
+  is_refunded: boolean;
+  is_voided: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Shared validators & types for subscription transaction data
+// ---------------------------------------------------------------------------
+
+export const transactionValidator = v.object({
+  id: v.number(),
+  amountCents: v.number(),
+  success: v.boolean(),
+  pending: v.boolean(),
+  createdAt: v.string(),
+  paidAt: v.union(v.string(), v.null()),
+  currency: v.string(),
+  cardPan: v.string(),
+  cardBrand: v.string(),
+  errorOccurred: v.boolean(),
+  isRefunded: v.boolean(),
+  isVoided: v.boolean(),
+});
+
+export const cardInfoValidator = v.union(
+  v.object({
+    pan: v.string(),
+    brand: v.string(),
+  }),
+  v.null()
+);
+
+export interface MappedTransaction {
+  id: number;
+  amountCents: number;
+  success: boolean;
+  pending: boolean;
+  createdAt: string;
+  paidAt: string | null;
+  currency: string;
+  cardPan: string;
+  cardBrand: string;
+  errorOccurred: boolean;
+  isRefunded: boolean;
+  isVoided: boolean;
+}
+
+export interface CardInfo {
+  pan: string;
+  brand: string;
+}
+
+// ---------------------------------------------------------------------------
+// fetchSubscriptionTransactions — internal action that hits Paymob API
+// ---------------------------------------------------------------------------
+
+async function getPaymobAuthToken() {
+  const response = await fetch(`${PAYMOB_API_URL}/auth/tokens`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ api_key: PAYMOB_API_KEY }),
+  });
+
+  if (!response.ok) {
+    throw new ConvexError("Failed to get Paymob auth token");
+  }
+
+  const data = await response.json();
+  return data.token as string;
+}
+
+export const fetchSubscriptionTransactions = internalAction({
+  args: {
+    paymobSubscriptionId: v.number(),
+  },
+  returns: v.object({
+    card: cardInfoValidator,
+    transactions: v.array(transactionValidator),
+  }),
+  handler: async (_ctx, args) => {
+    const authToken = await getPaymobAuthToken();
+
+    const response = await fetch(
+      `${PAYMOB_API_URL}/acceptance/subscriptions/${args.paymobSubscriptionId}/transactions`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    let card: CardInfo | null = null;
+    const transactions: Array<MappedTransaction> = [];
+
+    if (response.ok) {
+      const data = await response.json();
+      const results = (data.results ?? []) as Array<PaymobTransaction>;
+
+      // Extract card info from the first transaction that has source_data
+      for (const tx of results) {
+        if (tx.source_data?.pan && tx.source_data?.sub_type) {
+          card = {
+            pan: tx.source_data.pan,
+            brand: tx.source_data.sub_type,
+          };
+          break;
+        }
+      }
+
+      // Map transactions to our format
+      for (const tx of results) {
+        transactions.push({
+          id: tx.id,
+          amountCents: tx.amount_cents,
+          success: tx.success,
+          pending: tx.pending,
+          createdAt: tx.created_at,
+          paidAt: tx.paid_at,
+          currency: tx.currency,
+          cardPan: tx.source_data?.pan ?? "",
+          cardBrand: tx.source_data?.sub_type ?? "",
+          errorOccurred: tx.error_occured,
+          isRefunded: tx.is_refunded,
+          isVoided: tx.is_voided,
+        });
+      }
+    } else {
+      console.error(
+        "Failed to fetch Paymob transactions:",
+        await response.text()
+      );
+    }
+
+    return { card, transactions };
   },
 });

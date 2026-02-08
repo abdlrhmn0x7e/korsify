@@ -1,4 +1,5 @@
 import { courses } from "./courses";
+import { payments } from "./payments";
 import { settings } from "./settings";
 
 export const dashboard = {
@@ -12,6 +13,7 @@ export const dashboard = {
     settings: "الإعدادات",
   },
   courses,
+  payments,
   settings,
   home: {
     title: "مرحباً بعودتك",
