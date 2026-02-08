@@ -9,6 +9,7 @@ export const subscriptionsTable = defineTable({
   teacherId: v.id("teachers"),
   status: subscriptionStatusValidator,
 
+  paymobPlanId: v.number(),
   paymobSubscriptionId: v.number(),
 
   lastRenewalDate: v.number(),
