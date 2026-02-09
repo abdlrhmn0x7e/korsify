@@ -50,6 +50,7 @@ import type * as earlyAccess_admin_accessTokens from "../earlyAccess/admin/acces
 import type * as earlyAccess_admin_requests from "../earlyAccess/admin/requests.js";
 import type * as earlyAccess_requests from "../earlyAccess/requests.js";
 import type * as http from "../http.js";
+import type * as lib_billing from "../lib/billing.js";
 import type * as lib_limits from "../lib/limits.js";
 import type * as mux_actions from "../mux/actions.js";
 import type * as mux_internal from "../mux/internal.js";
@@ -71,6 +72,7 @@ import type * as teachers_sections_mutations from "../teachers/sections/mutation
 import type * as teachers_sections_queries from "../teachers/sections/queries.js";
 import type * as teachers_storefront from "../teachers/storefront.js";
 import type * as teachers_subscriptions_actions from "../teachers/subscriptions/actions.js";
+import type * as teachers_subscriptions_internal from "../teachers/subscriptions/internal.js";
 import type * as teachers_subscriptions_mutations from "../teachers/subscriptions/mutations.js";
 import type * as teachers_subscriptions_queries from "../teachers/subscriptions/queries.js";
 import type * as triggers from "../triggers.js";
@@ -125,6 +127,7 @@ declare const fullApi: ApiFromModules<{
   "earlyAccess/admin/requests": typeof earlyAccess_admin_requests;
   "earlyAccess/requests": typeof earlyAccess_requests;
   http: typeof http;
+  "lib/billing": typeof lib_billing;
   "lib/limits": typeof lib_limits;
   "mux/actions": typeof mux_actions;
   "mux/internal": typeof mux_internal;
@@ -146,6 +149,7 @@ declare const fullApi: ApiFromModules<{
   "teachers/sections/queries": typeof teachers_sections_queries;
   "teachers/storefront": typeof teachers_storefront;
   "teachers/subscriptions/actions": typeof teachers_subscriptions_actions;
+  "teachers/subscriptions/internal": typeof teachers_subscriptions_internal;
   "teachers/subscriptions/mutations": typeof teachers_subscriptions_mutations;
   "teachers/subscriptions/queries": typeof teachers_subscriptions_queries;
   triggers: typeof triggers;

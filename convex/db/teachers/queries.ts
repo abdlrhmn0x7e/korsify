@@ -33,6 +33,16 @@ export async function getByUserId(
   };
 }
 
+export async function getByEmail(
+  ctx: GenericQueryCtx<DataModel>,
+  email: string
+) {
+  return ctx.db
+    .query("teachers")
+    .withIndex("by_email", (q) => q.eq("email", email))
+    .first();
+}
+
 export async function getBySubdomain(
   ctx: GenericQueryCtx<DataModel>,
   subdomain: string

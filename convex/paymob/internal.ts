@@ -86,20 +86,6 @@ function mapPaymobStateToStatus(state: string): "active" | "inactive" {
   return state === "active" ? "active" : "inactive";
 }
 
-/**
- * Extract the teacher ID from the subscription plan name.
- * The plan name format is: `${teacherName}-${teacherId}`
- * Convex IDs don't contain dashes, so the last segment after
- * the final `-` is always the teacher ID.
- */
-function extractTeacherIdFromPlanName(name: string): Id<"teachers"> | null {
-  const lastDash = name.lastIndexOf("-");
-  if (lastDash === -1) return null;
-  const id = name.substring(lastDash + 1).trim();
-  if (!id) return null;
-  return id as Id<"teachers">;
-}
-
 export const fulfillSubscription = internalAction({
   args: {
     payload: v.any(),
@@ -109,7 +95,7 @@ export const fulfillSubscription = internalAction({
     const payload = args.payload as SubscriptionWebhookPayload;
     const { subscription_data, trigger_type } = payload;
     const paymobSubscriptionId = subscription_data.id;
-    const paymobPlanId = subscription_data.plan_id;
+    const amountCents = subscription_data.amount_cents;
     const nextBilling = parseNextBillingDate(subscription_data.next_billing);
     const now = Date.now();
 
@@ -117,7 +103,9 @@ export const fulfillSubscription = internalAction({
       `[Paymob Webhook] trigger_type="${trigger_type}" ` +
         `subscription_id=${paymobSubscriptionId} ` +
         `state="${subscription_data.state}" ` +
-        `request_id="${payload.paymob_request_id}"`
+        `amount_cents=${amountCents} ` +
+        `request_id="${payload.paymob_request_id}"` +
+        `payload=${JSON.stringify(payload)}`
     );
 
     // Ignore card management and webhook registration events
@@ -128,14 +116,22 @@ export const fulfillSubscription = internalAction({
 
     switch (trigger_type) {
       case "Subscription Created": {
-        const teacherId = extractTeacherIdFromPlanName(subscription_data.name);
-        if (!teacherId) {
+        // Look up teacher by email from the webhook payload
+        const email = subscription_data.client_info.email;
+        const teacher = await ctx.runQuery(
+          internal.paymob.queries.getTeacherByEmail,
+          { email }
+        );
+
+        if (!teacher) {
           console.error(
-            "[Paymob Webhook] Could not extract teacherId from plan name:",
-            subscription_data.name
+            "[Paymob Webhook] Could not find teacher by email:",
+            email
           );
           return null;
         }
+
+        const teacherId = teacher._id;
 
         // Check if subscription already exists for this teacher
         const existing = await ctx.runQuery(
@@ -152,7 +148,7 @@ export const fulfillSubscription = internalAction({
               status: "active" as const,
               lastRenewalDate: now,
               currentPeriodEnd: nextBilling,
-              paymobPlanId,
+              amountCents,
               paymobSubscriptionId,
             }
           );
@@ -167,8 +163,8 @@ export const fulfillSubscription = internalAction({
             {
               teacherId,
               status: "active" as const,
-              paymobPlanId,
               paymobSubscriptionId,
+              amountCents,
               lastRenewalDate: now,
               currentPeriodEnd: nextBilling,
             }
@@ -263,8 +259,8 @@ export const fulfillSubscription = internalAction({
       }
 
       case "updated": {
-        // Plan was updated (e.g. amount, frequency changed by merchant).
-        // Sync subscription state and billing dates from the payload.
+        // Subscription was updated (e.g. amount synced from trigger).
+        // Write amountCents from Paymob — this is the source of truth.
         const subscription = await ctx.runQuery(
           internal.paymob.queries.getSubscriptionByPaymobSubscriptionId,
           { paymobSubscriptionId }
@@ -279,11 +275,12 @@ export const fulfillSubscription = internalAction({
               status,
               lastRenewalDate: subscription.lastRenewalDate,
               currentPeriodEnd: nextBilling,
+              amountCents,
             }
           );
           console.log(
             `[Paymob Webhook] Updated subscription=${subscription._id} ` +
-              `status="${status}"`
+              `status="${status}" amountCents=${amountCents}`
           );
         } else {
           console.warn(
@@ -391,6 +388,43 @@ export const fulfillSubscription = internalAction({
       }
     }
 
+    return null;
+  },
+});
+
+// ---------------------------------------------------------------------------
+// syncAmountToPaymob — PUT new billing amount to Paymob subscription
+// ---------------------------------------------------------------------------
+
+export const syncAmountToPaymob = internalAction({
+  args: {
+    paymobSubscriptionId: v.number(),
+    amountCents: v.number(),
+  },
+  returns: v.null(),
+  handler: async (_ctx, args) => {
+    const authToken = await getPaymobAuthToken();
+    const response = await fetch(
+      `${PAYMOB_API_URL}/acceptance/subscriptions/${args.paymobSubscriptionId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount_cents: args.amountCents }),
+      }
+    );
+    if (!response.ok) {
+      console.error(
+        `[Paymob] Failed to sync amount (${args.amountCents}) to subscription ${args.paymobSubscriptionId}:`,
+        await response.text()
+      );
+    } else {
+      console.log(
+        `[Paymob] Synced amount_cents=${args.amountCents} to subscription ${args.paymobSubscriptionId}`
+      );
+    }
     return null;
   },
 });

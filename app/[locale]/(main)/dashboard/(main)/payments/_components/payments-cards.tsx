@@ -51,6 +51,7 @@ import {
   IconLoader2,
   IconReceipt,
   IconBan,
+  IconFileInvoice,
 } from "@tabler/icons-react";
 import { useScopedI18n } from "@/locales/client";
 import { useDialog } from "@/hooks/use-dialog";
@@ -354,6 +355,84 @@ export function TransactionsCard({
             </TableBody>
           </Table>
         )}
+      </CardContent>
+    </Card>
+  );
+}
+
+interface BillingCourse {
+  courseId: string;
+  courseTitle: string;
+  totalMinutes: number;
+  amountCents: number;
+}
+
+export function BillingBreakdownCard({
+  breakdown,
+  t,
+}: {
+  breakdown: {
+    base: number;
+    courses: Array<BillingCourse>;
+    totalAmountCents: number;
+  };
+  t: PaymentsT;
+}) {
+  const hasExtras = breakdown.courses.length > 0;
+  console.log("BREAKDOWN", breakdown);
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <IconFileInvoice className="size-5 text-primary" />
+          <CardTitle>{t("billing.title")}</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">{t("billing.base")}</span>
+          <span className="font-medium">
+            {formatCurrency(breakdown.base, "EGP")}
+          </span>
+        </div>
+
+        {hasExtras ? (
+          <>
+            <Separator />
+            {breakdown.courses.map((course) => (
+              <div
+                key={course.courseId}
+                className="flex items-center justify-between text-sm"
+              >
+                <div className="flex items-center gap-2">
+                  <IconVideo className="size-3.5 text-muted-foreground" />
+                  <span className="text-muted-foreground truncate max-w-[200px]">
+                    {course.courseTitle}
+                  </span>
+                  <span className="text-xs text-muted-foreground/60">
+                    {t("billing.minutes", {
+                      count: String(course.totalMinutes),
+                    })}
+                  </span>
+                </div>
+                <span className="font-medium">
+                  {formatCurrency(course.amountCents, "EGP")}
+                </span>
+              </div>
+            ))}
+          </>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            {t("billing.noExtras")}
+          </p>
+        )}
+
+        <Separator />
+        <div className="flex items-center justify-between text-sm font-semibold">
+          <span>{t("billing.total")}</span>
+          <span>{formatCurrency(breakdown.totalAmountCents, "EGP")}</span>
+        </div>
       </CardContent>
     </Card>
   );

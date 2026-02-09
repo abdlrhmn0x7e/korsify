@@ -28,7 +28,8 @@ export const lessonsTable = defineTable({
   updatedAt: v.number(),
 })
   .index("by_sectionId_order", ["sectionId", "order"])
-  .index("by_courseId", ["courseId"]);
+  .index("by_courseId", ["courseId"])
+  .index("by_teacherId", ["teacherId"]);
 
 export const lessonsDAL = {
   queries: lessonQueries,

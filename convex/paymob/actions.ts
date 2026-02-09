@@ -1,23 +1,18 @@
 import { v, ConvexError } from "convex/values";
 import { action } from "../_generated/server";
 import { api, internal } from "../_generated/api";
-import { Id } from "../_generated/dataModel";
 
 const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY!;
 const PAYMOB_SECRET_KEY = process.env.PAYMOB_SECRET_KEY!;
 const PAYMOB_INTEGRATION_ID = Number(process.env.PAYMOB_INTEGRATION_ID!);
+const PAYMOB_SUBSCRIPTION_PLAN_ID = Number(
+  process.env.PAYMOB_SUBSCRIPTION_PLAN_ID!
+);
 
 const PAYMOB_API_URL = "https://accept.paymob.com/api";
 const PAYMOB_REDIRECTION_URL = `${process.env.SITE_URL!}/dashboard/payments/redirect`;
-const PAYMOB_SUBSCRIPTION_WEBHOOK_URL =
-  "https://grand-rabbit-635.convex.site/paymob-subscription-webhook";
 const PAYMOB_INTENTION_WEBHOOK_URL =
   "https://grand-rabbit-635.convex.site/paymob-intention-webhook";
-
-const AMOUNT_CENTS = 50000; // 500 EGP
-const PLAN_FREQUENCY = 30; // Monthly
-const REMINDER_DAYS = 3;
-const RETRIAL_DAYS = 7;
 
 export const checkout = action({
   args: {},
@@ -31,19 +26,7 @@ export const checkout = action({
       throw new ConvexError("Teacher not found");
     }
 
-    // 1. Get auth token
-    const authToken = await getPaymobAuthToken();
-
-    // 2. Create a subscription plan for this teacher
-    const planId = await createSubscriptionPlan({
-      teacher: {
-        id: teacher._id,
-        name: teacher.name,
-      },
-      authToken,
-    });
-
-    // 3. Create an intention with the new plan
+    // Create an intention with the shared subscription plan
     const [firstName, ...lastParts] = teacher.name.split(" ");
     const lastName = lastParts.join(" ") || firstName;
 
@@ -57,7 +40,7 @@ export const checkout = action({
         amount: 100,
         currency: "EGP",
         payment_methods: [PAYMOB_INTEGRATION_ID],
-        subscription_plan_id: planId,
+        subscription_plan_id: PAYMOB_SUBSCRIPTION_PLAN_ID,
         items: [
           {
             name: "Card Validation Fees",
@@ -151,47 +134,3 @@ export const cancelSubscription = action({
     return null;
   },
 });
-
-async function createSubscriptionPlan({
-  teacher,
-  authToken,
-}: {
-  teacher: {
-    id: Id<"teachers">;
-    name: string;
-  };
-  authToken: string;
-}) {
-  const response = await fetch(
-    "https://accept.paymob.com/api/acceptance/subscription-plans",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        frequency: PLAN_FREQUENCY,
-        name: `${teacher.name}-${teacher.id}`,
-        reminder_days: REMINDER_DAYS,
-        retrial_days: RETRIAL_DAYS,
-        plan_type: "rent",
-        number_of_deductions: null,
-        amount_cents: AMOUNT_CENTS,
-        use_transaction_amount: false,
-        is_active: true,
-        integration: PAYMOB_INTEGRATION_ID,
-        webhook_url: PAYMOB_SUBSCRIPTION_WEBHOOK_URL,
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Paymob create plan error:", errorText);
-    throw new ConvexError("Failed to create subscription plan");
-  }
-
-  const data = await response.json();
-  return data.id as number;
-}

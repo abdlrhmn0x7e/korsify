@@ -4,7 +4,7 @@ import { attachMediaURLs } from "./utils";
 
 export async function getById(
   ctx: GenericQueryCtx<DataModel>,
-  lessonId: Id<"lessons">,
+  lessonId: Id<"lessons">
 ) {
   const lesson = await ctx.db.get(lessonId);
   return attachMediaURLs(ctx, lesson);
@@ -12,7 +12,7 @@ export async function getById(
 
 export async function getBySectionId(
   ctx: GenericQueryCtx<DataModel>,
-  sectionId: Id<"sections">,
+  sectionId: Id<"sections">
 ) {
   const lessons = await ctx.db
     .query("lessons")
@@ -24,7 +24,7 @@ export async function getBySectionId(
 
 export async function countByCourseId(
   ctx: GenericQueryCtx<DataModel>,
-  courseId: Id<"courses">,
+  courseId: Id<"courses">
 ): Promise<number> {
   const lessons = await ctx.db
     .query("lessons")
@@ -36,7 +36,7 @@ export async function countByCourseId(
 
 export async function countBySectionId(
   ctx: GenericQueryCtx<DataModel>,
-  sectionId: Id<"sections">,
+  sectionId: Id<"sections">
 ): Promise<number> {
   const lessons = await ctx.db
     .query("lessons")
@@ -48,7 +48,7 @@ export async function countBySectionId(
 
 export async function getMaxOrderBySectionId(
   ctx: GenericQueryCtx<DataModel>,
-  sectionId: Id<"sections">,
+  sectionId: Id<"sections">
 ) {
   const lesson = await ctx.db
     .query("lessons")

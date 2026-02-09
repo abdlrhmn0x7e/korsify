@@ -1,6 +1,6 @@
 "use client";
 
-import { useAction } from "convex/react";
+import { useAction, useQuery as useConvexQuery } from "convex/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ import {
   PlanCard,
   SubscribeCard,
   SubscriptionCard,
+  BillingBreakdownCard,
   TransactionsCard,
   CancelCard,
   LoadingSkeleton,
@@ -33,6 +34,11 @@ export function PaymentsContent() {
   const cancelAction = useAction(api.paymob.actions.cancelSubscription);
   const getDetailsAction = useAction(
     api.teachers.subscriptions.actions.getDetails
+  );
+
+  const billingBreakdown = useConvexQuery(
+    api.teachers.subscriptions.queries.getBillingBreakdown,
+    {}
   );
 
   const termsDialog = useDialog();
@@ -60,7 +66,6 @@ export function PaymentsContent() {
   const cancelMutation = useMutation({
     mutationFn: cancelAction,
     onSuccess: () => {
-      refetchDetails();
       router.push("/");
       toast.success(t("cancel.success"));
     },
@@ -111,6 +116,9 @@ export function PaymentsContent() {
               card={details.card}
               t={t}
             />
+            {billingBreakdown && (
+              <BillingBreakdownCard breakdown={billingBreakdown} t={t} />
+            )}
             <TransactionsCard transactions={details.transactions} t={t} />
             <CancelCard
               t={t}

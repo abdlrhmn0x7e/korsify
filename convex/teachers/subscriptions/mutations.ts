@@ -7,8 +7,8 @@ export const create = internalMutation({
   args: {
     teacherId: v.id("teachers"),
     status: subscriptionStatusValidator,
-    paymobPlanId: v.number(),
     paymobSubscriptionId: v.number(),
+    amountCents: v.number(),
     lastRenewalDate: v.number(),
     currentPeriodEnd: v.number(),
   },
@@ -24,7 +24,7 @@ export const update = internalMutation({
     status: subscriptionStatusValidator,
     lastRenewalDate: v.number(),
     currentPeriodEnd: v.number(),
-    paymobPlanId: v.optional(v.number()),
+    amountCents: v.optional(v.number()),
     paymobSubscriptionId: v.optional(v.number()),
   },
   returns: v.null(),

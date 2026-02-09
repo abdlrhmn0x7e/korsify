@@ -28,6 +28,7 @@ export const teachersTable = defineTable({
   updatedAt: v.number(),
 })
   .index("by_userId", ["userId"])
+  .index("by_email", ["email"])
   .index("by_subdomain", ["subdomain"])
   .index("by_customDomain", ["customDomain"]);
 

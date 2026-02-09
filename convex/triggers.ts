@@ -1,5 +1,6 @@
 import { Triggers } from "convex-helpers/server/triggers";
-import { DataModel } from "./_generated/dataModel";
+import { DataModel, Id } from "./_generated/dataModel";
+import { recalculateBilling } from "./teachers/subscriptions/internal";
 
 export const triggers = new Triggers<DataModel>();
 
@@ -30,3 +31,53 @@ triggers.register("sections", async (ctx, change) => {
   }
 });
 
+const scheduled: Record<Id<"teachers">, Id<"_scheduled_functions">> = {};
+
+// When a subscription is created, recalculate billing for the teacher
+triggers.register("subscriptions", async (ctx, change) => {
+  if (change.operation !== "insert") return;
+
+  const doc = change.newDoc;
+  if (scheduled[doc.teacherId]) {
+    await ctx.scheduler.cancel(scheduled[doc.teacherId]);
+  }
+
+  const id = await recalculateBilling(ctx, doc.teacherId);
+  if (id) {
+    scheduled[doc.teacherId] = id;
+  }
+});
+
+// When a lesson is created or deleted, recalculate billing for the teacher
+triggers.register("lessons", async (ctx, change) => {
+  const doc = change.newDoc ?? change.oldDoc;
+  if (!doc || doc.hosting.type !== "mux") return;
+
+  if (scheduled[doc.teacherId]) {
+    await ctx.scheduler.cancel(scheduled[doc.teacherId]);
+  }
+
+  const id = await recalculateBilling(ctx, doc.teacherId);
+  if (id) {
+    scheduled[doc.teacherId] = id;
+  }
+});
+
+// When a muxAsset's duration changes (e.g. video becomes ready),
+// recalculate billing for the teacher
+triggers.register("muxAssets", async (ctx, change) => {
+  const oldDuration = change.oldDoc?.duration;
+  const newDuration = change.newDoc?.duration;
+  if (oldDuration === newDuration) return; // no duration change
+  const doc = change.newDoc ?? change.oldDoc;
+  if (!doc) return;
+
+  if (scheduled[doc.teacherId]) {
+    await ctx.scheduler.cancel(scheduled[doc.teacherId]);
+  }
+
+  const id = await recalculateBilling(ctx, doc.teacherId);
+  if (id) {
+    scheduled[doc.teacherId] = id;
+  }
+});

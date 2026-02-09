@@ -8,8 +8,8 @@ type SubscriptionStatus = Infer<typeof subscriptionStatusValidator>;
 type CreateSubscriptionData = {
   teacherId: Id<"teachers">;
   status: SubscriptionStatus;
-  paymobPlanId: number;
   paymobSubscriptionId: number;
+  amountCents: number;
   lastRenewalDate: number;
   currentPeriodEnd: number;
 };
@@ -18,7 +18,7 @@ type UpdateSubscriptionData = {
   status: SubscriptionStatus;
   lastRenewalDate: number;
   currentPeriodEnd: number;
-  paymobPlanId?: number;
+  amountCents?: number;
   paymobSubscriptionId?: number;
 };
 

@@ -22,3 +22,12 @@ export const getSubscriptionByPaymobSubscriptionId = internalQuery({
     );
   },
 });
+
+export const getTeacherByEmail = internalQuery({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return db.teachers.queries.getByEmail(ctx, args.email);
+  },
+});

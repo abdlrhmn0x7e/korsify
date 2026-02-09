@@ -72,6 +72,14 @@ export const payments = {
       voided: "ملغي",
     },
   },
+  billing: {
+    title: "تفاصيل الفاتورة",
+    base: "الاشتراك الأساسي",
+    course: "{title}",
+    minutes: "{count} دقيقة",
+    total: "الإجمالي",
+    noExtras: "لا توجد رسوم استضافة فيديو",
+  },
   cancel: {
     title: "إلغاء الاشتراك",
     description:

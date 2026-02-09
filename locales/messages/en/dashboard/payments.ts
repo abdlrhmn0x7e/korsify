@@ -73,6 +73,14 @@ export const payments = {
       voided: "Voided",
     },
   },
+  billing: {
+    title: "Billing Breakdown",
+    base: "Base Subscription",
+    course: "{title}",
+    minutes: "{count} min",
+    total: "Total",
+    noExtras: "No video hosting charges",
+  },
   cancel: {
     title: "Cancel Subscription",
     description:
