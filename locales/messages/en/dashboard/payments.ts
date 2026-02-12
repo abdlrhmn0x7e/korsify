@@ -1,9 +1,21 @@
 export const payments = {
   title: "Payments & Subscription",
   plan: {
-    currentPlan: "Current Plan",
+    title: "Plan",
+    description: "Quick view of your current plan and account limits.",
+    current: "Current",
     free: "Free",
     pro: "Pro",
+    table: {
+      free: {
+        courses: "Up to 3 courses",
+        uploads: "YouTube links only",
+      },
+      pro: {
+        courses: "Unlimited courses",
+        uploads: "Video uploads with hosting",
+      },
+    },
     limits: {
       maxCourses: "Max Courses",
       unlimited: "Unlimited",
@@ -20,6 +32,9 @@ export const payments = {
     title: "Upgrade to Pro",
     description:
       "Unlock unlimited courses, video uploads, and more for 500 EGP/month.",
+    highlight: "Billing is monthly and renews automatically while active.",
+    storageNotice:
+      "If your subscription is canceled or remains inactive, hosted videos are scheduled for deletion after 30 days.",
     cta: "Subscribe Now",
     termsDialog: {
       title: "Terms & Conditions",
@@ -35,6 +50,8 @@ export const payments = {
         refund: "No refunds are provided for partial billing periods.",
         downgrade:
           "Upon cancellation, your plan reverts to the free tier at the end of the current period.",
+        deletion:
+          "Hosted videos are deleted 30 days after cancellation or prolonged inactive status.",
       },
       accept: "I Accept",
       cancel: "Cancel",
@@ -49,29 +66,12 @@ export const payments = {
     lastRenewal: "Last Renewal",
     amount: "500 EGP / month",
     inactiveWarning:
-      "Your subscription is inactive. Your plan will revert to the free tier. Please update your payment method or contact support.",
+      "Your subscription is inactive. If it stays inactive, your hosted videos will be deleted after 30 days.",
   },
   card: {
     title: "Payment Method",
     endingIn: "ending in {pan}",
     noCard: "No card on file",
-  },
-  transactions: {
-    title: "Transaction History",
-    empty: "No transactions yet",
-    headers: {
-      date: "Date",
-      amount: "Amount",
-      status: "Status",
-      card: "Card",
-    },
-    status: {
-      success: "Paid",
-      pending: "Pending",
-      failed: "Failed",
-      refunded: "Refunded",
-      voided: "Voided",
-    },
   },
   billing: {
     title: "Billing Breakdown",
@@ -83,9 +83,12 @@ export const payments = {
   },
   cancel: {
     title: "Cancel Subscription",
-    description:
-      "Are you sure you want to cancel? This action is permanent and cannot be reversed.",
+    description: "End your subscription and move back to the free plan.",
+    warning:
+      "After cancellation or inactive status, hosted videos are deleted after 30 days.",
     cta: "Cancel Subscription",
+    confirmDescription:
+      "This action is permanent. You will move to the free plan, and hosted videos are deleted after 30 days.",
     confirm: "Yes, Cancel",
     back: "Keep Subscription",
     success: "Subscription cancelled successfully",

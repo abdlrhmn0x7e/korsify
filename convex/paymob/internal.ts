@@ -44,22 +44,6 @@ interface SubscriptionWebhookPayload {
   };
 }
 
-/**
- * Trigger types we explicitly handle.
- * Card management events (add_secondry_card, change_primary_card,
- * delete_card) and register_webhook are ignored.
- */
-const HANDLED_TRIGGER_TYPES = [
-  "Subscription Created",
-  "suspended",
-  "canceled",
-  "resumed",
-  "updated",
-  "Successful Transaction",
-  "Failed Transaction",
-  "Failed Overdue Transaction",
-] as const;
-
 const IGNORED_TRIGGER_TYPES = [
   "add_secondry_card",
   "change_primary_card",
@@ -433,43 +417,20 @@ export const syncAmountToPaymob = internalAction({
 // Paymob transaction type from the API
 // ---------------------------------------------------------------------------
 
-interface PaymobTransaction {
-  id: number;
-  pending: boolean;
-  amount_cents: number;
-  success: boolean;
-  created_at: string;
-  paid_at: string | null;
-  currency: string;
-  source_data: {
-    pan: string;
-    type: string;
-    tenure: number | null;
-    sub_type: string;
-  };
-  error_occured: boolean;
-  is_refunded: boolean;
-  is_voided: boolean;
+interface PaymobTransactionSourceData {
+  pan?: string;
+  sub_type?: string;
+}
+
+interface PaymobTransactionLookupResponse {
+  results?: Array<{
+    source_data?: PaymobTransactionSourceData;
+  }>;
 }
 
 // ---------------------------------------------------------------------------
-// Shared validators & types for subscription transaction data
+// Shared validators & types for subscription card data
 // ---------------------------------------------------------------------------
-
-export const transactionValidator = v.object({
-  id: v.number(),
-  amountCents: v.number(),
-  success: v.boolean(),
-  pending: v.boolean(),
-  createdAt: v.string(),
-  paidAt: v.union(v.string(), v.null()),
-  currency: v.string(),
-  cardPan: v.string(),
-  cardBrand: v.string(),
-  errorOccurred: v.boolean(),
-  isRefunded: v.boolean(),
-  isVoided: v.boolean(),
-});
 
 export const cardInfoValidator = v.union(
   v.object({
@@ -479,28 +440,13 @@ export const cardInfoValidator = v.union(
   v.null()
 );
 
-export interface MappedTransaction {
-  id: number;
-  amountCents: number;
-  success: boolean;
-  pending: boolean;
-  createdAt: string;
-  paidAt: string | null;
-  currency: string;
-  cardPan: string;
-  cardBrand: string;
-  errorOccurred: boolean;
-  isRefunded: boolean;
-  isVoided: boolean;
-}
-
 export interface CardInfo {
   pan: string;
   brand: string;
 }
 
 // ---------------------------------------------------------------------------
-// fetchSubscriptionTransactions — internal action that hits Paymob API
+// fetchSubscriptionCardInfo — internal action that hits Paymob API
 // ---------------------------------------------------------------------------
 
 async function getPaymobAuthToken() {
@@ -518,14 +464,11 @@ async function getPaymobAuthToken() {
   return data.token as string;
 }
 
-export const fetchSubscriptionTransactions = internalAction({
+export const fetchSubscriptionCardInfo = internalAction({
   args: {
     paymobSubscriptionId: v.number(),
   },
-  returns: v.object({
-    card: cardInfoValidator,
-    transactions: v.array(transactionValidator),
-  }),
+  returns: cardInfoValidator,
   handler: async (_ctx, args) => {
     const authToken = await getPaymobAuthToken();
 
@@ -540,11 +483,10 @@ export const fetchSubscriptionTransactions = internalAction({
     );
 
     let card: CardInfo | null = null;
-    const transactions: Array<MappedTransaction> = [];
 
     if (response.ok) {
-      const data = await response.json();
-      const results = (data.results ?? []) as Array<PaymobTransaction>;
+      const data = (await response.json()) as PaymobTransactionLookupResponse;
+      const results = data.results ?? [];
 
       // Extract card info from the first transaction that has source_data
       for (const tx of results) {
@@ -556,24 +498,6 @@ export const fetchSubscriptionTransactions = internalAction({
           break;
         }
       }
-
-      // Map transactions to our format
-      for (const tx of results) {
-        transactions.push({
-          id: tx.id,
-          amountCents: tx.amount_cents,
-          success: tx.success,
-          pending: tx.pending,
-          createdAt: tx.created_at,
-          paidAt: tx.paid_at,
-          currency: tx.currency,
-          cardPan: tx.source_data?.pan ?? "",
-          cardBrand: tx.source_data?.sub_type ?? "",
-          errorOccurred: tx.error_occured,
-          isRefunded: tx.is_refunded,
-          isVoided: tx.is_voided,
-        });
-      }
     } else {
       console.error(
         "Failed to fetch Paymob transactions:",
@@ -581,6 +505,6 @@ export const fetchSubscriptionTransactions = internalAction({
       );
     }
 
-    return { card, transactions };
+    return card;
   },
 });

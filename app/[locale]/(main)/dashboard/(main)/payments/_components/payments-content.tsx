@@ -18,9 +18,7 @@ import { generatePaymobCheckoutUrl } from "./payments-utils";
 import {
   PlanCard,
   SubscribeCard,
-  SubscriptionCard,
-  BillingBreakdownCard,
-  TransactionsCard,
+  SubscriptionBillingCard,
   CancelCard,
   LoadingSkeleton,
 } from "./payments-cards";
@@ -78,7 +76,7 @@ export function PaymentsContent() {
 
   const isSubscribed = details?.hasSubscription === true;
 
-  if (!isLoaded || detailsLoading) {
+  if (!isLoaded || detailsLoading || billingBreakdown === undefined) {
     return <LoadingSkeleton />;
   }
 
@@ -106,33 +104,34 @@ export function PaymentsContent() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
-        <PlanCard plan={plan} limits={limits} usage={usage} t={t} />
-
-        {isSubscribed && details.hasSubscription ? (
-          <>
-            <SubscriptionCard
+      <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6">
+        {isSubscribed && details.hasSubscription && billingBreakdown ? (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] items-start">
+            <SubscriptionBillingCard
               subscription={details.subscription}
               card={details.card}
+              breakdown={billingBreakdown}
               t={t}
             />
-            {billingBreakdown && (
-              <BillingBreakdownCard breakdown={billingBreakdown} t={t} />
-            )}
-            <TransactionsCard transactions={details.transactions} t={t} />
-            <CancelCard
+            <div className="space-y-6">
+              <PlanCard plan={plan} limits={limits} usage={usage} t={t} />
+              <CancelCard
+                t={t}
+                onCancel={() => cancelMutation.mutate({})}
+                cancelLoading={cancelMutation.isPending}
+              />
+            </div>
+          </div>
+        ) : (
+          <>
+            <PlanCard plan={plan} limits={limits} usage={usage} t={t} />
+            <SubscribeCard
               t={t}
-              onCancel={() => cancelMutation.mutate({})}
-              cancelLoading={cancelMutation.isPending}
+              termsDialog={termsDialog}
+              checkoutLoading={checkoutMutation.isPending}
+              onCheckout={() => checkoutMutation.mutate({})}
             />
           </>
-        ) : (
-          <SubscribeCard
-            t={t}
-            termsDialog={termsDialog}
-            checkoutLoading={checkoutMutation.isPending}
-            onCheckout={() => checkoutMutation.mutate({})}
-          />
         )}
       </div>
     </div>

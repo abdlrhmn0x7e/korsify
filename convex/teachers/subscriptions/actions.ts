@@ -4,9 +4,7 @@ import { api } from "../../_generated/api";
 import { internal } from "../../_generated/api";
 import { Doc } from "../../_generated/dataModel";
 import {
-  transactionValidator,
   cardInfoValidator,
-  type MappedTransaction,
   type CardInfo,
 } from "../../paymob/internal";
 
@@ -24,7 +22,6 @@ type SubscriptionDetailsResult =
         currentPeriodEnd: number;
       };
       card: CardInfo | null;
-      transactions: Array<MappedTransaction>;
     }
   | {
       hasSubscription: false;
@@ -46,7 +43,6 @@ export const getDetails = action({
         currentPeriodEnd: v.number(),
       }),
       card: cardInfoValidator,
-      transactions: v.array(transactionValidator),
     }),
     v.object({
       hasSubscription: v.literal(false),
@@ -71,8 +67,8 @@ export const getDetails = action({
     }
 
     // Delegate Paymob API fetch to the internal action
-    const { card, transactions } = await ctx.runAction(
-      internal.paymob.internal.fetchSubscriptionTransactions,
+    const card: CardInfo | null = await ctx.runAction(
+      internal.paymob.internal.fetchSubscriptionCardInfo,
       { paymobSubscriptionId: subscription.paymobSubscriptionId }
     );
 
@@ -85,7 +81,6 @@ export const getDetails = action({
         currentPeriodEnd: subscription.currentPeriodEnd,
       },
       card,
-      transactions,
     };
   },
 });

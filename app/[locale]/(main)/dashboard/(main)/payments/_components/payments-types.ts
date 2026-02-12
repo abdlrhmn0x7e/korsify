@@ -5,5 +5,4 @@ export type SubscriptionDetails = FunctionReturnType<
   typeof api.teachers.subscriptions.actions.getDetails
 >;
 type SubscribedDetails = Extract<SubscriptionDetails, { hasSubscription: true }>;
-export type MappedTransaction = SubscribedDetails["transactions"][number];
 export type CardInfo = NonNullable<SubscribedDetails["card"]>;

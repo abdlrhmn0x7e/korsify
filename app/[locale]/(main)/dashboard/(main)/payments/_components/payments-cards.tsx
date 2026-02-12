@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import type { ReactNode } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,43 +19,58 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogTrigger,
-  AlertDialogMedia,
 } from "@/components/ui/alert-dialog";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   IconCreditCard,
-  IconCheck,
-  IconAlertTriangle,
   IconCrown,
   IconBook,
   IconVideo,
   IconCircleCheck,
-  IconLoader2,
-  IconReceipt,
-  IconBan,
   IconFileInvoice,
+  IconCalendarMonth,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 import { useScopedI18n } from "@/locales/client";
 import { useDialog } from "@/hooks/use-dialog";
 
-import type { CardInfo, MappedTransaction } from "./payments-types";
+import type { CardInfo } from "./payments-types";
 import { format } from "date-fns";
-import { formatCurrency, getTransactionStatus } from "./payments-utils";
+import { formatCurrency } from "./payments-utils";
 import { Spinner } from "@/components/ui/spinner";
 
 type PaymentsT = ReturnType<typeof useScopedI18n<"dashboard.payments">>;
 type DialogReturn = ReturnType<typeof useDialog>;
+
+function SectionShell({
+  title,
+  description,
+  children,
+  right,
+}: {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  right?: ReactNode;
+}) {
+  return (
+    <section className="rounded-xl border bg-background/80">
+      <header className="flex flex-wrap items-start justify-between gap-4 border-b px-5 py-4">
+        <div className="space-y-1">
+          <h3 className="text-sm font-semibold">{title}</h3>
+          {description ? (
+            <p className="text-xs text-muted-foreground">{description}</p>
+          ) : null}
+        </div>
+        {right}
+      </header>
+      <div className="px-5 py-4">{children}</div>
+    </section>
+  );
+}
 
 export function PlanCard({
   plan,
@@ -78,68 +86,60 @@ export function PlanCard({
   const isPro = plan === "pro";
   const maxCourses = limits?.maxCourses;
   const courseCount = usage?.courseCount ?? 0;
+  const usageRatio =
+    maxCourses && maxCourses > 0
+      ? Math.min((courseCount / maxCourses) * 100, 100)
+      : 0;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <CardTitle>{t("plan.currentPlan")}</CardTitle>
-          <Badge variant={isPro ? "default" : "outline"} size="lg">
-            {isPro && <IconCrown className="size-3" />}
-            {isPro ? t("plan.pro") : t("plan.free")}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="flex items-start gap-3 rounded-lg border p-3">
-            <div className="bg-primary/10 text-primary rounded-md p-2">
-              <IconBook className="size-4" />
-            </div>
-            <div className="space-y-0.5">
-              <p className="text-sm font-medium">
-                {t("plan.limits.maxCourses")}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {maxCourses === null
-                  ? t("plan.usage.coursesUnlimited", {
-                      count: String(courseCount),
-                    })
-                  : t("plan.usage.courses", {
-                      count: String(courseCount),
-                      max: String(maxCourses),
-                    })}
-              </p>
-              {maxCourses != null && (
-                <div className="mt-1.5 h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all"
-                    style={{
-                      width: `${Math.min((courseCount / maxCourses) * 100, 100)}%`,
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+    <SectionShell
+      title={t("plan.title")}
+      description={t("plan.description")}
+      right={
+        <Badge variant={isPro ? "default" : "secondary"} size="lg">
+          {isPro && <IconCrown className="size-3" />}
+          {isPro ? t("plan.pro") : t("plan.free")}
+        </Badge>
+      }
+    >
+      <div className="space-y-3">
+        <div className="rounded-lg border bg-muted/20 p-3">
+          <div className="flex items-center gap-2">
+            <IconBook className="size-4 text-primary" />
+            <p className="text-sm font-medium">{t("plan.limits.maxCourses")}</p>
           </div>
-          <div className="flex items-start gap-3 rounded-lg border p-3">
-            <div className="bg-primary/10 text-primary rounded-md p-2">
-              <IconVideo className="size-4" />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            {maxCourses === null
+              ? t("plan.usage.coursesUnlimited", {
+                  count: String(courseCount),
+                })
+              : t("plan.usage.courses", {
+                  count: String(courseCount),
+                  max: String(maxCourses),
+                })}
+          </p>
+          {maxCourses !== null && maxCourses !== undefined ? (
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-border/70">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${usageRatio}%` }}
+              />
             </div>
-            <div className="space-y-0.5">
-              <p className="text-sm font-medium">
-                {t("plan.limits.muxHosting")}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {limits?.canUseMuxHosting
-                  ? t("plan.limits.enabled")
-                  : t("plan.limits.disabled")}
-              </p>
-            </div>
-          </div>
+          ) : null}
         </div>
-      </CardContent>
-    </Card>
+        <div className="rounded-lg border bg-muted/20 p-3">
+          <div className="flex items-center gap-2">
+            <IconVideo className="size-4 text-primary" />
+            <p className="text-sm font-medium">{t("plan.limits.muxHosting")}</p>
+          </div>
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            {limits?.canUseMuxHosting
+              ? t("plan.limits.enabled")
+              : t("plan.limits.disabled")}
+          </p>
+        </div>
+      </div>
+    </SectionShell>
   );
 }
 
@@ -156,18 +156,24 @@ export function SubscribeCard({
 }) {
   return (
     <>
-      <Card className="border-primary/30 bg-primary/2">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <IconCrown className="size-5 text-primary" />
-            <CardTitle>{t("subscribe.title")}</CardTitle>
+      <SectionShell
+        title={t("subscribe.title")}
+        description={t("subscribe.description")}
+        right={
+          <Button onClick={termsDialog.trigger} size="sm">
+            {t("subscribe.cta")}
+          </Button>
+        }
+      >
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            {t("subscribe.highlight")}
+          </p>
+          <div className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+            {t("subscribe.storageNotice")}
           </div>
-          <CardDescription>{t("subscribe.description")}</CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <Button onClick={termsDialog.trigger}>{t("subscribe.cta")}</Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </SectionShell>
       <Dialog {...termsDialog.props}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -184,6 +190,7 @@ export function SubscribeCard({
                 "cancellation",
                 "refund",
                 "downgrade",
+                "deletion",
               ] as const
             ).map((key) => (
               <div key={key} className="flex gap-2.5 text-sm">
@@ -213,9 +220,17 @@ export function SubscribeCard({
   );
 }
 
-export function SubscriptionCard({
+interface BillingCourse {
+  courseId: string;
+  courseTitle: string;
+  totalMinutes: number;
+  amountCents: number;
+}
+
+export function SubscriptionBillingCard({
   subscription,
   card,
+  breakdown,
   t,
 }: {
   subscription: {
@@ -225,216 +240,141 @@ export function SubscriptionCard({
     currentPeriodEnd: number;
   };
   card: CardInfo | null;
+  breakdown:
+    | {
+        base: number;
+        courses: Array<BillingCourse>;
+        totalAmountCents: number;
+      }
+    | undefined;
   t: PaymentsT;
 }) {
   const isActive = subscription.status === "active";
+  const stateLabel = isActive
+    ? t("subscription.active")
+    : t("subscription.inactive");
+  const hasExtras = breakdown?.courses.length ? breakdown.courses.length > 0 : false;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <CardTitle>{t("subscription.title")}</CardTitle>
-          <Badge variant={isActive ? "success" : "error"}>
-            {isActive ? t("subscription.active") : t("subscription.inactive")}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {!isActive && (
-          <div className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
-            <IconAlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
-            <p className="text-sm text-destructive/90">
-              {t("subscription.inactiveWarning")}
-            </p>
+    <SectionShell
+      title={t("subscription.title")}
+      right={
+        <Badge variant={isActive ? "success" : "warning"} size="sm">
+          {stateLabel}
+        </Badge>
+      }
+    >
+      <div className="space-y-4">
+        {!isActive ? (
+          <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2.5 text-xs text-warning-foreground">
+            {t("subscription.inactiveWarning")}
           </div>
-        )}
+        ) : null}
+
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="space-y-1 rounded-lg border p-3">
-            <p className="text-xs text-muted-foreground">
+          <div className="rounded-lg border bg-muted/20 p-3">
+            <p className="mb-1 text-xs text-muted-foreground">
               {t("subscription.nextBilling")}
             </p>
-            <p className="text-sm font-medium">
-              {format(new Date(subscription.currentPeriodEnd), "MMM d, yyyy")}
-            </p>
+            <div className="flex items-center gap-1.5 text-sm font-medium">
+              <IconCalendarMonth className="size-4 text-muted-foreground" />
+              <span>
+                {format(new Date(subscription.currentPeriodEnd), "MMM d, yyyy")}
+              </span>
+            </div>
           </div>
-          <div className="space-y-1 rounded-lg border p-3">
-            <p className="text-xs text-muted-foreground">
+          <div className="rounded-lg border bg-muted/20 p-3">
+            <p className="mb-1 text-xs text-muted-foreground">
               {t("subscription.lastRenewal")}
             </p>
-            <p className="text-sm font-medium">
-              {format(new Date(subscription.lastRenewalDate), "MMM d, yyyy")}
-            </p>
+            <div className="flex items-center gap-1.5 text-sm font-medium">
+              <IconCalendarMonth className="size-4 text-muted-foreground" />
+              <span>
+                {format(new Date(subscription.lastRenewalDate), "MMM d, yyyy")}
+              </span>
+            </div>
           </div>
         </div>
+
         <Separator />
-        <div className="flex items-center justify-between">
+        <div className="rounded-xl border border-primary/30 bg-linear-to-r from-primary/10 to-primary/5 p-3.5">
           <div className="flex items-center gap-3">
-            <div className="bg-muted rounded-md p-2">
-              <IconCreditCard className="size-4 text-muted-foreground" />
+            <div className="rounded-full bg-primary/15 p-2 text-primary">
+              <IconCreditCard className="size-4" />
             </div>
             <div>
-              <p className="text-sm font-medium">{t("card.title")}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">
+                {t("card.title")}
+              </p>
               {card ? (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium">
                   {card.brand} {t("card.endingIn", { pan: card.pan })}
                 </p>
               ) : (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-muted-foreground">
                   {t("card.noCard")}
                 </p>
               )}
             </div>
           </div>
-          <p className="text-sm font-semibold">{t("subscription.amount")}</p>
         </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-export function TransactionsCard({
-  transactions,
-  t,
-}: {
-  transactions: Array<MappedTransaction>;
-  t: PaymentsT;
-}) {
-  const statusConfig = {
-    success: { badge: "success" as const, icon: IconCheck },
-    pending: { badge: "warning" as const, icon: IconLoader2 },
-    failed: { badge: "error" as const, icon: IconAlertTriangle },
-    refunded: { badge: "info" as const, icon: IconReceipt },
-    voided: { badge: "secondary" as const, icon: IconBan },
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("transactions.title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {transactions.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">
-            {t("transactions.empty")}
-          </p>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("transactions.headers.date")}</TableHead>
-                <TableHead>{t("transactions.headers.amount")}</TableHead>
-                <TableHead>{t("transactions.headers.status")}</TableHead>
-                <TableHead>{t("transactions.headers.card")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((tx) => {
-                const status = getTransactionStatus(tx);
-                const config = statusConfig[status];
-                return (
-                  <TableRow key={tx.id}>
-                    <TableCell className="text-muted-foreground">
-                      {format(new Date(tx.createdAt), "MMM d, yyyy")}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {formatCurrency(tx.amountCents, tx.currency)}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={config.badge}>
-                        {t(`transactions.status.${status}`)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {tx.cardBrand && tx.cardPan
-                        ? `${tx.cardBrand} •••• ${tx.cardPan.slice(-4)}`
-                        : "—"}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-interface BillingCourse {
-  courseId: string;
-  courseTitle: string;
-  totalMinutes: number;
-  amountCents: number;
-}
-
-export function BillingBreakdownCard({
-  breakdown,
-  t,
-}: {
-  breakdown: {
-    base: number;
-    courses: Array<BillingCourse>;
-    totalAmountCents: number;
-  };
-  t: PaymentsT;
-}) {
-  const hasExtras = breakdown.courses.length > 0;
-  console.log("BREAKDOWN", breakdown);
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <IconFileInvoice className="size-5 text-primary" />
-          <CardTitle>{t("billing.title")}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">{t("billing.base")}</span>
-          <span className="font-medium">
-            {formatCurrency(breakdown.base, "EGP")}
-          </span>
-        </div>
-
-        {hasExtras ? (
-          <>
-            <Separator />
-            {breakdown.courses.map((course) => (
-              <div
-                key={course.courseId}
-                className="flex items-center justify-between text-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <IconVideo className="size-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground truncate max-w-[200px]">
-                    {course.courseTitle}
-                  </span>
-                  <span className="text-xs text-muted-foreground/60">
-                    {t("billing.minutes", {
-                      count: String(course.totalMinutes),
-                    })}
-                  </span>
-                </div>
-                <span className="font-medium">
-                  {formatCurrency(course.amountCents, "EGP")}
-                </span>
-              </div>
-            ))}
-          </>
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            {t("billing.noExtras")}
-          </p>
-        )}
 
         <Separator />
-        <div className="flex items-center justify-between text-sm font-semibold">
-          <span>{t("billing.total")}</span>
-          <span>{formatCurrency(breakdown.totalAmountCents, "EGP")}</span>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <IconFileInvoice className="size-4 text-muted-foreground" />
+            <p className="text-sm font-medium">{t("billing.title")}</p>
+          </div>
+          {breakdown ? (
+            <>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{t("billing.base")}</span>
+                <span className="font-medium">
+                  {formatCurrency(breakdown.base, "EGP")}
+                </span>
+              </div>
+
+              {hasExtras ? (
+                <>
+                  <Separator />
+                  {breakdown.courses.map((course) => (
+                    <div
+                      key={course.courseId}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <IconVideo className="size-3.5 text-muted-foreground" />
+                        <span className="max-w-[220px] truncate text-muted-foreground">
+                          {course.courseTitle}
+                        </span>
+                        <span className="text-xs text-muted-foreground/60">
+                          {t("billing.minutes", {
+                            count: String(course.totalMinutes),
+                          })}
+                        </span>
+                      </div>
+                      <span className="font-medium">
+                        {formatCurrency(course.amountCents, "EGP")}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <p className="text-xs text-muted-foreground">{t("billing.noExtras")}</p>
+              )}
+
+              <Separator />
+              <div className="flex items-center justify-between text-sm font-semibold">
+                <span>{t("billing.total")}</span>
+                <span>{formatCurrency(breakdown.totalAmountCents, "EGP")}</span>
+              </div>
+            </>
+          ) : (
+            <Skeleton className="h-16 rounded-lg" />
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </SectionShell>
   );
 }
 
@@ -448,12 +388,16 @@ export function CancelCard({
   cancelLoading: boolean;
 }) {
   return (
-    <Card className="border-destructive/20">
-      <CardHeader>
-        <CardTitle className="text-destructive">{t("cancel.title")}</CardTitle>
-        <CardDescription>{t("cancel.description")}</CardDescription>
-      </CardHeader>
-      <CardFooter>
+    <SectionShell title={t("cancel.title")} description={t("cancel.description")}>
+      <div className="space-y-3">
+        <div className="rounded-xl border-2 border-destructive/35 bg-destructive/10 p-3">
+          <div className="flex items-start gap-2.5">
+            <IconAlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
+            <p className="text-xs font-medium text-destructive/90">
+              {t("cancel.warning")}
+            </p>
+          </div>
+        </div>
         <AlertDialog>
           <AlertDialogTrigger
             render={<Button variant="destructive-outline" size="sm" />}
@@ -462,12 +406,9 @@ export function CancelCard({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogMedia className="bg-destructive/10">
-                <IconAlertTriangle className="text-destructive" />
-              </AlertDialogMedia>
               <AlertDialogTitle>{t("cancel.title")}</AlertDialogTitle>
               <AlertDialogDescription>
-                {t("cancel.description")}
+                {t("cancel.confirmDescription")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -483,55 +424,38 @@ export function CancelCard({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CardFooter>
-    </Card>
+      </div>
+    </SectionShell>
   );
 }
 
 export function LoadingSkeleton() {
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-5 w-28" />
-              <Skeleton className="h-5 w-12" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Skeleton className="h-20 rounded-lg" />
-              <Skeleton className="h-20 rounded-lg" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-5 w-36" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-2">
+      <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+          <div className="rounded-xl border p-5">
+            <Skeleton className="h-4 w-36" />
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <Skeleton className="h-16 rounded-lg" />
               <Skeleton className="h-16 rounded-lg" />
             </div>
-            <Skeleton className="h-px w-full" />
-            <Skeleton className="h-12 w-full" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-5 w-40" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
+            <Skeleton className="mt-4 h-12 rounded-lg" />
+            <Skeleton className="mt-4 h-24 rounded-lg" />
+          </div>
+          <div className="space-y-6">
+            <div className="rounded-xl border p-5">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="mt-3 h-14 rounded-lg" />
+              <Skeleton className="mt-2 h-14 rounded-lg" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="rounded-xl border p-5">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="mt-3 h-14 rounded-lg" />
+              <Skeleton className="mt-3 h-9 rounded-lg" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
