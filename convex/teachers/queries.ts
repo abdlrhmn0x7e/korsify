@@ -1,7 +1,16 @@
 import { ConvexError, v } from "convex/values";
-import { query } from "../_generated/server";
+import { internalQuery, query } from "../_generated/server";
 import { db } from "../db";
 import { authComponent } from "../auth";
+
+export const getById = internalQuery({
+  args: {
+    teacherId: v.id("teachers"),
+  },
+  handler: async (ctx, args) => {
+    return await db.teachers.queries.getById(ctx, args.teacherId);
+  },
+});
 
 export const getTeacher = query({
   args: {},

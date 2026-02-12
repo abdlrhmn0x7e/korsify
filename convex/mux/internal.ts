@@ -84,31 +84,8 @@ export const onAssetErrored = internalMutation({
   },
 });
 
-const muxAssetValidator = v.union(
-  v.object({
-    _id: v.id("muxAssets"),
-    _creationTime: v.number(),
-    teacherId: v.id("teachers"),
-    uploadId: v.string(),
-    assetId: v.optional(v.string()),
-    playbackId: v.optional(v.string()),
-    status: v.union(
-      v.literal("waiting_upload"),
-      v.literal("processing"),
-      v.literal("ready"),
-      v.literal("errored")
-    ),
-    duration: v.optional(v.number()),
-    aspectRatio: v.optional(v.string()),
-    errorMessage: v.optional(v.string()),
-    updatedAt: v.number(),
-  }),
-  v.null()
-);
-
 export const getAssetByUploadId = internalQuery({
   args: { uploadId: v.string() },
-  returns: muxAssetValidator,
   handler: async (ctx, args) => {
     return db.muxAssets.queries.getByUploadId(ctx, args.uploadId);
   },
@@ -116,8 +93,31 @@ export const getAssetByUploadId = internalQuery({
 
 export const getAssetByAssetId = internalQuery({
   args: { assetId: v.string() },
-  returns: muxAssetValidator,
   handler: async (ctx, args) => {
     return db.muxAssets.queries.getByAssetId(ctx, args.assetId);
+  },
+});
+
+export const getAssetsByTeacherId = internalQuery({
+  args: {
+    teacherId: v.id("teachers"),
+  },
+  handler: (ctx, args) => {
+    return db.muxAssets.queries.getAllByTeacherId(ctx, args.teacherId);
+  },
+});
+
+export const markAssetAsRemovedForBilling = internalMutation({
+  args: {
+    muxAssetId: v.id("muxAssets"),
+    reason: v.string(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    await db.muxAssets.mutations.updateStatus(ctx, args.muxAssetId, {
+      status: "errored",
+      errorMessage: args.reason,
+    });
+    return null;
   },
 });

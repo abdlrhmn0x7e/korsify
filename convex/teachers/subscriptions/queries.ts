@@ -3,6 +3,17 @@ import { db } from "../../db";
 import { teacherQuery } from "../../utils";
 import { getPlanUsage } from "../../lib/limits";
 import { BASE_AMOUNT_CENTS } from "../../lib/billing";
+import { v } from "convex/values";
+import { internalQuery } from "../../_generated/server";
+
+export const getByTeacherId = internalQuery({
+  args: {
+    teacherId: v.id("teachers"),
+  },
+  handler: async (ctx, args) => {
+    return db.subscriptions.queries.getByTeacherId(ctx, args.teacherId);
+  },
+});
 
 export const get = teacherQuery({
   args: {},

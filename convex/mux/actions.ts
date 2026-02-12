@@ -1,7 +1,7 @@
 "use node";
 
 import { v, ConvexError } from "convex/values";
-import { action } from "../_generated/server";
+import { action, internalAction } from "../_generated/server";
 import { api } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
 import Mux from "@mux/mux-node";
@@ -98,23 +98,23 @@ export const getSignedPlaybackToken = action({
   },
 });
 
-export const deleteAsset = action({
+export const removeAsset = internalAction({
   args: {
     muxAssetId: v.string(),
   },
-  returns: v.object({
-    success: v.boolean(),
-    error: v.optional(v.string()),
-  }),
   handler: async (_, args) => {
-    const mux = getMuxClient();
-
-    try {
-      await mux.video.assets.delete(args.muxAssetId);
-      return { success: true };
-    } catch (error) {
-      console.error("Failed to delete Mux asset:", error);
-      return { success: false, error: String(error) };
-    }
+    return await deleteMuxAssetById(args.muxAssetId);
   },
 });
+
+async function deleteMuxAssetById(muxAssetId: string) {
+  const mux = getMuxClient();
+
+  try {
+    await mux.video.assets.delete(muxAssetId);
+    return { success: true as const };
+  } catch (error) {
+    console.error("Failed to delete Mux asset:", error);
+    return { success: false as const, error: String(error) };
+  }
+}

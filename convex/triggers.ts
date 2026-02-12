@@ -1,6 +1,7 @@
 import { Triggers } from "convex-helpers/server/triggers";
 import { DataModel, Id } from "./_generated/dataModel";
 import { recalculateBilling } from "./teachers/subscriptions/internal";
+import { internal } from "./_generated/api";
 
 export const triggers = new Triggers<DataModel>();
 
@@ -31,20 +32,79 @@ triggers.register("sections", async (ctx, change) => {
   }
 });
 
-const scheduled: Record<Id<"teachers">, Id<"_scheduled_functions">> = {};
+const scheduledBilling: Record<Id<"teachers">, Id<"_scheduled_functions">> = {};
+const scheduledMuxCleanup: Record<
+  Id<"teachers">,
+  Id<"_scheduled_functions">
+> = {};
+
+const MUX_CLEANUP_GRACE_DAYS = Number(
+  process.env.MUX_CLEANUP_GRACE_DAYS ?? "30"
+);
+const MUX_CLEANUP_GRACE_MS = MUX_CLEANUP_GRACE_DAYS * 24 * 60 * 60 * 1000;
 
 // When a subscription is created, recalculate billing for the teacher
 triggers.register("subscriptions", async (ctx, change) => {
-  if (change.operation !== "insert") return;
+  const newDoc = change.newDoc;
+  const oldDoc = change.oldDoc;
+  const teacherId = newDoc?.teacherId ?? oldDoc?.teacherId;
+  if (!teacherId) return;
 
-  const doc = change.newDoc;
-  if (scheduled[doc.teacherId]) {
-    await ctx.scheduler.cancel(scheduled[doc.teacherId]);
+  if (change.operation === "insert" && newDoc) {
+    if (scheduledBilling[newDoc.teacherId]) {
+      await ctx.scheduler.cancel(scheduledBilling[newDoc.teacherId]);
+    }
+
+    const id = await recalculateBilling(ctx, newDoc.teacherId);
+    if (id) {
+      scheduledBilling[newDoc.teacherId] = id;
+    }
   }
 
-  const id = await recalculateBilling(ctx, doc.teacherId);
-  if (id) {
-    scheduled[doc.teacherId] = id;
+  const becameInactive =
+    oldDoc !== null &&
+    oldDoc !== undefined &&
+    newDoc !== null &&
+    newDoc !== undefined &&
+    oldDoc.status === "active" &&
+    newDoc.status === "inactive";
+  const wasDeleted = Boolean(oldDoc) && !newDoc;
+  const becameActive =
+    oldDoc !== null &&
+    oldDoc !== undefined &&
+    newDoc !== null &&
+    newDoc !== undefined &&
+    oldDoc.status === "inactive" &&
+    newDoc.status === "active";
+
+  if (becameActive && scheduledMuxCleanup[teacherId]) {
+    await ctx.scheduler.cancel(scheduledMuxCleanup[teacherId]);
+    delete scheduledMuxCleanup[teacherId];
+  }
+
+  if (!becameInactive && !wasDeleted) return;
+
+  if (scheduledMuxCleanup[teacherId]) {
+    await ctx.scheduler.cancel(scheduledMuxCleanup[teacherId]);
+  }
+
+  const scheduledId = await ctx.scheduler.runAfter(
+    MUX_CLEANUP_GRACE_MS,
+    internal.teachers.actions.cleanupInactive,
+    {
+      teacherId,
+    }
+  );
+  scheduledMuxCleanup[teacherId] = scheduledId;
+
+  if (wasDeleted) {
+    console.log(
+      `[Mux Cleanup] Scheduled after subscription deletion for teacher=${teacherId} in ${MUX_CLEANUP_GRACE_DAYS} day(s)`
+    );
+  } else {
+    console.log(
+      `[Mux Cleanup] Scheduled after subscription became inactive for teacher=${teacherId} in ${MUX_CLEANUP_GRACE_DAYS} day(s)`
+    );
   }
 });
 
@@ -53,13 +113,13 @@ triggers.register("lessons", async (ctx, change) => {
   const doc = change.newDoc ?? change.oldDoc;
   if (!doc || doc.hosting.type !== "mux") return;
 
-  if (scheduled[doc.teacherId]) {
-    await ctx.scheduler.cancel(scheduled[doc.teacherId]);
+  if (scheduledBilling[doc.teacherId]) {
+    await ctx.scheduler.cancel(scheduledBilling[doc.teacherId]);
   }
 
   const id = await recalculateBilling(ctx, doc.teacherId);
   if (id) {
-    scheduled[doc.teacherId] = id;
+    scheduledBilling[doc.teacherId] = id;
   }
 });
 
@@ -72,12 +132,12 @@ triggers.register("muxAssets", async (ctx, change) => {
   const doc = change.newDoc ?? change.oldDoc;
   if (!doc) return;
 
-  if (scheduled[doc.teacherId]) {
-    await ctx.scheduler.cancel(scheduled[doc.teacherId]);
+  if (scheduledBilling[doc.teacherId]) {
+    await ctx.scheduler.cancel(scheduledBilling[doc.teacherId]);
   }
 
   const id = await recalculateBilling(ctx, doc.teacherId);
   if (id) {
-    scheduled[doc.teacherId] = id;
+    scheduledBilling[doc.teacherId] = id;
   }
 });

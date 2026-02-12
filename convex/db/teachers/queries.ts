@@ -1,8 +1,15 @@
 import { GenericQueryCtx } from "convex/server";
-import { DataModel } from "../../_generated/dataModel";
+import { DataModel, Id } from "../../_generated/dataModel";
 
 export function getAll(ctx: GenericQueryCtx<DataModel>) {
   return ctx.db.query("teachers").collect();
+}
+
+export async function getById(
+  ctx: GenericQueryCtx<DataModel>,
+  teacherId: Id<"teachers">
+) {
+  return ctx.db.get(teacherId);
 }
 
 export async function getByUserId(

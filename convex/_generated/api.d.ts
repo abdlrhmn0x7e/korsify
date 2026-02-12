@@ -60,6 +60,7 @@ import type * as paymob_queries from "../paymob/queries.js";
 import type * as storage_mutations from "../storage/mutations.js";
 import type * as storefront_queries from "../storefront/queries.js";
 import type * as studentAuth from "../studentAuth.js";
+import type * as teachers_actions from "../teachers/actions.js";
 import type * as teachers_courses_mutations from "../teachers/courses/mutations.js";
 import type * as teachers_courses_queries from "../teachers/courses/queries.js";
 import type * as teachers_lessons_mutations from "../teachers/lessons/mutations.js";
@@ -137,6 +138,7 @@ declare const fullApi: ApiFromModules<{
   "storage/mutations": typeof storage_mutations;
   "storefront/queries": typeof storefront_queries;
   studentAuth: typeof studentAuth;
+  "teachers/actions": typeof teachers_actions;
   "teachers/courses/mutations": typeof teachers_courses_mutations;
   "teachers/courses/queries": typeof teachers_courses_queries;
   "teachers/lessons/mutations": typeof teachers_lessons_mutations;
