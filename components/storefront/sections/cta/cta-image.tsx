@@ -1,9 +1,28 @@
-import Image from "next/image";
 import { IconChevronRight } from "@tabler/icons-react";
-
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import type { CtaContent } from "@/convex/db/storefronts/validators";
+import { LazyStorageImage } from "@/components/lazy-storage-image";
 
-export default function CTASection() {
+interface CtaImageProps {
+  content: CtaContent;
+  whatsappNumber?: string;
+}
+
+export function CtaImage({ content, whatsappNumber }: CtaImageProps) {
+  const {
+    headline,
+    subheadline,
+    buttonText,
+    buttonLink,
+    showWhatsApp,
+    backgroundImageStorageId,
+  } = content;
+
+  const whatsappLink = whatsappNumber
+    ? `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`
+    : "#";
+
   return (
     <section className="py-12 lg:py-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -11,31 +30,40 @@ export default function CTASection() {
           <header className="flex flex-col px-4 py-10 lg:px-10">
             <div className="mb-4 space-y-4">
               <h3 className="font-heading text-3xl text-balance md:text-4xl">
-                Ready to Transform Your Website?
+                {headline}
               </h3>
-              <p className="text-muted-foreground md:text-lg">
-                Join thousands of satisfied customers who have optimized their
-                websites and boosted conversions with Metro&#39;s AI-powered
-                platform.
-              </p>
+              {subheadline && (
+                <p className="text-muted-foreground md:text-lg">{subheadline}</p>
+              )}
             </div>
             <div className="mt-4 flex flex-col justify-center gap-3 sm:flex-row! lg:justify-start">
-              <Button>
-                Start Free Trial
+              <Button render={<Link href={buttonLink} />}>
+                {buttonText}
                 <IconChevronRight />
               </Button>
-              <Button variant="outline">Schedule a Demo</Button>
+              {showWhatsApp && whatsappNumber && (
+                <Button
+                  variant="outline"
+                  render={<Link href={whatsappLink} target="_blank" />}
+                >
+                  Chat on WhatsApp
+                </Button>
+              )}
             </div>
           </header>
           <figure className="relative lg:mt-10 lg:self-end">
-            <Image
-              className="lg:rounded-te-none aspect-video w-full rounded-tl-lg rounded-tr-lg object-cover lg:rounded-tr-none"
-              width={300}
-              height={300}
-              src="https://images.unsplash.com/photo-1760346738721-235e811f573d?q=80&w=3864&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="shadcn landing page"
-              unoptimized
-            />
+            {backgroundImageStorageId ? (
+              <LazyStorageImage
+                storageId={backgroundImageStorageId}
+                alt={headline}
+                className="lg:rounded-te-none aspect-video w-full rounded-tl-lg rounded-tr-lg lg:rounded-tr-none"
+                fallback={
+                  <div className="lg:rounded-te-none aspect-video w-full rounded-tl-lg rounded-tr-lg lg:rounded-tr-none bg-muted-foreground/10" />
+                }
+              />
+            ) : (
+              <div className="lg:rounded-te-none aspect-video w-full rounded-tl-lg rounded-tr-lg lg:rounded-tr-none bg-muted-foreground/10" />
+            )}
           </figure>
         </div>
       </div>

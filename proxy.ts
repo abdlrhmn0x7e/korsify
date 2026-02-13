@@ -12,7 +12,7 @@ function resolveTransform(parsed: ParsedRequest): RequestTransform | null {
 
 function applyTransform(
   req: NextRequest,
-  transform: RequestTransform | null,
+  transform: RequestTransform | null
 ): NextRequest {
   if (!transform) return req;
   return new NextRequest(new URL(transform.rewritePath, req.url));
@@ -20,7 +20,7 @@ function applyTransform(
 
 function applyHeaders(
   response: NextResponse,
-  transform: RequestTransform | null,
+  transform: RequestTransform | null
 ): void {
   if (!transform?.headers) return;
 

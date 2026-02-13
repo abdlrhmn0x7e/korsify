@@ -5,6 +5,11 @@ import { useStorefront } from "./storefront-context";
 import { Button } from "@/components/ui/button";
 import { StorefrontSection } from "@/convex/db/storefronts/validators";
 import { HeroEditor } from "./editors/hero-editor";
+import { CoursesEditor } from "./editors/courses-editor";
+import { AboutEditor } from "./editors/about-editor";
+import { TestimonialsEditor } from "./editors/testimonials-editor";
+import { FaqEditor } from "./editors/faq-editor";
+import { CtaEditor } from "./editors/cta-editor";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -221,11 +226,13 @@ function SectionEditorView({ section }: { section: StorefrontSection }) {
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-6">
           {section.type === "hero" && <HeroEditor section={section} />}
-          {section.type !== "hero" && (
-            <div className="text-center text-muted-foreground py-8">
-              Editor for {section.type} coming soon
-            </div>
+          {section.type === "courses" && <CoursesEditor section={section} />}
+          {section.type === "about" && <AboutEditor section={section} />}
+          {section.type === "testimonials" && (
+            <TestimonialsEditor section={section} />
           )}
+          {section.type === "faq" && <FaqEditor section={section} />}
+          {section.type === "cta" && <CtaEditor section={section} />}
         </div>
       </ScrollArea>
     </div>
