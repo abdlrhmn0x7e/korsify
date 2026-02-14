@@ -51,6 +51,23 @@ export interface UpdateSectionData {
   visible?: boolean;
 }
 
+function patchSectionContent(
+  currentContent: Record<string, unknown>,
+  updates: Record<string, unknown>
+): Record<string, unknown> {
+  const nextContent = { ...currentContent };
+
+  for (const [key, value] of Object.entries(updates)) {
+    if (value === null) {
+      delete nextContent[key];
+      continue;
+    }
+    nextContent[key] = value;
+  }
+
+  return nextContent;
+}
+
 export async function updateSection(
   ctx: GenericMutationCtx<DataModel>,
   storefrontId: Id<"storefronts">,
@@ -67,7 +84,10 @@ export async function updateSection(
       ...(data.variant !== undefined && { variant: data.variant }),
       ...(data.visible !== undefined && { visible: data.visible }),
       ...(data.content !== undefined && {
-        content: { ...section.content, ...data.content },
+        content: patchSectionContent(
+          section.content as Record<string, unknown>,
+          data.content
+        ),
       }),
     };
   }) as Array<StorefrontSection>;

@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { StorefrontSection, StatItem } from "@/convex/db/storefronts/validators";
+import {
+  StorefrontSection,
+  StatItem,
+} from "@/convex/db/storefronts/validators";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEffect, useState } from "react";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
@@ -122,7 +125,7 @@ export function AboutEditor({ section }: AboutEditorProps) {
 
           {(content.stats ?? []).length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No statistics added yet. Click "Add Stat" to create one.
+              No statistics added yet. Click &quot;Add Stat&quot; to create one.
             </p>
           )}
 

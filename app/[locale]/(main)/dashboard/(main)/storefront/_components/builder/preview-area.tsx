@@ -54,8 +54,18 @@ export function PreviewArea() {
                 {activeSectionId === section.id ? "Editing" : "Click to edit"}
               </div>
 
-              <div className="pointer-events-none">
-                <DynamicSection section={section} courses={[]} />
+              <div
+                className={cn(
+                  section.type === "hero" && section.variant === "video"
+                    ? "pointer-events-auto"
+                    : "pointer-events-none"
+                )}
+              >
+                <DynamicSection
+                  section={section}
+                  courses={[]}
+                  isBuilderPreview
+                />
               </div>
             </div>
           ))}

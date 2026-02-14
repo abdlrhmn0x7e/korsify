@@ -8,11 +8,18 @@ import { LazyStorageImage } from "@/components/lazy-storage-image";
 
 interface HeroVideoProps {
   content: HeroContent;
+  isBuilderPreview?: boolean;
 }
 
-export function HeroVideo({ content }: HeroVideoProps) {
-  const { headline, subheadline, ctaText, ctaLink, backgroundImageStorageId } =
-    content;
+export function HeroVideo({ content, isBuilderPreview = false }: HeroVideoProps) {
+  const {
+    headline,
+    subheadline,
+    ctaText,
+    ctaLink,
+    backgroundImageStorageId,
+    videoUrl,
+  } = content;
 
   return (
     <section className="py-10 lg:py-16">
@@ -26,9 +33,13 @@ export function HeroVideo({ content }: HeroVideoProps) {
               {subheadline}
             </p>
             <div className="flex justify-center gap-2">
-              <Button render={<Link href={ctaLink} />} size="lg">
-                {ctaText}
-              </Button>
+              {isBuilderPreview ? (
+                <Button size="lg">{ctaText}</Button>
+              ) : (
+                <Button render={<Link href={ctaLink} />} size="lg">
+                  {ctaText}
+                </Button>
+              )}
             </div>
           </header>
           <figure className="relative">
@@ -51,7 +62,7 @@ export function HeroVideo({ content }: HeroVideoProps) {
               </div>
             )}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
-              <VideoModal videoUrl="" />
+              <VideoModal videoUrl={videoUrl ?? ""} />
             </div>
           </figure>
         </div>

@@ -17,6 +17,7 @@ export const heroContentValidator = v.object({
   subheadline: v.string(),
   ctaText: v.string(),
   ctaLink: v.string(),
+  videoUrl: v.optional(v.string()),
   backgroundImageStorageId: v.optional(v.id("_storage")),
 });
 

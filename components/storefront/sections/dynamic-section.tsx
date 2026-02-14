@@ -20,14 +20,26 @@ interface DynamicSectionProps {
   section: StorefrontSection;
   courses?: Array<Course>;
   whatsappNumber?: string;
+  isBuilderPreview?: boolean;
 }
 
-export function DynamicSection({ section, courses = [], whatsappNumber }: DynamicSectionProps) {
+export function DynamicSection({
+  section,
+  courses = [],
+  whatsappNumber,
+  isBuilderPreview = false,
+}: DynamicSectionProps) {
   if (!section.visible) return null;
 
   switch (section.type) {
     case "hero":
-      return <HeroSection content={section.content} variant={section.variant} />;
+      return (
+        <HeroSection
+          content={section.content}
+          variant={section.variant}
+          isBuilderPreview={isBuilderPreview}
+        />
+      );
     case "courses":
       return (
         <CoursesSection
