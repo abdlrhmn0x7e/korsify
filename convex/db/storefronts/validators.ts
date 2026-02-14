@@ -56,10 +56,18 @@ export const aboutVariantValidator = v.union(
   v.literal("stats-focus")
 );
 
+export const statItemValidator = v.object({
+  id: v.string(),
+  value: v.string(),
+  label: v.string(),
+});
+
 export const aboutContentValidator = v.object({
   title: v.string(),
+  description: v.optional(v.string()),
   imageStorageId: v.optional(v.id("_storage")),
   showStats: v.boolean(),
+  stats: v.optional(v.array(statItemValidator)),
 });
 
 export const aboutSectionValidator = v.object({
@@ -194,5 +202,6 @@ export type CtaContent = Infer<typeof ctaContentValidator>;
 
 export type TestimonialItem = Infer<typeof testimonialItemValidator>;
 export type FaqItem = Infer<typeof faqItemValidator>;
+export type StatItem = Infer<typeof statItemValidator>;
 
 export type SectionType = StorefrontSection["type"];

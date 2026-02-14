@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 
-const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN || "korsify.com";
+const APP_DOMAIN = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://korsify.com"
+).split("//")[1];
 
 export const APP_HOSTNAMES = new Set([
   APP_DOMAIN,
@@ -87,6 +89,7 @@ export function parse(req: NextRequest): ParsedRequest {
 
   const subdomain = extractSubdomain(domain);
 
+  console.log("domain", APP_DOMAIN);
   const isCustomDomain =
     !APP_HOSTNAMES.has(domain) &&
     !ADMIN_HOSTNAMES.has(domain) &&
