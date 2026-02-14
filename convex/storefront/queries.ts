@@ -14,6 +14,6 @@ export const getPublishedCourses = query({
   args: { teacherId: v.id("teachers") },
   returns: v.any(),
   handler: async (ctx, args) => {
-    return db.courses.queries.listPublished(ctx, args.teacherId);
+    return db.courses.queries.listPublishedWithDuration(ctx, args.teacherId);
   },
 });

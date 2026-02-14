@@ -6,7 +6,7 @@ import { courseStatusValidator } from "../../db/courses/validators";
 export const getAll = teacherQuery({
   args: {},
   handler: async (ctx) => {
-    return db.courses.queries.getByTeacherId(ctx, ctx.teacherId);
+    return db.courses.queries.getByTeacherIdWithDuration(ctx, ctx.teacherId);
   },
 });
 

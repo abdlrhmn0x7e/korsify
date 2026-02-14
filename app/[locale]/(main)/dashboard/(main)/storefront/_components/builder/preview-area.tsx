@@ -8,11 +8,14 @@ import { Navbar } from "@/components/storefront/navbar";
 import { TeacherContextProvider } from "@/components/storefront/teacher-context-provider";
 import { useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export function PreviewArea() {
   const container = useRef<HTMLDivElement>(null);
   const { storefront, teacher, activeSectionId, setActiveSectionId } =
     useStorefront();
+  const courses = useQuery(api.teachers.courses.queries.getAll);
 
   if (!storefront || !teacher) return null;
 
@@ -63,7 +66,7 @@ export function PreviewArea() {
               >
                 <DynamicSection
                   section={section}
-                  courses={[]}
+                  courses={courses ?? []}
                   isBuilderPreview
                 />
               </div>

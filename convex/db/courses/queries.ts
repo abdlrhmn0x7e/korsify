@@ -2,6 +2,31 @@ import { GenericQueryCtx } from "convex/server";
 import { DataModel, Id } from "../../_generated/dataModel";
 import { attachThumbnailURL } from "./utils";
 
+async function attachCourseDurations<
+  T extends {
+    _id: Id<"courses">;
+  },
+>(ctx: GenericQueryCtx<DataModel>, courses: Array<T>) {
+  return Promise.all(
+    courses.map(async (course) => {
+      const lessons = await ctx.db
+        .query("lessons")
+        .withIndex("by_courseId", (q) => q.eq("courseId", course._id))
+        .collect();
+
+      let duration = 0;
+      for (const lesson of lessons) {
+        if (lesson.hosting.type !== "mux") continue;
+
+        const asset = await ctx.db.get(lesson.hosting.videoId);
+        duration += asset?.duration ?? 0;
+      }
+
+      return { ...course, duration };
+    })
+  );
+}
+
 export async function getAll(ctx: GenericQueryCtx<DataModel>) {
   const courses = await ctx.db.query("courses").collect();
   return attachThumbnailURL(ctx, courses);
@@ -36,6 +61,14 @@ export async function getByTeacherId(
   return attachThumbnailURL(ctx, courses);
 }
 
+export async function getByTeacherIdWithDuration(
+  ctx: GenericQueryCtx<DataModel>,
+  teacherId: Id<"teachers">,
+) {
+  const courses = await getByTeacherId(ctx, teacherId);
+  return attachCourseDurations(ctx, courses);
+}
+
 export async function isSlugAvailable(
   ctx: GenericQueryCtx<DataModel>,
   slug: string,
@@ -58,4 +91,12 @@ export async function listPublished(
     .collect();
 
   return attachThumbnailURL(ctx, courses);
+}
+
+export async function listPublishedWithDuration(
+  ctx: GenericQueryCtx<DataModel>,
+  teacherId: Id<"teachers">,
+) {
+  const courses = await listPublished(ctx, teacherId);
+  return attachCourseDurations(ctx, courses);
 }

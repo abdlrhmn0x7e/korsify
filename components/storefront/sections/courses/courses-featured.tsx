@@ -31,11 +31,10 @@ export function CoursesFeatured({ content, courses }: CoursesFeaturedProps) {
     subtitle,
     showPrice,
     showDuration,
-    limit = 4,
     viewAllLink,
   } = content;
 
-  const displayCourses = courses.slice(0, limit);
+  const displayCourses = courses;
   const featuredCourse = displayCourses[0];
   const otherCourses = displayCourses.slice(1);
 

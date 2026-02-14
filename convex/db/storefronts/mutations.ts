@@ -163,7 +163,7 @@ function getDefaultContent(type: StorefrontSection["type"]): StorefrontSection["
         title: "Our Courses",
         showPrice: true,
         showDuration: true,
-        limit: 6,
+        selectedCourseIds: [],
         viewAllLink: true,
       };
     case "about":

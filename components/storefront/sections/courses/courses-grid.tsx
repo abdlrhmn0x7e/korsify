@@ -31,11 +31,8 @@ export function CoursesGrid({ content, courses }: CoursesGridProps) {
     subtitle,
     showPrice,
     showDuration,
-    limit = 6,
     viewAllLink,
   } = content;
-
-  const displayCourses = courses.slice(0, limit);
 
   return (
     <section className="py-16 px-4 @3xl:px-8">
@@ -50,7 +47,7 @@ export function CoursesGrid({ content, courses }: CoursesGridProps) {
         </div>
 
         <div className="grid grid-cols-1 @3xl:grid-cols-2 @5xl:grid-cols-3 gap-8">
-          {displayCourses.map((course) => (
+          {courses.map((course) => (
             <Card
               key={course._id}
               className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -95,13 +92,13 @@ export function CoursesGrid({ content, courses }: CoursesGridProps) {
           ))}
         </div>
 
-        {displayCourses.length === 0 && (
+        {courses.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
             No courses available yet.
           </div>
         )}
 
-        {viewAllLink && displayCourses.length > 0 && (
+        {viewAllLink && courses.length > 0 && (
           <div className="text-center pt-8">
             <Button
               variant="outline"

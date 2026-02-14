@@ -24,11 +24,8 @@ export function CoursesList({ content, courses }: CoursesListProps) {
     subtitle,
     showPrice,
     showDuration,
-    limit = 6,
     viewAllLink,
   } = content;
-
-  const displayCourses = courses.slice(0, limit);
 
   return (
     <section className="py-16 px-4 @3xl:px-8">
@@ -43,7 +40,7 @@ export function CoursesList({ content, courses }: CoursesListProps) {
         </div>
 
         <div className="space-y-6">
-          {displayCourses.map((course) => (
+          {courses.map((course) => (
             <div
               key={course._id}
               className="flex gap-6 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow"
@@ -97,13 +94,13 @@ export function CoursesList({ content, courses }: CoursesListProps) {
           ))}
         </div>
 
-        {displayCourses.length === 0 && (
+        {courses.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
             No courses available yet.
           </div>
         )}
 
-        {viewAllLink && displayCourses.length > 0 && (
+        {viewAllLink && courses.length > 0 && (
           <div className="text-center pt-8">
             <Button
               variant="outline"

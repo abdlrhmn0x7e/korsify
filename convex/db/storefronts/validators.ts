@@ -40,7 +40,7 @@ export const coursesContentValidator = v.object({
   subtitle: v.optional(v.string()),
   showPrice: v.boolean(),
   showDuration: v.boolean(),
-  limit: v.optional(v.number()),
+  selectedCourseIds: v.array(v.id("courses")),
   viewAllLink: v.optional(v.boolean()),
 });
 
@@ -175,6 +175,24 @@ export const storefrontStyleValidator = v.object({
   buttonStyle: buttonStyleValidator,
   borderRadius: v.optional(v.string()),
 });
+
+interface DefaultSectionVariant {
+  hero: Infer<typeof heroVariantValidator>;
+  courses: Infer<typeof coursesVariantValidator>;
+  about: Infer<typeof aboutVariantValidator>;
+  testimonials: Infer<typeof testimonialsVariantValidator>;
+  faq: Infer<typeof faqVariantValidator>;
+  cta: Infer<typeof ctaVariantValidator>;
+}
+
+export const defaultSectionVariant: DefaultSectionVariant = {
+  hero: "centered",
+  courses: "grid",
+  about: "side-by-side",
+  testimonials: "cards",
+  faq: "accordion",
+  cta: "simple",
+};
 
 export type StorefrontTheme = Infer<typeof storefrontThemeValidator>;
 export type StorefrontStyle = Infer<typeof storefrontStyleValidator>;

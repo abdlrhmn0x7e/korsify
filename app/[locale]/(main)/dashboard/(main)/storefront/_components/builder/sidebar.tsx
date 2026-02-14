@@ -3,7 +3,10 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { useStorefront } from "./storefront-context";
 import { Button } from "@/components/ui/button";
-import { StorefrontSection } from "@/convex/db/storefronts/validators";
+import {
+  defaultSectionVariant,
+  StorefrontSection,
+} from "@/convex/db/storefronts/validators";
 import { HeroEditor } from "./editors/hero-editor";
 import { CoursesEditor } from "./editors/courses-editor";
 import { AboutEditor } from "./editors/about-editor";
@@ -184,7 +187,7 @@ function AddSectionView() {
               variant="outline"
               className="justify-start capitalize"
               onClick={() => {
-                addSection(type, "default");
+                addSection(type, defaultSectionVariant[type]);
                 setActiveSectionId(null);
               }}
             >
