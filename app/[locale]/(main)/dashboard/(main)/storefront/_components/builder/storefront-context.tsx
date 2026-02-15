@@ -24,12 +24,15 @@ type TeacherWithBranding = NonNullable<
 >;
 
 interface StorefrontContextType {
-  storefront: {
-    _id: string;
-    theme: StorefrontTheme;
-    style: StorefrontStyle;
-    sections: Array<StorefrontSection>;
-  } | null | undefined;
+  storefront:
+    | {
+        _id: string;
+        theme: StorefrontTheme;
+        style: StorefrontStyle;
+        sections: Array<StorefrontSection>;
+      }
+    | null
+    | undefined;
   teacher: TeacherWithBranding | null | undefined;
   isLoading: boolean;
   activeSectionId: string | null;

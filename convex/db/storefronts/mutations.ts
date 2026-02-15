@@ -68,6 +68,10 @@ function patchSectionContent(
   return nextContent;
 }
 
+function shouldPatchContent(updates: Record<string, unknown>): boolean {
+  return Object.values(updates).some((value) => value === null);
+}
+
 export async function updateSection(
   ctx: GenericMutationCtx<DataModel>,
   storefrontId: Id<"storefronts">,
@@ -84,10 +88,12 @@ export async function updateSection(
       ...(data.variant !== undefined && { variant: data.variant }),
       ...(data.visible !== undefined && { visible: data.visible }),
       ...(data.content !== undefined && {
-        content: patchSectionContent(
-          section.content as Record<string, unknown>,
-          data.content
-        ),
+        content: shouldPatchContent(data.content)
+          ? patchSectionContent(
+              section.content as Record<string, unknown>,
+              data.content
+            )
+          : data.content,
       }),
     };
   }) as Array<StorefrontSection>;
