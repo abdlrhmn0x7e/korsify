@@ -93,6 +93,24 @@ export async function listPublished(
   return attachThumbnailURL(ctx, courses);
 }
 
+export async function listPublishedLite(
+  ctx: GenericQueryCtx<DataModel>,
+  teacherId: Id<"teachers">,
+) {
+  const courses = await ctx.db
+    .query("courses")
+    .withIndex("by_teacherId_status", (q) =>
+      q.eq("teacherId", teacherId).eq("status", "published")
+    )
+    .order("desc")
+    .collect();
+
+  return courses.map((course) => ({
+    _id: course._id,
+    title: course.title,
+  }));
+}
+
 export async function listPublishedWithDuration(
   ctx: GenericQueryCtx<DataModel>,
   teacherId: Id<"teachers">,

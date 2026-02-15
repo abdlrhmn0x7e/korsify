@@ -218,8 +218,6 @@ export function StorefrontProvider({
   };
 
   const removeSection = (sectionId: string) => {
-    if (!confirm("Are you sure you want to remove this section?")) return;
-
     updateDraft((current) => {
       const sections = current.sections.filter((s) => s.id !== sectionId);
       if (activeSectionId === sectionId) setActiveSectionId(null);

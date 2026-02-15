@@ -10,6 +10,19 @@ export const getAll = teacherQuery({
   },
 });
 
+export const listPublishedLite = teacherQuery({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id("courses"),
+      title: v.string(),
+    })
+  ),
+  handler: async (ctx) => {
+    return db.courses.queries.listPublishedLite(ctx, ctx.teacherId);
+  },
+});
+
 export const getAllWithLessonCount = teacherQuery({
   args: {
     status: v.optional(courseStatusValidator),

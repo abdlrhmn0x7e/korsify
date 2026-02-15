@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   CoursesVariant,
   StorefrontSection,
@@ -13,7 +12,16 @@ import {
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
-import { Id } from "@/convex/_generated/dataModel";
+import {
+  Combobox,
+  ComboboxChips,
+  ComboboxChip,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 
 interface CoursesEditorProps {
   section: StorefrontSection & { type: "courses" };
@@ -48,9 +56,15 @@ const COURSES_TEMPLATE_OPTIONS: Array<{
 
 export function CoursesEditor({ section }: CoursesEditorProps) {
   const { updateSection } = useStorefront();
-  const teacherCourses = useQuery(api.teachers.courses.queries.getAll) ?? [];
+  const publishedCoursesQuery = useQuery(
+    api.teachers.courses.queries.listPublishedLite
+  );
+  const publishedCourses = publishedCoursesQuery ?? [];
   const content = section.content;
   const variant = section.variant;
+  const selectedCourses = publishedCourses.filter((course) =>
+    content.selectedCourseIds.includes(course._id)
+  );
 
   function handleChange<K extends keyof typeof content>(
     key: K,
@@ -69,21 +83,10 @@ export function CoursesEditor({ section }: CoursesEditorProps) {
     updateSection(section.id, { variant: nextVariant });
   }
 
-  function handleCourseToggle(courseId: Id<"courses">, checked: boolean) {
-    const selectedCourseIds = new Set(content.selectedCourseIds);
-    if (checked) {
-      selectedCourseIds.add(courseId);
-    } else {
-      selectedCourseIds.delete(courseId);
-    }
-
-    handleChange("selectedCourseIds", Array.from(selectedCourseIds));
-  }
-
   function handleSelectAllCourses() {
     handleChange(
       "selectedCourseIds",
-      teacherCourses.map((course) => course._id)
+      publishedCourses.map((course) => course._id)
     );
   }
 
@@ -173,9 +176,7 @@ export function CoursesEditor({ section }: CoursesEditorProps) {
           </div>
           <Switch
             checked={content.viewAllLink ?? false}
-            onCheckedChange={(checked) =>
-              handleChange("viewAllLink", checked)
-            }
+            onCheckedChange={(checked) => handleChange("viewAllLink", checked)}
           />
         </div>
       </div>
@@ -208,40 +209,44 @@ export function CoursesEditor({ section }: CoursesEditorProps) {
           </div>
         </div>
 
-        <div className="max-h-72 space-y-2 overflow-y-auto rounded-lg border p-2">
-          {teacherCourses.length === 0 && (
-            <p className="px-2 py-3 text-sm text-muted-foreground">
-              No courses found yet.
-            </p>
-          )}
-
-          {teacherCourses.map((course) => {
-            const isChecked = content.selectedCourseIds.includes(course._id);
-
-            return (
-              <div
-                key={course._id}
-                className="flex items-center justify-between rounded-md border px-3 py-2"
-              >
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">{course.title}</p>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-[10px] uppercase">
-                      {course.status}
-                    </Badge>
-                    <p className="text-xs text-muted-foreground">{course.slug}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={isChecked}
-                  onCheckedChange={(checked) =>
-                    handleCourseToggle(course._id, checked)
-                  }
-                />
-              </div>
+        <Combobox
+          multiple
+          items={publishedCourses}
+          value={selectedCourses}
+          itemToStringLabel={(course) => course.title}
+          isItemEqualToValue={(course, selected) => course._id === selected._id}
+          onValueChange={(value) => {
+            const nextSelected = Array.isArray(value) ? value : [];
+            handleChange(
+              "selectedCourseIds",
+              nextSelected.map((course) => course._id)
             );
-          })}
-        </div>
+          }}
+        >
+          <ComboboxChips className="w-full">
+            {selectedCourses.map((course) => (
+              <ComboboxChip key={course._id}>{course.title}</ComboboxChip>
+            ))}
+            <ComboboxChipsInput
+              placeholder={
+                publishedCoursesQuery === undefined
+                  ? "Loading published courses..."
+                  : "Search published courses"
+              }
+              disabled={publishedCoursesQuery === undefined}
+            />
+          </ComboboxChips>
+          <ComboboxContent align="center" className="w-full">
+            <ComboboxEmpty>No published courses found.</ComboboxEmpty>
+            <ComboboxList>
+              {(course) => (
+                <ComboboxItem key={course._id} value={course}>
+                  <span className="truncate">{course.title}</span>
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
       </div>
     </div>
   );

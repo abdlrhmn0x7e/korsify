@@ -36,7 +36,7 @@ export default async function StorefrontBuilderPage({
       preloadedStorefront={preloadedStorefront}
       preloadedTeacher={preloadedTeacher}
     >
-      <PageLayout>
+      <PageLayout className="min-h-0 overflow-hidden">
         <PageHeader Icon={IconBuildingStore} title="Customize storefront">
           <div className="flex items-center gap-4">
             <SaveStatus />

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, ReactNode } from "react";
 import { useStorefront } from "./storefront-context";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   IconBorderCorners,
+  IconAlertTriangle,
   IconEye,
   IconEyeOff,
   IconGripVertical,
@@ -35,6 +36,33 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface BuilderSidebarContextType {
   isOpen: boolean;
@@ -73,68 +101,71 @@ function SectionListView() {
     setActiveSectionId,
     toggleSectionVisibility,
     removeSection,
+    reorderSections,
   } = useStorefront();
 
+  const sectionIds = useMemo(
+    () => storefront?.sections.map((section) => section.id) ?? [],
+    [storefront?.sections]
+  );
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!storefront || !over || active.id === over.id) {
+      return;
+    }
+
+    const activeIndex = storefront.sections.findIndex(
+      (section) => section.id === active.id
+    );
+    const overIndex = storefront.sections.findIndex(
+      (section) => section.id === over.id
+    );
+
+    if (activeIndex === -1 || overIndex === -1) {
+      return;
+    }
+
+    const newSectionIds = arrayMove(sectionIds, activeIndex, overIndex);
+    reorderSections(newSectionIds);
+  }
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full min-h-0 flex-col">
       <div className="h-12 border-b px-3 py-1 bg-background flex items-center gap-2 shrink-0">
         <IconBorderCorners className="size-4" />
         <span className="text-sm font-medium">Sections</span>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="min-h-0 flex-1">
         <div className="p-2 space-y-2">
-          {storefront?.sections.map((section) => (
-            <div
-              key={section.id}
-              className={cn(
-                "group flex items-center gap-2 p-3 rounded-lg border bg-card transition-colors hover:border-primary/50 cursor-pointer"
-              )}
-              onClick={() => setActiveSectionId(section.id)}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={sectionIds}
+              strategy={verticalListSortingStrategy}
             >
-              <div className="cursor-grab text-muted-foreground hover:text-foreground">
-                <IconGripVertical className="h-4 w-4" />
+              <div className="space-y-2">
+                {storefront?.sections.map((section) => (
+                  <SortableSectionItem
+                    key={section.id}
+                    section={section}
+                    onClick={() => setActiveSectionId(section.id)}
+                    onToggleVisibility={() =>
+                      toggleSectionVisibility(section.id, !section.visible)
+                    }
+                    onDelete={() => removeSection(section.id)}
+                  />
+                ))}
               </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm capitalize truncate">
-                  {section.type} Section
-                </div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {section.variant || "Default"}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSectionVisibility(section.id, !section.visible);
-                  }}
-                >
-                  {section.visible ? (
-                    <IconEye className="h-3.5 w-3.5" />
-                  ) : (
-                    <IconEyeOff className="h-3.5 w-3.5 text-muted-foreground" />
-                  )}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  className="hover:text-destructive hover:bg-destructive/10"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeSection(section.id);
-                  }}
-                >
-                  <IconTrash className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
+            </SortableContext>
+          </DndContext>
 
           <Button
             className="w-full"
@@ -165,7 +196,7 @@ function AddSectionView() {
   const { addSection, setActiveSectionId } = useStorefront();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full min-h-0 flex-col">
       <div className="h-12 border-b px-2 flex items-center gap-2 bg-background shrink-0">
         <Button
           variant="ghost"
@@ -177,7 +208,7 @@ function AddSectionView() {
         <span className="font-semibold">Add Section</span>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="min-h-0 flex-1">
         <div className="p-4 grid gap-2">
           {(
             ["hero", "courses", "about", "testimonials", "faq", "cta"] as const
@@ -200,11 +231,112 @@ function AddSectionView() {
   );
 }
 
+function SortableSectionItem({
+  section,
+  onClick,
+  onToggleVisibility,
+  onDelete,
+}: {
+  section: StorefrontSection;
+  onClick: () => void;
+  onToggleVisibility: () => void;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <div
+        className={cn(
+          "group flex items-center gap-2 p-3 rounded-lg border bg-card transition-colors hover:border-primary/50 cursor-pointer"
+        )}
+        onClick={onClick}
+      >
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          className="cursor-grab text-muted-foreground hover:text-foreground"
+          {...listeners}
+          {...attributes}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <IconGripVertical className="h-4 w-4" />
+        </Button>
+
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-sm capitalize truncate">
+            {section.type} Section
+          </div>
+          <div className="text-xs text-muted-foreground truncate">
+            {section.variant || "Default"}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            onClick={(event) => {
+              event.stopPropagation();
+              onToggleVisibility();
+            }}
+          >
+            {section.visible ? (
+              <IconEye className="h-3.5 w-3.5" />
+            ) : (
+              <IconEyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+            )}
+          </Button>
+
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="hover:text-destructive hover:bg-destructive/10"
+                  onClick={(event) => event.stopPropagation()}
+                />
+              }
+            >
+              <IconTrash className="h-3.5 w-3.5" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogMedia>
+                  <IconAlertTriangle className="text-destructive" />
+                </AlertDialogMedia>
+                <AlertDialogTitle>Remove section?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will remove the section from your storefront draft. You
+                  can add it back later.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction variant="destructive" onClick={onDelete}>
+                  Remove
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SectionEditorView({ section }: { section: StorefrontSection }) {
   const { setActiveSectionId, removeSection } = useStorefront();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full min-h-0 flex-col">
       <div className="h-12 px-2 py-1 border-b flex items-center justify-between bg-background shrink-0">
         <div className="flex items-center gap-2">
           <Button
@@ -216,17 +348,43 @@ function SectionEditorView({ section }: { section: StorefrontSection }) {
           </Button>
           <span className="text-sm capitalize">{section.type}</span>
         </div>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-destructive hover:bg-destructive/10"
-          onClick={() => removeSection(section.id)}
-        >
-          <IconTrash />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-destructive hover:bg-destructive/10"
+              />
+            }
+          >
+            <IconTrash />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogMedia>
+                <IconAlertTriangle className="text-destructive" />
+              </AlertDialogMedia>
+              <AlertDialogTitle>Remove section?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will remove the section from your storefront draft. You can
+                add it back later.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                onClick={() => removeSection(section.id)}
+              >
+                Remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="h-[calc(100vh-10rem)]">
         <div className="p-4 space-y-6">
           {section.type === "hero" && <HeroEditor section={section} />}
           {section.type === "courses" && <CoursesEditor section={section} />}
@@ -251,15 +409,17 @@ function BuilderSidebarContent() {
     (s: StorefrontSection) => s.id === activeSectionId
   );
 
-  if (activeSectionId === "add-new") {
-    return <AddSectionView />;
-  }
-
-  if (activeSection) {
-    return <SectionEditorView section={activeSection} />;
-  }
-
-  return <SectionListView />;
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      {activeSectionId === "add-new" ? (
+        <AddSectionView />
+      ) : activeSection ? (
+        <SectionEditorView section={activeSection} />
+      ) : (
+        <SectionListView />
+      )}
+    </div>
+  );
 }
 
 function DesktopSidebar() {
@@ -272,7 +432,7 @@ function DesktopSidebar() {
         isOpen ? "w-80" : "w-0"
       )}
     >
-      <div className="w-80 h-full">
+      <div className="flex h-full min-h-0 w-80 flex-col">
         <BuilderSidebarContent />
       </div>
     </div>
@@ -284,14 +444,20 @@ function MobileSidebar() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent side="right" className="w-80 p-0" showCloseButton={false}>
+      <SheetContent
+        side="right"
+        className="flex h-full min-h-0 w-80 flex-col p-0"
+        showCloseButton={false}
+      >
         <SheetHeader className="sr-only">
           <SheetTitle>Customization Panel</SheetTitle>
           <SheetDescription>
             Customize your storefront sections
           </SheetDescription>
         </SheetHeader>
-        <BuilderSidebarContent />
+        <div className="min-h-0 flex-1">
+          <BuilderSidebarContent />
+        </div>
       </SheetContent>
     </Sheet>
   );
