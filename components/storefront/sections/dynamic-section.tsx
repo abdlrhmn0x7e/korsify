@@ -19,14 +19,12 @@ interface Course {
 interface DynamicSectionProps {
   section: StorefrontSection;
   courses?: Array<Course>;
-  whatsappNumber?: string;
   isBuilderPreview?: boolean;
 }
 
 export function DynamicSection({
   section,
   courses = [],
-  whatsappNumber,
   isBuilderPreview = false,
 }: DynamicSectionProps) {
   if (!section.visible) return null;
@@ -60,7 +58,7 @@ export function DynamicSection({
     case "faq":
       return <FaqSection content={section.content} variant={section.variant} />;
     case "cta":
-      return <CtaSection content={section.content} variant={section.variant} whatsappNumber={whatsappNumber} />;
+      return <CtaSection content={section.content} variant={section.variant} />;
     default:
       return null;
   }

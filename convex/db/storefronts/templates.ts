@@ -68,7 +68,6 @@ const MINIMALIST_SECTIONS: Array<StorefrontSection> = [
       subheadline: "Join our community of learners today",
       buttonText: "Get Started",
       buttonLink: "/courses",
-      showWhatsApp: false,
     },
   },
 ];
@@ -191,7 +190,6 @@ const ACADEMY_SECTIONS: Array<StorefrontSection> = [
       subheadline: "Join thousands of successful students",
       buttonText: "Enroll Now",
       buttonLink: "/courses",
-      showWhatsApp: true,
     },
   },
 ];
@@ -278,7 +276,6 @@ const COACH_SECTIONS: Array<StorefrontSection> = [
       subheadline: "Book a free consultation call",
       buttonText: "Book Now",
       buttonLink: "/courses",
-      showWhatsApp: true,
     },
   },
 ];
@@ -365,7 +362,6 @@ const CREATIVE_SECTIONS: Array<StorefrontSection> = [
       subheadline: "Join our creative community",
       buttonText: "Join Now",
       buttonLink: "/courses",
-      showWhatsApp: false,
     },
   },
 ];
@@ -452,7 +448,6 @@ const BOOTCAMP_SECTIONS: Array<StorefrontSection> = [
       subheadline: "Next cohort starts soon",
       buttonText: "Reserve Your Spot",
       buttonLink: "/courses",
-      showWhatsApp: true,
     },
   },
 ];

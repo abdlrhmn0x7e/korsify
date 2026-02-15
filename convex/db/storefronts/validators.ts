@@ -139,7 +139,6 @@ export const ctaContentValidator = v.object({
   subheadline: v.optional(v.string()),
   buttonText: v.string(),
   buttonLink: v.string(),
-  showWhatsApp: v.boolean(),
   backgroundImageStorageId: v.optional(v.id("_storage")),
 });
 

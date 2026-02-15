@@ -192,7 +192,6 @@ function getDefaultContent(type: StorefrontSection["type"]): StorefrontSection["
         headline: "Ready to Start?",
         buttonText: "Join Now",
         buttonLink: "/courses",
-        showWhatsApp: false,
       };
   }
 }

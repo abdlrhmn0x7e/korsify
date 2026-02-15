@@ -145,7 +145,8 @@ export function AboutEditor({ section }: AboutEditorProps) {
   const variant = section.variant;
 
   const debouncedContent = useDebounce(content, 500);
-  const canShowDescription = variant === "side-by-side" || variant === "centered";
+  const canShowDescription =
+    variant === "side-by-side" || variant === "centered";
   const canShowImage = variant === "side-by-side" || variant === "centered";
   const canToggleStats = variant === "side-by-side" || variant === "centered";
   const shouldShowStatsEditor = variant === "stats-focus" || content.showStats;
@@ -171,9 +172,7 @@ export function AboutEditor({ section }: AboutEditorProps) {
 
   function handleTemplateChange(nextVariant: AboutVariant) {
     const nextContent =
-      nextVariant === "stats-focus"
-        ? { ...content, showStats: true }
-        : content;
+      nextVariant === "stats-focus" ? { ...content, showStats: true } : content;
 
     setContent(nextContent);
     updateSection(section.id, {

@@ -6,22 +6,16 @@ import { LazyStorageImage } from "@/components/lazy-storage-image";
 
 interface CtaImageProps {
   content: CtaContent;
-  whatsappNumber?: string;
 }
 
-export function CtaImage({ content, whatsappNumber }: CtaImageProps) {
+export function CtaImage({ content }: CtaImageProps) {
   const {
     headline,
     subheadline,
     buttonText,
     buttonLink,
-    showWhatsApp,
     backgroundImageStorageId,
   } = content;
-
-  const whatsappLink = whatsappNumber
-    ? `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`
-    : "#";
 
   return (
     <section className="py-12 lg:py-20">
@@ -41,14 +35,6 @@ export function CtaImage({ content, whatsappNumber }: CtaImageProps) {
                 {buttonText}
                 <IconChevronRight />
               </Button>
-              {showWhatsApp && whatsappNumber && (
-                <Button
-                  variant="outline"
-                  render={<Link href={whatsappLink} target="_blank" />}
-                >
-                  Chat on WhatsApp
-                </Button>
-              )}
             </div>
           </header>
           <figure className="relative lg:mt-10 lg:self-end">

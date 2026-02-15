@@ -5,15 +5,10 @@ import { LazyBackgroundImage } from "@/components/lazy-storage-image";
 
 interface CtaGradientProps {
   content: CtaContent;
-  whatsappNumber?: string;
 }
 
-export function CtaGradient({ content, whatsappNumber }: CtaGradientProps) {
-  const { headline, subheadline, buttonText, buttonLink, showWhatsApp, backgroundImageStorageId } = content;
-
-  const whatsappLink = whatsappNumber 
-    ? `https://wa.me/${whatsappNumber.replace(/\D/g, '')}` 
-    : "#";
+export function CtaGradient({ content }: CtaGradientProps) {
+  const { headline, subheadline, buttonText, buttonLink, backgroundImageStorageId } = content;
 
   return (
     <section className="relative py-24 px-4 @3xl:px-8 bg-primary overflow-hidden">
@@ -34,25 +29,14 @@ export function CtaGradient({ content, whatsappNumber }: CtaGradientProps) {
         )}
         
         <div className="flex flex-col @sm:flex-row items-center justify-center gap-4 pt-4">
-          <Button 
-            size="lg" 
-            variant="secondary" 
+          <Button
+            size="lg"
+            variant="secondary"
             className="text-lg px-8 w-full @sm:w-auto"
             render={<Link href={buttonLink} />}
           >
             {buttonText}
           </Button>
-          
-          {showWhatsApp && (
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="text-lg px-8 w-full @sm:w-auto bg-transparent text-white border-white hover:bg-white/10 hover:text-white"
-              render={<Link href={whatsappLink} target="_blank" rel="noopener noreferrer" />}
-            >
-              Chat on WhatsApp
-            </Button>
-          )}
         </div>
       </div>
     </section>

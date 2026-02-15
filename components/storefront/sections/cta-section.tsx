@@ -6,17 +6,16 @@ import { CtaGradient } from "./cta/cta-gradient";
 interface CtaSectionProps {
   content: CtaContent;
   variant: CtaVariant;
-  whatsappNumber?: string;
 }
 
-export function CtaSection({ content, variant, whatsappNumber }: CtaSectionProps) {
+export function CtaSection({ content, variant }: CtaSectionProps) {
   switch (variant) {
     case "image":
-      return <CtaImage content={content} whatsappNumber={whatsappNumber} />;
+      return <CtaImage content={content} />;
     case "gradient":
-      return <CtaGradient content={content} whatsappNumber={whatsappNumber} />;
+      return <CtaGradient content={content} />;
     case "simple":
     default:
-      return <CtaSimple content={content} whatsappNumber={whatsappNumber} />;
+      return <CtaSimple content={content} />;
   }
 }

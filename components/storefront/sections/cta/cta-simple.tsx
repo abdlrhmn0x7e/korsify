@@ -4,16 +4,10 @@ import type { CtaContent } from "@/convex/db/storefronts/validators";
 
 interface CtaSimpleProps {
   content: CtaContent;
-  whatsappNumber?: string;
 }
 
-export function CtaSimple({ content, whatsappNumber }: CtaSimpleProps) {
-  const { headline, subheadline, buttonText, buttonLink, showWhatsApp } =
-    content;
-
-  const whatsappLink = whatsappNumber
-    ? `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`
-    : "#";
+export function CtaSimple({ content }: CtaSimpleProps) {
+  const { headline, subheadline, buttonText, buttonLink } = content;
 
   return (
     <section className="py-12 lg:py-20">
@@ -30,14 +24,6 @@ export function CtaSimple({ content, whatsappNumber }: CtaSimpleProps) {
             )}
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:gap-4">
-            {showWhatsApp && whatsappNumber && (
-              <Button
-                variant="outline"
-                render={<Link href={whatsappLink} target="_blank" />}
-              >
-                Chat on WhatsApp
-              </Button>
-            )}
             <Button
               render={<Link href={buttonLink} />}
               variant="default"

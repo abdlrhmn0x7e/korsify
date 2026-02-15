@@ -19,7 +19,6 @@ export const brandingValidator = v.object({
   faviconStorageId: v.optional(v.id("_storage")),
   accentColor: v.optional(v.string()),
   bio: v.optional(v.string()),
-  whatsappNumber: v.optional(v.string()),
   socialLinks: v.optional(v.array(socialLinkValidator)),
   footerText: v.optional(v.string()),
 });
