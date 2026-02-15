@@ -5,14 +5,38 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { StorefrontSection, FaqItem } from "@/convex/db/storefronts/validators";
+import {
+  StorefrontSection,
+  FaqItem,
+  FaqVariant,
+} from "@/convex/db/storefronts/validators";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEffect, useState } from "react";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
 
 interface FaqEditorProps {
   section: StorefrontSection & { type: "faq" };
 }
+
+const FAQ_TEMPLATE_OPTIONS: Array<{
+  value: FaqVariant;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "accordion",
+    label: "Accordion",
+    description:
+      "Expandable rows that keep the section compact and easy to scan.",
+  },
+  {
+    value: "two-column",
+    label: "Two Column",
+    description:
+      "Shows answers side-by-side in cards for faster browsing on larger screens.",
+  },
+];
 
 function generateId() {
   return Math.random().toString(36).substring(2, 9);
@@ -21,6 +45,7 @@ function generateId() {
 export function FaqEditor({ section }: FaqEditorProps) {
   const { updateSection } = useStorefront();
   const [content, setContent] = useState(section.content);
+  const variant = section.variant;
 
   const debouncedContent = useDebounce(content, 500);
 
@@ -30,8 +55,15 @@ export function FaqEditor({ section }: FaqEditorProps) {
     }
   }, [debouncedContent, section.id, section.content, updateSection]);
 
-  function handleTitleChange(value: string) {
-    setContent((prev) => ({ ...prev, title: value }));
+  function handleChange<K extends keyof typeof content>(
+    key: K,
+    value: (typeof content)[K]
+  ) {
+    setContent((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function handleTemplateChange(nextVariant: FaqVariant) {
+    updateSection(section.id, { variant: nextVariant });
   }
 
   function handleAddItem() {
@@ -40,10 +72,7 @@ export function FaqEditor({ section }: FaqEditorProps) {
       question: "",
       answer: "",
     };
-    setContent((prev) => ({
-      ...prev,
-      items: [...prev.items, newItem],
-    }));
+    setContent((prev) => ({ ...prev, items: [...prev.items, newItem] }));
   }
 
   function handleUpdateItem(
@@ -66,29 +95,73 @@ export function FaqEditor({ section }: FaqEditorProps) {
     }));
   }
 
+  const titlePlaceholder =
+    variant === "two-column"
+      ? "Everything You Need to Know"
+      : "Frequently Asked Questions";
+  const answerPlaceholder =
+    variant === "two-column"
+      ? "Write a concise card-style answer..."
+      : "Provide a detailed answer...";
+
   return (
     <div className="space-y-4">
+      <div className="space-y-2">
+        <Label>Template</Label>
+        <div className="grid gap-2">
+          {FAQ_TEMPLATE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => handleTemplateChange(option.value)}
+              className={cn(
+                "w-full rounded-lg border px-3 py-2 text-left transition-colors",
+                variant === option.value
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/40 hover:bg-muted/40"
+              )}
+            >
+              <p className="text-sm font-medium">{option.label}</p>
+              <p className="text-xs text-muted-foreground">
+                {option.description}
+              </p>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label>Section Title</Label>
         <Input
           value={content.title}
-          onChange={(e) => handleTitleChange(e.target.value)}
-          placeholder="Frequently Asked Questions"
+          onChange={(e) => handleChange("title", e.target.value)}
+          placeholder={titlePlaceholder}
         />
       </div>
 
+      {variant === "two-column" && (
+        <p className="rounded-md border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+          Two Column works best with short, direct answers so each card stays
+          easy to scan.
+        </p>
+      )}
+
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
-          <Label>Questions & Answers</Label>
+          <Label>
+            {variant === "two-column" ? "FAQ Cards" : "Questions & Answers"}
+          </Label>
           <Button variant="outline" size="sm" onClick={handleAddItem}>
             <IconPlus className="h-4 w-4 mr-1" />
-            Add Question
+            {variant === "two-column" ? "Add Card" : "Add Question"}
           </Button>
         </div>
 
         {content.items.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No questions added yet. Click "Add Question" to create one.
+            No items added yet. Click{" "}
+            {variant === "two-column" ? '"Add Card"' : '"Add Question"'} to
+            create one.
           </p>
         )}
 
@@ -128,7 +201,7 @@ export function FaqEditor({ section }: FaqEditorProps) {
                 onChange={(e) =>
                   handleUpdateItem(item.id, "answer", e.target.value)
                 }
-                placeholder="Provide a detailed answer..."
+                placeholder={answerPlaceholder}
                 rows={3}
               />
             </div>
