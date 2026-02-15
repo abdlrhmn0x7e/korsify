@@ -44,6 +44,27 @@ export async function updateStyle(
   });
 }
 
+export interface UpdateStorefrontData {
+  theme: StorefrontTheme;
+  style: StorefrontStyle;
+  sections: Array<StorefrontSection>;
+  cssVariables?: Record<string, string>;
+}
+
+export async function updateStorefront(
+  ctx: GenericMutationCtx<DataModel>,
+  storefrontId: Id<"storefronts">,
+  data: UpdateStorefrontData
+): Promise<void> {
+  await ctx.db.patch(storefrontId, {
+    theme: data.theme,
+    style: data.style,
+    sections: data.sections,
+    cssVariables: data.cssVariables,
+    updatedAt: Date.now(),
+  });
+}
+
 export interface UpdateSectionData {
   sectionId: string;
   variant?: string;

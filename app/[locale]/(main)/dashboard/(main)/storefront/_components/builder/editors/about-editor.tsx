@@ -11,8 +11,7 @@ import {
   StorefrontSection,
   StatItem,
 } from "@/convex/db/storefronts/validators";
-import { useDebounce } from "@/hooks/use-debounce";
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useRef } from "react";
 import { IconPhoto, IconPlus, IconTrash } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useUploadFile } from "@/hooks/use-upload-file";
@@ -141,43 +140,34 @@ function AboutImageUploader({ storageId, onChange }: AboutImageUploaderProps) {
 
 export function AboutEditor({ section }: AboutEditorProps) {
   const { updateSection } = useStorefront();
-  const [content, setContent] = useState(section.content);
+  const content = section.content;
   const variant = section.variant;
-
-  const debouncedContent = useDebounce(content, 500);
   const canShowDescription =
     variant === "side-by-side" || variant === "centered";
   const canShowImage = variant === "side-by-side" || variant === "centered";
   const canToggleStats = variant === "side-by-side" || variant === "centered";
   const shouldShowStatsEditor = variant === "stats-focus" || content.showStats;
 
-  useEffect(() => {
-    if (JSON.stringify(debouncedContent) !== JSON.stringify(section.content)) {
-      updateSection(section.id, { content: debouncedContent });
-    }
-  }, [debouncedContent, section.id, section.content, updateSection]);
-
   function handleChange<K extends keyof typeof content>(
     key: K,
     value: (typeof content)[K]
   ) {
-    setContent((prev) => {
-      if (value !== undefined) return { ...prev, [key]: value };
-
-      const next = { ...prev } as Record<string, unknown>;
+    const next = { ...content } as Record<string, unknown>;
+    if (value !== undefined) {
+      next[key as string] = value;
+    } else {
       delete next[key as string];
-      return next as typeof prev;
-    });
+    }
+    updateSection(section.id, { content: next as typeof content });
   }
 
   function handleTemplateChange(nextVariant: AboutVariant) {
-    const nextContent =
-      nextVariant === "stats-focus" ? { ...content, showStats: true } : content;
-
-    setContent(nextContent);
     updateSection(section.id, {
       variant: nextVariant,
-      content: nextVariant === "stats-focus" ? nextContent : undefined,
+      content:
+        nextVariant === "stats-focus"
+          ? { ...content, showStats: true }
+          : undefined,
     });
   }
 
@@ -261,17 +251,7 @@ export function AboutEditor({ section }: AboutEditorProps) {
       {canShowImage && (
         <AboutImageUploader
           storageId={content.imageStorageId}
-          onChange={(storageId) => {
-            handleChange("imageStorageId", storageId);
-
-            if (storageId === undefined) {
-              updateSection(section.id, {
-                content: {
-                  imageStorageId: null,
-                } as unknown as typeof section.content,
-              });
-            }
-          }}
+          onChange={(storageId) => handleChange("imageStorageId", storageId)}
         />
       )}
 

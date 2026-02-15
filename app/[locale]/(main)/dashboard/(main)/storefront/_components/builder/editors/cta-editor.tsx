@@ -9,8 +9,7 @@ import {
   CtaVariant,
   StorefrontSection,
 } from "@/convex/db/storefronts/validators";
-import { useDebounce } from "@/hooks/use-debounce";
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { Id } from "@/convex/_generated/dataModel";
@@ -193,33 +192,25 @@ const CTA_VARIANT_DETAILS: Record<CtaVariant, CtaVariantDetails> = {
 
 export function CtaEditor({ section }: CtaEditorProps) {
   const { updateSection } = useStorefront();
-  const [content, setContent] = useState(section.content);
+  const content = section.content;
   const variant = section.variant;
-
-  const debouncedContent = useDebounce(content, 500);
   const supportsBackgroundImage = variant === "gradient" || variant === "image";
   const activeTemplate = CTA_TEMPLATE_OPTIONS.find(
     (option) => option.value === variant
   );
   const variantDetails = CTA_VARIANT_DETAILS[variant];
 
-  useEffect(() => {
-    if (JSON.stringify(debouncedContent) !== JSON.stringify(section.content)) {
-      updateSection(section.id, { content: debouncedContent });
-    }
-  }, [debouncedContent, section.id, section.content, updateSection]);
-
   function handleChange<K extends keyof typeof content>(
     key: K,
     value: (typeof content)[K]
   ) {
-    setContent((prev) => {
-      if (value !== undefined) return { ...prev, [key]: value };
-
-      const next = { ...prev } as Record<string, unknown>;
+    const next = { ...content } as Record<string, unknown>;
+    if (value !== undefined) {
+      next[key as string] = value;
+    } else {
       delete next[key as string];
-      return next as typeof prev;
-    });
+    }
+    updateSection(section.id, { content: next as typeof content });
   }
 
   function handleTemplateChange(nextVariant: CtaVariant) {
@@ -314,17 +305,9 @@ export function CtaEditor({ section }: CtaEditorProps) {
               "Recommended: 1920x1080px for best visual quality."
             }
             storageId={content.backgroundImageStorageId}
-            onChange={(storageId) => {
-              handleChange("backgroundImageStorageId", storageId);
-
-              if (storageId === undefined) {
-                updateSection(section.id, {
-                  content: {
-                    backgroundImageStorageId: null,
-                  } as unknown as typeof section.content,
-                });
-              }
-            }}
+            onChange={(storageId) =>
+              handleChange("backgroundImageStorageId", storageId)
+            }
           />
 
           {variant === "image" && !content.backgroundImageStorageId && (

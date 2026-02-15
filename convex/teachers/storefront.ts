@@ -102,6 +102,32 @@ export const updateStyle = mutation({
   },
 });
 
+export const updateStorefront = mutation({
+  args: {
+    theme: storefrontThemeValidator,
+    style: storefrontStyleValidator,
+    sections: v.array(storefrontSectionValidator),
+    cssVariables: v.optional(v.record(v.string(), v.string())),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) throw new ConvexError("Unauthorized");
+
+    const teacher = await db.teachers.queries.getByUserId(ctx, user._id);
+    if (!teacher) throw new ConvexError("Teacher profile not found");
+
+    const storefront = await db.storefronts.queries.getByTeacherId(
+      ctx,
+      teacher._id
+    );
+    if (!storefront) throw new ConvexError("Storefront not found");
+
+    await db.storefronts.mutations.updateStorefront(ctx, storefront._id, args);
+    return null;
+  },
+});
+
 export const updateSection = mutation({
   args: {
     sectionId: v.string(),

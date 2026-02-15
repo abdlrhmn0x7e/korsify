@@ -10,8 +10,7 @@ import {
   TestimonialItem,
   TestimonialsVariant,
 } from "@/convex/db/storefronts/validators";
-import { useDebounce } from "@/hooks/use-debounce";
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useRef } from "react";
 import { IconPhoto, IconPlus, IconStar, IconTrash } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useUploadFile } from "@/hooks/use-upload-file";
@@ -139,26 +138,20 @@ function TestimonialAvatarUploader({
 
 export function TestimonialsEditor({ section }: TestimonialsEditorProps) {
   const { updateSection } = useStorefront();
-  const [content, setContent] = useState(section.content);
+  const content = section.content;
   const variant = section.variant;
-
-  const debouncedContent = useDebounce(content, 500);
   const supportsRatings = variant === "cards" || variant === "quotes";
   const activeTemplate = TESTIMONIAL_TEMPLATE_OPTIONS.find(
     (option) => option.value === variant
   );
 
-  useEffect(() => {
-    if (JSON.stringify(debouncedContent) !== JSON.stringify(section.content)) {
-      updateSection(section.id, { content: debouncedContent });
-    }
-  }, [debouncedContent, section.id, section.content, updateSection]);
-
   function handleChange<K extends keyof typeof content>(
     key: K,
     value: (typeof content)[K]
   ) {
-    setContent((prev) => ({ ...prev, [key]: value }));
+    updateSection(section.id, {
+      content: { ...content, [key]: value } as typeof content,
+    });
   }
 
   function handleTemplateChange(nextVariant: TestimonialsVariant) {
@@ -172,10 +165,12 @@ export function TestimonialsEditor({ section }: TestimonialsEditorProps) {
       content: "",
       rating: 5,
     };
-    setContent((prev) => ({
-      ...prev,
-      items: [...prev.items, newItem],
-    }));
+    updateSection(section.id, {
+      content: {
+        ...content,
+        items: [...content.items, newItem],
+      } as typeof content,
+    });
   }
 
   function handleUpdateItem<K extends keyof Omit<TestimonialItem, "id">>(
@@ -183,19 +178,23 @@ export function TestimonialsEditor({ section }: TestimonialsEditorProps) {
     field: K,
     value: Omit<TestimonialItem, "id">[K]
   ) {
-    setContent((prev) => ({
-      ...prev,
-      items: prev.items.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      ),
-    }));
+    updateSection(section.id, {
+      content: {
+        ...content,
+        items: content.items.map((item) =>
+          item.id === id ? { ...item, [field]: value } : item
+        ),
+      } as typeof content,
+    });
   }
 
   function handleRemoveItem(id: string) {
-    setContent((prev) => ({
-      ...prev,
-      items: prev.items.filter((item) => item.id !== id),
-    }));
+    updateSection(section.id, {
+      content: {
+        ...content,
+        items: content.items.filter((item) => item.id !== id),
+      } as typeof content,
+    });
   }
 
   return (

@@ -23,16 +23,79 @@ type TeacherWithBranding = NonNullable<
   FunctionReturnType<typeof api.teachers.queries.getTeacher>
 >;
 
+type StorefrontData = FunctionReturnType<typeof api.teachers.storefront.get>;
+type StorefrontDraft = NonNullable<StorefrontData>;
+
+function generateSectionId(): string {
+  return Math.random().toString(36).substring(2, 9);
+}
+
+function patchSectionContent(
+  currentContent: Record<string, unknown>,
+  updates: Record<string, unknown>
+): Record<string, unknown> {
+  const nextContent = { ...currentContent };
+
+  for (const [key, value] of Object.entries(updates)) {
+    if (value === null) {
+      delete nextContent[key];
+      continue;
+    }
+    nextContent[key] = value;
+  }
+
+  return nextContent;
+}
+
+function shouldPatchContent(updates: Record<string, unknown>): boolean {
+  return Object.values(updates).some((value) => value === null);
+}
+
+function getDefaultContent(
+  type: StorefrontSection["type"]
+): StorefrontSection["content"] {
+  switch (type) {
+    case "hero":
+      return {
+        headline: "Your Headline Here",
+        subheadline: "Add your subheadline",
+        ctaText: "Get Started",
+        ctaLink: "/courses",
+      };
+    case "courses":
+      return {
+        title: "Our Courses",
+        showPrice: true,
+        showDuration: true,
+        selectedCourseIds: [],
+        viewAllLink: true,
+      };
+    case "about":
+      return {
+        title: "About",
+        showStats: true,
+      };
+    case "testimonials":
+      return {
+        title: "What Students Say",
+        items: [],
+      };
+    case "faq":
+      return {
+        title: "Frequently Asked Questions",
+        items: [],
+      };
+    case "cta":
+      return {
+        headline: "Ready to Start?",
+        buttonText: "Join Now",
+        buttonLink: "/courses",
+      };
+  }
+}
+
 interface StorefrontContextType {
-  storefront:
-    | {
-        _id: string;
-        theme: StorefrontTheme;
-        style: StorefrontStyle;
-        sections: Array<StorefrontSection>;
-      }
-    | null
-    | undefined;
+  storefront: StorefrontDraft | null | undefined;
   teacher: TeacherWithBranding | null | undefined;
   isLoading: boolean;
   activeSectionId: string | null;
@@ -51,6 +114,7 @@ interface StorefrontContextType {
   toggleSectionVisibility: (sectionId: string, visible: boolean) => void;
   isSaving: boolean;
   hasUnsavedChanges: boolean;
+  saveChanges: () => Promise<void>;
 }
 
 const StorefrontContext = createContext<StorefrontContextType | undefined>(
@@ -74,22 +138,14 @@ export function StorefrontProvider({
   const createFromTemplate = useMutation(
     api.teachers.storefront.createFromTemplate
   );
-  const updateSectionMutation = useMutation(
-    api.teachers.storefront.updateSection
-  );
-  const addSectionMutation = useMutation(api.teachers.storefront.addSection);
-  const removeSectionMutation = useMutation(
-    api.teachers.storefront.removeSection
-  );
-  const reorderSectionsMutation = useMutation(
-    api.teachers.storefront.reorderSections
-  );
-  const updateStyleMutation = useMutation(api.teachers.storefront.updateStyle);
-  const toggleVisibilityMutation = useMutation(
-    api.teachers.storefront.toggleSectionVisibility
+  const updateStorefrontMutation = useMutation(
+    api.teachers.storefront.updateStorefront
   );
 
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [draftStorefront, setDraftStorefront] = useState<
+    StorefrontDraft | null | undefined
+  >(undefined);
   const [isSaving, setIsSaving] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -101,92 +157,118 @@ export function StorefrontProvider({
     }
   }, [storefront, createFromTemplate]);
 
-  const updateSection = async (
+  useEffect(() => {
+    if (storefront === undefined || hasUnsavedChanges) return;
+    if (storefront === draftStorefront) return;
+
+    setDraftStorefront(storefront);
+  }, [storefront, hasUnsavedChanges, draftStorefront]);
+
+  const updateDraft = (
+    updater: (current: StorefrontDraft) => StorefrontDraft
+  ) => {
+    setDraftStorefront((current) => {
+      if (!current) return current;
+      return updater(current);
+    });
+    setHasUnsavedChanges(true);
+  };
+
+  const updateSection = (
     sectionId: string,
     updates: Partial<Pick<StorefrontSection, "variant" | "content" | "visible">>
   ) => {
-    setIsSaving(true);
-    setHasUnsavedChanges(true);
-    try {
-      await updateSectionMutation({
-        sectionId,
-        variant: updates.variant as string | undefined,
-        content: updates.content,
-        visible: updates.visible,
+    updateDraft((current) => {
+      const sections = current.sections.map((section) => {
+        if (section.id !== sectionId) return section;
+
+        const nextContent = updates.content
+          ? shouldPatchContent(updates.content as Record<string, unknown>)
+            ? patchSectionContent(
+                section.content as Record<string, unknown>,
+                updates.content as Record<string, unknown>
+              )
+            : updates.content
+          : section.content;
+
+        return {
+          ...section,
+          ...(updates.variant !== undefined && { variant: updates.variant }),
+          ...(updates.visible !== undefined && { visible: updates.visible }),
+          ...(updates.content !== undefined && { content: nextContent }),
+        } as StorefrontSection;
       });
-      setHasUnsavedChanges(false);
-    } catch {
-      toast.error("Failed to update section");
-    } finally {
-      setIsSaving(false);
-    }
+
+      return { ...current, sections };
+    });
   };
 
-  const addSection = async (
-    type: StorefrontSection["type"],
-    variant: string
-  ) => {
-    setIsSaving(true);
-    try {
-      await addSectionMutation({ type, variant });
-      toast.success("Section added");
-    } catch {
-      toast.error("Failed to add section");
-    } finally {
-      setIsSaving(false);
-    }
+  const addSection = (type: StorefrontSection["type"], variant: string) => {
+    updateDraft((current) => {
+      const newSection: StorefrontSection = {
+        id: generateSectionId(),
+        type,
+        variant: variant as StorefrontSection["variant"],
+        visible: true,
+        content: getDefaultContent(type),
+      } as StorefrontSection;
+
+      return { ...current, sections: [...current.sections, newSection] };
+    });
   };
 
-  const removeSection = async (sectionId: string) => {
+  const removeSection = (sectionId: string) => {
     if (!confirm("Are you sure you want to remove this section?")) return;
 
-    setIsSaving(true);
-    try {
-      await removeSectionMutation({ sectionId });
-      toast.success("Section removed");
+    updateDraft((current) => {
+      const sections = current.sections.filter((s) => s.id !== sectionId);
       if (activeSectionId === sectionId) setActiveSectionId(null);
-    } catch {
-      toast.error("Failed to remove section");
-    } finally {
-      setIsSaving(false);
-    }
+      return { ...current, sections };
+    });
   };
 
-  const reorderSections = async (sectionIds: string[]) => {
-    setIsSaving(true);
-    try {
-      await reorderSectionsMutation({ sectionIds });
-    } catch {
-      toast.error("Failed to reorder sections");
-    } finally {
-      setIsSaving(false);
-    }
+  const reorderSections = (sectionIds: string[]) => {
+    updateDraft((current) => {
+      const sectionMap = new Map(
+        current.sections.map((section) => [section.id, section])
+      );
+      const sections = sectionIds
+        .map((id) => sectionMap.get(id))
+        .filter((section): section is StorefrontSection => section !== undefined);
+
+      return { ...current, sections };
+    });
   };
 
-  const updateStyle = async (updates: {
+  const updateStyle = (updates: {
     theme?: StorefrontTheme;
     style?: StorefrontStyle;
   }) => {
-    setIsSaving(true);
-    try {
-      await updateStyleMutation(updates);
-      toast.success("Style updated");
-    } catch {
-      toast.error("Failed to update style");
-    } finally {
-      setIsSaving(false);
-    }
+    updateDraft((current) => ({
+      ...current,
+      ...updates,
+    }));
   };
 
-  const toggleSectionVisibility = async (
-    sectionId: string,
-    visible: boolean
-  ) => {
+  const toggleSectionVisibility = (sectionId: string, visible: boolean) => {
+    updateSection(sectionId, { visible });
+  };
+
+  const saveChanges = async () => {
+    if (!draftStorefront || !hasUnsavedChanges) return;
+
     setIsSaving(true);
     try {
-      await toggleVisibilityMutation({ sectionId, visible });
+      await updateStorefrontMutation({
+        theme: draftStorefront.theme,
+        style: draftStorefront.style,
+        sections: draftStorefront.sections,
+        cssVariables: draftStorefront.cssVariables,
+      });
+      setHasUnsavedChanges(false);
+      toast.success("Storefront saved");
     } catch {
-      toast.error("Failed to toggle visibility");
+      toast.error("Failed to save storefront");
     } finally {
       setIsSaving(false);
     }
@@ -195,9 +277,9 @@ export function StorefrontProvider({
   return (
     <StorefrontContext.Provider
       value={{
-        storefront,
+        storefront: draftStorefront,
         teacher,
-        isLoading: storefront === undefined,
+        isLoading: draftStorefront === undefined || draftStorefront === null,
         activeSectionId,
         setActiveSectionId,
         updateSection,
@@ -208,6 +290,7 @@ export function StorefrontProvider({
         toggleSectionVisibility,
         isSaving,
         hasUnsavedChanges,
+        saveChanges,
       }}
     >
       {children}

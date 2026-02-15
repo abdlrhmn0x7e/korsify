@@ -10,8 +10,6 @@ import {
   FaqItem,
   FaqVariant,
 } from "@/convex/db/storefronts/validators";
-import { useDebounce } from "@/hooks/use-debounce";
-import { useEffect, useState } from "react";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
@@ -44,22 +42,16 @@ function generateId() {
 
 export function FaqEditor({ section }: FaqEditorProps) {
   const { updateSection } = useStorefront();
-  const [content, setContent] = useState(section.content);
+  const content = section.content;
   const variant = section.variant;
-
-  const debouncedContent = useDebounce(content, 500);
-
-  useEffect(() => {
-    if (JSON.stringify(debouncedContent) !== JSON.stringify(section.content)) {
-      updateSection(section.id, { content: debouncedContent });
-    }
-  }, [debouncedContent, section.id, section.content, updateSection]);
 
   function handleChange<K extends keyof typeof content>(
     key: K,
     value: (typeof content)[K]
   ) {
-    setContent((prev) => ({ ...prev, [key]: value }));
+    updateSection(section.id, {
+      content: { ...content, [key]: value } as typeof content,
+    });
   }
 
   function handleTemplateChange(nextVariant: FaqVariant) {
@@ -72,7 +64,9 @@ export function FaqEditor({ section }: FaqEditorProps) {
       question: "",
       answer: "",
     };
-    setContent((prev) => ({ ...prev, items: [...prev.items, newItem] }));
+    updateSection(section.id, {
+      content: { ...content, items: [...content.items, newItem] },
+    });
   }
 
   function handleUpdateItem(
@@ -80,19 +74,23 @@ export function FaqEditor({ section }: FaqEditorProps) {
     field: keyof Omit<FaqItem, "id">,
     value: string
   ) {
-    setContent((prev) => ({
-      ...prev,
-      items: prev.items.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      ),
-    }));
+    updateSection(section.id, {
+      content: {
+        ...content,
+        items: content.items.map((item) =>
+          item.id === id ? { ...item, [field]: value } : item
+        ),
+      },
+    });
   }
 
   function handleRemoveItem(id: string) {
-    setContent((prev) => ({
-      ...prev,
-      items: prev.items.filter((item) => item.id !== id),
-    }));
+    updateSection(section.id, {
+      content: {
+        ...content,
+        items: content.items.filter((item) => item.id !== id),
+      },
+    });
   }
 
   const titlePlaceholder =

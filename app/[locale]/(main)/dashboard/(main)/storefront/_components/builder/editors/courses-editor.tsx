@@ -10,8 +10,6 @@ import {
   CoursesVariant,
   StorefrontSection,
 } from "@/convex/db/storefronts/validators";
-import { useDebounce } from "@/hooks/use-debounce";
-import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
@@ -51,28 +49,20 @@ const COURSES_TEMPLATE_OPTIONS: Array<{
 export function CoursesEditor({ section }: CoursesEditorProps) {
   const { updateSection } = useStorefront();
   const teacherCourses = useQuery(api.teachers.courses.queries.getAll) ?? [];
-  const [content, setContent] = useState(section.content);
+  const content = section.content;
   const variant = section.variant;
-
-  const debouncedContent = useDebounce(content, 500);
-
-  useEffect(() => {
-    if (JSON.stringify(debouncedContent) !== JSON.stringify(section.content)) {
-      updateSection(section.id, { content: debouncedContent });
-    }
-  }, [debouncedContent, section.id, section.content, updateSection]);
 
   function handleChange<K extends keyof typeof content>(
     key: K,
     value: (typeof content)[K]
   ) {
-    setContent((prev) => {
-      if (value !== undefined) return { ...prev, [key]: value };
-
-      const next = { ...prev } as Record<string, unknown>;
+    const next = { ...content } as Record<string, unknown>;
+    if (value !== undefined) {
+      next[key as string] = value;
+    } else {
       delete next[key as string];
-      return next as typeof prev;
-    });
+    }
+    updateSection(section.id, { content: next as typeof content });
   }
 
   function handleTemplateChange(nextVariant: CoursesVariant) {
