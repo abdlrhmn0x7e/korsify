@@ -1,6 +1,11 @@
 import { GenericMutationCtx } from "convex/server";
 import { DataModel, Id } from "../../_generated/dataModel";
-import type { StorefrontSection, StorefrontStyle, StorefrontTheme } from "./validators";
+import {
+  defaultStorefrontTypography,
+  StorefrontSection,
+  StorefrontStyle,
+  StorefrontTheme,
+} from "./validators";
 import { STARTER_TEMPLATES, StarterTemplateId } from "./templates";
 
 export interface CreateFromTemplateData {
@@ -22,7 +27,11 @@ export async function createFromTemplate(
   return ctx.db.insert("storefronts", {
     teacherId: data.teacherId,
     theme: template.defaultTheme,
-    style: template.defaultStyle,
+    style: {
+      ...template.defaultStyle,
+      typography:
+        template.defaultStyle.typography ?? defaultStorefrontTypography,
+    },
     sections: template.sections,
     updatedAt: now,
   });

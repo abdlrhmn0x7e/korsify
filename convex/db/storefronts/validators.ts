@@ -169,10 +169,35 @@ export const buttonStyleValidator = v.union(
   v.literal("sharp")
 );
 
+export const headingWeightValidator = v.union(
+  v.literal("semibold"),
+  v.literal("bold"),
+  v.literal("extrabold")
+);
+
+export const headingTrackingValidator = v.union(
+  v.literal("tight"),
+  v.literal("normal"),
+  v.literal("wide")
+);
+
+export const bodyLineHeightValidator = v.union(
+  v.literal("normal"),
+  v.literal("relaxed"),
+  v.literal("loose")
+);
+
+export const storefrontTypographyValidator = v.object({
+  headingWeight: headingWeightValidator,
+  headingTracking: headingTrackingValidator,
+  bodyLineHeight: bodyLineHeightValidator,
+});
+
 export const storefrontStyleValidator = v.object({
   fontPair: v.string(),
   buttonStyle: buttonStyleValidator,
   borderRadius: v.optional(v.string()),
+  typography: v.optional(storefrontTypographyValidator),
 });
 
 interface DefaultSectionVariant {
@@ -193,8 +218,17 @@ export const defaultSectionVariant: DefaultSectionVariant = {
   cta: "simple",
 };
 
+export const defaultStorefrontTypography: Infer<
+  typeof storefrontTypographyValidator
+> = {
+  headingWeight: "bold",
+  headingTracking: "tight",
+  bodyLineHeight: "relaxed",
+};
+
 export type StorefrontTheme = Infer<typeof storefrontThemeValidator>;
 export type StorefrontStyle = Infer<typeof storefrontStyleValidator>;
+export type StorefrontTypography = Infer<typeof storefrontTypographyValidator>;
 export type StorefrontSection = Infer<typeof storefrontSectionValidator>;
 
 export type HeroSection = Infer<typeof heroSectionValidator>;

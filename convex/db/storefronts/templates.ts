@@ -202,7 +202,8 @@ const COACH_SECTIONS: Array<StorefrontSection> = [
     visible: true,
     content: {
       headline: "Unlock Your Full Potential",
-      subheadline: "Personal coaching and training programs that deliver results",
+      subheadline:
+        "Personal coaching and training programs that deliver results",
       ctaText: "Start Now",
       ctaLink: "/courses",
     },
@@ -288,7 +289,8 @@ const CREATIVE_SECTIONS: Array<StorefrontSection> = [
     visible: true,
     content: {
       headline: "Master Your Creative Craft",
-      subheadline: "Learn design, art, and creativity from a working professional",
+      subheadline:
+        "Learn design, art, and creativity from a working professional",
       ctaText: "View Courses",
       ctaLink: "/courses",
     },
@@ -537,28 +539,28 @@ export const FONT_PAIRS: Record<
   { heading: string; body: string; name: string }
 > = {
   "geist-geist": {
-    heading: "var(--font-geist-sans)",
-    body: "var(--font-geist-sans)",
+    heading: "var(--font-geist)",
+    body: "var(--font-geist)",
     name: "Geist",
   },
   "inter-playfair": {
-    heading: "Playfair Display",
-    body: "Inter",
+    heading: "var(--font-playfair)",
+    body: "var(--font-inter)",
     name: "Inter + Playfair",
   },
   "cairo-tajawal": {
-    heading: "Cairo",
-    body: "Tajawal",
+    heading: "var(--font-cairo)",
+    body: "var(--font-tajawal)",
     name: "Cairo + Tajawal",
   },
   "poppins-opensans": {
-    heading: "Poppins",
-    body: "Open Sans",
+    heading: "var(--font-poppins)",
+    body: "var(--font-open-sans)",
     name: "Poppins + Open Sans",
   },
   "montserrat-lora": {
-    heading: "Montserrat",
-    body: "Lora",
+    heading: "var(--font-montserrat)",
+    body: "var(--font-lora)",
     name: "Montserrat + Lora",
   },
 };

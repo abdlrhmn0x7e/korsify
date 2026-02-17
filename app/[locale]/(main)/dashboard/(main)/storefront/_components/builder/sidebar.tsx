@@ -25,7 +25,6 @@ import {
   IconPalette,
   IconPlug,
   IconTrash,
-  IconTypeface,
 } from "@tabler/icons-react";
 import { DirectedArrow } from "@/components/directed-arrow";
 import {
@@ -63,6 +62,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { TypographySettingsDialog } from "./typography-settings-dialog";
 
 interface BuilderSidebarContextType {
   isOpen: boolean;
@@ -183,10 +183,7 @@ function SectionListView() {
           <IconPalette />
           Theme & Colors
         </Button>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          <IconTypeface />
-          Typography
-        </Button>
+        <TypographySettingsDialog />
       </div>
     </div>
   );

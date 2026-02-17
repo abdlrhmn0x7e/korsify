@@ -62,7 +62,9 @@ export function CoursesCarousel({ content, courses }: CoursesCarouselProps) {
       <section className="px-4 py-16 @3xl:px-8">
         <div className="mx-auto max-w-7xl space-y-12">
           <div className="space-y-4 text-center">
-            <h2 className="text-3xl font-bold @3xl:text-4xl">{title}</h2>
+            <h2 className="font-heading text-3xl font-bold @3xl:text-4xl">
+              {title}
+            </h2>
             {subtitle && (
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
                 {subtitle}
@@ -92,7 +94,9 @@ export function CoursesCarousel({ content, courses }: CoursesCarouselProps) {
     <section className="px-4 py-16 @3xl:px-8">
       <div className="mx-auto max-w-7xl space-y-12">
         <div className="space-y-4 text-center">
-          <h2 className="text-3xl font-bold @3xl:text-4xl">{title}</h2>
+          <h2 className="font-heading text-3xl font-bold @3xl:text-4xl">
+            {title}
+          </h2>
           {subtitle && (
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               {subtitle}

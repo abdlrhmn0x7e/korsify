@@ -174,3 +174,22 @@
     @apply text-zinc-800 dark:text-zinc-100 scroll-m-20 text-sm sm:text-base font-semibold tracking-tight;
   }
 }
+
+.storefront-shell {
+  font-family: var(--font-body, var(--font-sans));
+  line-height: var(--storefront-body-line-height, 1.65);
+}
+
+.storefront-shell .font-heading {
+  font-family: var(--font-heading, var(--font-sans));
+}
+
+.storefront-shell :where(h1, h2, h3, h4, h5, h6, .font-heading) {
+  font-family: var(--font-heading, var(--font-sans));
+  letter-spacing: var(--storefront-heading-tracking, -0.025em);
+  font-weight: var(--storefront-heading-weight, 700);
+}
+
+.storefront-shell :where(p, li, blockquote, figcaption, small) {
+  line-height: var(--storefront-body-line-height, 1.65);
+}

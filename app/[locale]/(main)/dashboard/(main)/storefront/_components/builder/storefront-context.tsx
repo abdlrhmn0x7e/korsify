@@ -15,6 +15,8 @@ import {
   StorefrontSection,
   StorefrontTheme,
   StorefrontStyle,
+  StorefrontTypography,
+  defaultStorefrontTypography,
 } from "@/convex/db/storefronts/validators";
 import { toast } from "sonner";
 import { FunctionReturnType } from "convex/server";
@@ -111,6 +113,7 @@ interface StorefrontContextType {
     theme?: StorefrontTheme;
     style?: StorefrontStyle;
   }) => void;
+  updateTypography: (updates: Partial<StorefrontTypography>) => void;
   toggleSectionVisibility: (sectionId: string, visible: boolean) => void;
   isSaving: boolean;
   hasUnsavedChanges: boolean;
@@ -248,6 +251,20 @@ export function StorefrontProvider({
     }));
   };
 
+  const updateTypography = (updates: Partial<StorefrontTypography>) => {
+    updateDraft((current) => ({
+      ...current,
+      style: {
+        ...current.style,
+        typography: {
+          ...defaultStorefrontTypography,
+          ...(current.style.typography ?? {}),
+          ...updates,
+        },
+      },
+    }));
+  };
+
   const toggleSectionVisibility = (sectionId: string, visible: boolean) => {
     updateSection(sectionId, { visible });
   };
@@ -285,6 +302,7 @@ export function StorefrontProvider({
         removeSection,
         reorderSections,
         updateStyle,
+        updateTypography,
         toggleSectionVisibility,
         isSaving,
         hasUnsavedChanges,

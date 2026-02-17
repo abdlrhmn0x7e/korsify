@@ -10,6 +10,8 @@ import { useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { getStorefrontCssVariables } from "@/lib/storefront-style";
+import { defaultStorefrontTypography } from "@/convex/db/storefronts/validators";
 
 export function PreviewArea() {
   const container = useRef<HTMLDivElement>(null);
@@ -19,60 +21,76 @@ export function PreviewArea() {
 
   if (!storefront || !teacher) return null;
 
+  const cssVariables = getStorefrontCssVariables({
+    primaryColor: teacher.branding?.primaryColor || "#3b82f6",
+    theme: storefront.theme,
+    style: {
+      ...storefront.style,
+      typography:
+        storefront.style.typography ?? defaultStorefrontTypography,
+    },
+    cssVariables: storefront.cssVariables,
+  });
+
   return (
     <TeacherContextProvider teacher={teacher}>
-      <ScrollArea
-        className="h-full overflow-y-auto bg-background"
-        viewportRef={container}
+      <div
+        className="storefront-shell h-full bg-background"
+        style={cssVariables as React.CSSProperties}
       >
-        <Navbar className="pointer-events-none" container={container} />
+        <ScrollArea
+          className="h-full overflow-y-auto bg-background"
+          viewportRef={container}
+        >
+          <Navbar className="pointer-events-none" container={container} />
 
-        {storefront.sections
-          .filter((s) => s.visible)
-          .map((section) => (
-            <div
-              key={section.id}
-              className={cn(
-                "relative group transition-all",
-                activeSectionId === section.id &&
-                  "ring-2 ring-primary ring-inset z-10"
-              )}
-              onClick={() => setActiveSectionId(section.id)}
-            >
+          {storefront.sections
+            .filter((s) => s.visible)
+            .map((section) => (
               <div
+                key={section.id}
                 className={cn(
-                  "absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-2 border-transparent group-hover:border-primary/20",
+                  "relative group transition-all",
                   activeSectionId === section.id &&
-                    "opacity-100 border-none bg-transparent"
+                    "ring-2 ring-primary ring-inset z-10"
                 )}
-              />
-
-              <div
-                className={cn(
-                  "absolute top-4 right-4 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-20 flex items-center gap-1",
-                  activeSectionId === section.id && "opacity-100"
-                )}
+                onClick={() => setActiveSectionId(section.id)}
               >
-                <IconEdit className="w-3 h-3" />
-                {activeSectionId === section.id ? "Editing" : "Click to edit"}
-              </div>
-
-              <div
-                className={cn(
-                  section.type === "hero" && section.variant === "video"
-                    ? "pointer-events-auto"
-                    : "pointer-events-none"
-                )}
-              >
-                <DynamicSection
-                  section={section}
-                  courses={courses ?? []}
-                  isBuilderPreview
+                <div
+                  className={cn(
+                    "absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-2 border-transparent group-hover:border-primary/20",
+                    activeSectionId === section.id &&
+                      "opacity-100 border-none bg-transparent"
+                  )}
                 />
+
+                <div
+                  className={cn(
+                    "absolute top-4 right-4 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-20 flex items-center gap-1",
+                    activeSectionId === section.id && "opacity-100"
+                  )}
+                >
+                  <IconEdit className="w-3 h-3" />
+                  {activeSectionId === section.id ? "Editing" : "Click to edit"}
+                </div>
+
+                <div
+                  className={cn(
+                    section.type === "hero" && section.variant === "video"
+                      ? "pointer-events-auto"
+                      : "pointer-events-none"
+                  )}
+                >
+                  <DynamicSection
+                    section={section}
+                    courses={courses ?? []}
+                    isBuilderPreview
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-      </ScrollArea>
+            ))}
+        </ScrollArea>
+      </div>
     </TeacherContextProvider>
   );
 }

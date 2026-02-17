@@ -4,6 +4,14 @@ import {
   Geist_Mono,
   Inter,
   Noto_Kufi_Arabic,
+  Geist,
+  Playfair,
+  Cairo,
+  Tajawal,
+  Poppins,
+  Open_Sans,
+  Montserrat,
+  Lora,
 } from "next/font/google";
 import "../globals.css";
 import { getStaticParams } from "@/locales/server";
@@ -11,6 +19,7 @@ import { setStaticParamsLocale } from "next-international/server";
 import { I18nProviderClient } from "@/locales/client";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-serif-latin",
@@ -30,6 +39,48 @@ const geistMono = Geist_Mono({
 
 const inter = Inter({
   variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const geist = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
+});
+
+const playfair = Playfair({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const cairo = Cairo({
+  variable: "--font-cairo",
+  subsets: ["latin"],
+});
+
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
+  subsets: ["latin"],
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
 });
 
@@ -56,7 +107,20 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={isArabic ? "rtl" : "ltr"}
-      className={`${inter.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoKufiArabic.variable}`}
+      className={cn(
+        inter.variable,
+        instrumentSerif.variable,
+        geistMono.variable,
+        notoKufiArabic.variable,
+        geist.variable,
+        playfair.variable,
+        cairo.variable,
+        tajawal.variable,
+        poppins.variable,
+        openSans.variable,
+        montserrat.variable,
+        lora.variable
+      )}
       style={
         {
           "--font-sans": isArabic ? "var(--font-arabic)" : "var(--font-sans)",

@@ -10,6 +10,7 @@ import {
 } from "./validators";
 
 export {
+  storefrontTypographyValidator,
   storefrontSectionValidator,
   storefrontStyleValidator,
   storefrontThemeValidator,
