@@ -141,9 +141,7 @@ export async function reorderSections(
   const storefront = await ctx.db.get(storefrontId);
   if (!storefront) throw new Error("Storefront not found");
 
-  const sectionMap = new Map(
-    storefront.sections.map((s) => [s.id, s])
-  );
+  const sectionMap = new Map(storefront.sections.map((s) => [s.id, s]));
 
   const reorderedSections = sectionIds
     .map((id) => sectionMap.get(id))
@@ -184,7 +182,9 @@ function generateSectionId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
 
-function getDefaultContent(type: StorefrontSection["type"]): StorefrontSection["content"] {
+function getDefaultContent(
+  type: StorefrontSection["type"]
+): StorefrontSection["content"] {
   switch (type) {
     case "hero":
       return {

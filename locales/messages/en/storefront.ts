@@ -1,4 +1,26 @@
 export const storefront = {
+  courses: {
+    pageTitle: "Courses",
+    pageSubtitle: "Browse our collection of courses and start learning today.",
+    searchPlaceholder: "Search courses...",
+    filterAll: "All",
+    filterFree: "Free",
+    filterPaid: "Paid",
+    sortNewest: "Newest",
+    sortPriceLow: "Price: Low to High",
+    sortPriceHigh: "Price: High to Low",
+    sortTitle: "Title: A to Z",
+    viewCourse: "View Course",
+    free: "Free",
+    minutes: "min",
+    noCoursesTitle: "No courses yet",
+    noCoursesDescription: "Courses will appear here once they are published.",
+    noResultsTitle: "No courses found",
+    noResultsDescription:
+      "Try adjusting your search or filters to find what you're looking for.",
+    clearFilters: "Clear filters",
+    coursesAvailable: "courses available",
+  },
   auth: {
     login: {
       title: "Log in to your account",

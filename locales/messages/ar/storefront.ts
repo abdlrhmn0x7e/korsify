@@ -1,4 +1,25 @@
 export const storefront = {
+  courses: {
+    pageTitle: "الدورات",
+    pageSubtitle: "تصفح مجموعتنا من الدورات وابدأ التعلم اليوم.",
+    searchPlaceholder: "ابحث عن دورة...",
+    filterAll: "الكل",
+    filterFree: "مجانية",
+    filterPaid: "مدفوعة",
+    sortNewest: "الأحدث",
+    sortPriceLow: "السعر: من الأقل إلى الأعلى",
+    sortPriceHigh: "السعر: من الأعلى إلى الأقل",
+    sortTitle: "العنوان: أ إلى ي",
+    viewCourse: "عرض الدورة",
+    free: "مجانية",
+    minutes: "دقيقة",
+    noCoursesTitle: "لا توجد دورات بعد",
+    noCoursesDescription: "ستظهر الدورات هنا بمجرد نشرها.",
+    noResultsTitle: "لم يتم العثور على دورات",
+    noResultsDescription: "حاول تعديل البحث أو الفلاتر للعثور على ما تبحث عنه.",
+    clearFilters: "مسح الفلاتر",
+    coursesAvailable: "دورات متاحة",
+  },
   auth: {
     login: {
       title: "تسجيل الدخول إلى حسابك",

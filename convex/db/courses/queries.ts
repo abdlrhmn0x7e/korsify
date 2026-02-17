@@ -34,7 +34,7 @@ export async function getAll(ctx: GenericQueryCtx<DataModel>) {
 
 export async function getById(
   ctx: GenericQueryCtx<DataModel>,
-  courseId: Id<"courses">,
+  courseId: Id<"courses">
 ) {
   const course = await ctx.db.get(courseId);
   return attachThumbnailURL(ctx, course);
@@ -50,7 +50,7 @@ export async function getBySlug(ctx: GenericQueryCtx<DataModel>, slug: string) {
 
 export async function getByTeacherId(
   ctx: GenericQueryCtx<DataModel>,
-  teacherId: Id<"teachers">,
+  teacherId: Id<"teachers">
 ) {
   const courses = await ctx.db
     .query("courses")
@@ -63,7 +63,7 @@ export async function getByTeacherId(
 
 export async function getByTeacherIdWithDuration(
   ctx: GenericQueryCtx<DataModel>,
-  teacherId: Id<"teachers">,
+  teacherId: Id<"teachers">
 ) {
   const courses = await getByTeacherId(ctx, teacherId);
   return attachCourseDurations(ctx, courses);
@@ -71,7 +71,7 @@ export async function getByTeacherIdWithDuration(
 
 export async function isSlugAvailable(
   ctx: GenericQueryCtx<DataModel>,
-  slug: string,
+  slug: string
 ) {
   // should I make this scoped to teacher courses?
   const existing = await getBySlug(ctx, slug);
@@ -80,7 +80,7 @@ export async function isSlugAvailable(
 
 export async function listPublished(
   ctx: GenericQueryCtx<DataModel>,
-  teacherId: Id<"teachers">,
+  teacherId: Id<"teachers">
 ) {
   const courses = await ctx.db
     .query("courses")
@@ -95,7 +95,7 @@ export async function listPublished(
 
 export async function listPublishedLite(
   ctx: GenericQueryCtx<DataModel>,
-  teacherId: Id<"teachers">,
+  teacherId: Id<"teachers">
 ) {
   const courses = await ctx.db
     .query("courses")
@@ -113,7 +113,7 @@ export async function listPublishedLite(
 
 export async function listPublishedWithDuration(
   ctx: GenericQueryCtx<DataModel>,
-  teacherId: Id<"teachers">,
+  teacherId: Id<"teachers">
 ) {
   const courses = await listPublished(ctx, teacherId);
   return attachCourseDurations(ctx, courses);
