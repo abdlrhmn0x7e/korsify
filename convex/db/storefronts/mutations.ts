@@ -1,10 +1,10 @@
 import { GenericMutationCtx } from "convex/server";
 import { DataModel, Id } from "../../_generated/dataModel";
 import {
+  defaultStorefrontStyle,
   defaultStorefrontTypography,
   StorefrontSection,
   StorefrontStyle,
-  StorefrontTheme,
 } from "./validators";
 import { STARTER_TEMPLATES, StarterTemplateId } from "./templates";
 
@@ -26,11 +26,13 @@ export async function createFromTemplate(
 
   return ctx.db.insert("storefronts", {
     teacherId: data.teacherId,
-    theme: template.defaultTheme,
     style: {
+      ...defaultStorefrontStyle,
       ...template.defaultStyle,
-      typography:
-        template.defaultStyle.typography ?? defaultStorefrontTypography,
+      typography: {
+        ...defaultStorefrontTypography,
+        ...(template.defaultStyle.typography ?? {}),
+      },
     },
     sections: template.sections,
     updatedAt: now,
@@ -38,7 +40,6 @@ export async function createFromTemplate(
 }
 
 export interface UpdateStyleData {
-  theme?: StorefrontTheme;
   style?: StorefrontStyle;
 }
 
@@ -54,7 +55,6 @@ export async function updateStyle(
 }
 
 export interface UpdateStorefrontData {
-  theme: StorefrontTheme;
   style: StorefrontStyle;
   sections: Array<StorefrontSection>;
   cssVariables?: Record<string, string>;
@@ -66,7 +66,6 @@ export async function updateStorefront(
   data: UpdateStorefrontData
 ): Promise<void> {
   await ctx.db.patch(storefrontId, {
-    theme: data.theme,
     style: data.style,
     sections: data.sections,
     cssVariables: data.cssVariables,

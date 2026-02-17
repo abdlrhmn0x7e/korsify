@@ -22,7 +22,6 @@ import {
   IconEyeOff,
   IconGripVertical,
   IconLayoutSidebar,
-  IconPalette,
   IconPlug,
   IconTrash,
 } from "@tabler/icons-react";
@@ -63,6 +62,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { TypographySettingsDialog } from "./typography-settings-dialog";
+import { ThemeSettingsDialog } from "./theme-settings-dialog";
 
 interface BuilderSidebarContextType {
   isOpen: boolean;
@@ -179,10 +179,7 @@ function SectionListView() {
 
       <div className="p-4 border-t bg-background shrink-0 space-y-2">
         <h3 className="font-semibold text-sm mb-2">Global Settings</h3>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          <IconPalette />
-          Theme & Colors
-        </Button>
+        <ThemeSettingsDialog />
         <TypographySettingsDialog />
       </div>
     </div>

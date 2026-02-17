@@ -158,15 +158,24 @@ export const storefrontSectionValidator = v.union(
   ctaSectionValidator
 );
 
-export const storefrontThemeValidator = v.union(
-  v.literal("light"),
-  v.literal("dark"),
-  v.literal("soft")
-);
-
 export const buttonStyleValidator = v.union(
   v.literal("rounded"),
   v.literal("sharp")
+);
+
+export const storefrontColorPresetValidator = v.union(
+  v.literal("brand"),
+  v.literal("ocean"),
+  v.literal("sunset"),
+  v.literal("forest"),
+  v.literal("violet"),
+  v.literal("mono")
+);
+
+export const sectionSpacingValidator = v.union(
+  v.literal("compact"),
+  v.literal("comfortable"),
+  v.literal("spacious")
 );
 
 export const headingWeightValidator = v.union(
@@ -197,6 +206,8 @@ export const storefrontStyleValidator = v.object({
   fontPair: v.string(),
   buttonStyle: buttonStyleValidator,
   borderRadius: v.optional(v.string()),
+  colorPreset: v.optional(storefrontColorPresetValidator),
+  sectionSpacing: v.optional(sectionSpacingValidator),
   typography: v.optional(storefrontTypographyValidator),
 });
 
@@ -226,9 +237,19 @@ export const defaultStorefrontTypography: Infer<
   bodyLineHeight: "relaxed",
 };
 
-export type StorefrontTheme = Infer<typeof storefrontThemeValidator>;
+export const defaultStorefrontStyle: Infer<typeof storefrontStyleValidator> = {
+  fontPair: "geist-geist",
+  buttonStyle: "rounded",
+  borderRadius: "0.5rem",
+  colorPreset: "brand",
+  sectionSpacing: "comfortable",
+  typography: defaultStorefrontTypography,
+};
+
 export type StorefrontStyle = Infer<typeof storefrontStyleValidator>;
 export type StorefrontTypography = Infer<typeof storefrontTypographyValidator>;
+export type StorefrontColorPreset = Infer<typeof storefrontColorPresetValidator>;
+export type StorefrontSectionSpacing = Infer<typeof sectionSpacingValidator>;
 export type StorefrontSection = Infer<typeof storefrontSectionValidator>;
 
 export type HeroSection = Infer<typeof heroSectionValidator>;

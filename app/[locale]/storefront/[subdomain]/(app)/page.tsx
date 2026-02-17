@@ -42,13 +42,11 @@ export default async function StorefrontHomePage() {
 
   if (storefrontData?.sections && storefrontData.sections.length > 0) {
     return (
-      <div className="@container flex flex-col">
+      <div className="@container flex flex-col gap-(--storefront-section-gap,1rem)">
         {storefrontData.sections.map((section) => (
-          <DynamicSection
-            key={section.id}
-            section={section}
-            courses={courses}
-          />
+          <div key={section.id} className="storefront-section">
+            <DynamicSection section={section} courses={courses} />
+          </div>
         ))}
       </div>
     );

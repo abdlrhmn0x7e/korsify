@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconTypeface } from "@tabler/icons-react";
+import { IconPalette } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,62 +19,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FONT_PAIRS } from "@/convex/db/storefronts/templates";
 import {
-  StorefrontTypography,
+  StorefrontStyle,
 } from "@/convex/db/storefronts/validators";
 import { resolveStorefrontStyle } from "@/lib/storefront-style";
 import { useStorefront } from "./storefront-context";
 
-const headingWeightOptions: Array<{
-  value: StorefrontTypography["headingWeight"];
+const colorPresetOptions: Array<{
+  value: NonNullable<StorefrontStyle["colorPreset"]>;
   label: string;
+  swatch: string;
 }> = [
-  { value: "semibold", label: "Semi Bold" },
-  { value: "bold", label: "Bold" },
-  { value: "extrabold", label: "Extra Bold" },
+  { value: "brand", label: "Brand Color", swatch: "#3b82f6" },
+  { value: "ocean", label: "Ocean", swatch: "#3b82f6" },
+  { value: "sunset", label: "Sunset", swatch: "#f97316" },
+  { value: "forest", label: "Forest", swatch: "#10b981" },
+  { value: "violet", label: "Violet", swatch: "#8b5cf6" },
+  { value: "mono", label: "Monochrome", swatch: "#334155" },
 ];
 
-const headingTrackingOptions: Array<{
-  value: StorefrontTypography["headingTracking"];
+const buttonStyleOptions: Array<{
+  value: StorefrontStyle["buttonStyle"];
   label: string;
 }> = [
-  { value: "tight", label: "Tight" },
-  { value: "normal", label: "Normal" },
-  { value: "wide", label: "Wide" },
+  { value: "rounded", label: "Rounded" },
+  { value: "sharp", label: "Sharp" },
 ];
 
-const bodyLineHeightOptions: Array<{
-  value: StorefrontTypography["bodyLineHeight"];
+const borderRadiusOptions: Array<{
+  value: string;
   label: string;
 }> = [
-  { value: "normal", label: "Normal" },
-  { value: "relaxed", label: "Relaxed" },
-  { value: "loose", label: "Loose" },
+  { value: "0.25rem", label: "Small" },
+  { value: "0.5rem", label: "Medium" },
+  { value: "0.75rem", label: "Large" },
+  { value: "1rem", label: "Extra Large" },
 ];
 
-export function TypographySettingsDialog() {
-  const { storefront, updateStyle, updateTypography } = useStorefront();
+const sectionSpacingOptions: Array<{
+  value: NonNullable<StorefrontStyle["sectionSpacing"]>;
+  label: string;
+}> = [
+  { value: "compact", label: "Compact" },
+  { value: "comfortable", label: "Comfortable" },
+  { value: "spacious", label: "Spacious" },
+];
+
+export function ThemeSettingsDialog() {
+  const { storefront, teacher, updateStyle } = useStorefront();
   const [open, setOpen] = useState(false);
 
   if (!storefront) return null;
 
   const style = resolveStorefrontStyle(storefront.style);
-  const typography = style.typography;
-  const fontPairOptions = Object.entries(FONT_PAIRS).map(
-    ([value, fontPair]) => ({
-      value,
-      label: fontPair.name,
-    })
-  );
 
-  function handleTypographyUpdate(
-    key: keyof StorefrontTypography,
-    value: string
-  ) {
-    updateTypography({
-      [key]: value,
-    } as Partial<StorefrontTypography>);
+  function updateStorefrontStyle(updates: Partial<StorefrontStyle>) {
+    updateStyle({
+      style: {
+        ...style,
+        ...updates,
+      },
+    });
   }
 
   return (
@@ -84,27 +89,28 @@ export function TypographySettingsDialog() {
           <Button variant="ghost" size="sm" className="w-full justify-start" />
         }
       >
-        <IconTypeface />
-        Typography
+        <IconPalette />
+        Theme & Colors
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Typography</DialogTitle>
+          <DialogTitle>Theme & Colors</DialogTitle>
           <DialogDescription>
-            Control the font pairing and text rhythm across your storefront.
+            Choose a look and feel for your storefront with color, spacing, and
+            shape controls.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <p className="text-sm font-medium">Font Pair</p>
+            <p className="text-sm font-medium">Color Palette</p>
             <Select
-              items={fontPairOptions}
-              value={style.fontPair}
+              items={colorPresetOptions}
+              value={style.colorPreset}
               onValueChange={(value) => {
                 if (!value) return;
-                updateStyle({
-                  style: { ...style, fontPair: value },
+                updateStorefrontStyle({
+                  colorPreset: value,
                 });
               }}
             >
@@ -113,7 +119,45 @@ export function TypographySettingsDialog() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {fontPairOptions.map((option) => (
+                  {colorPresetOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <span className="inline-flex items-center gap-2">
+                        <span
+                          className="size-2.5 rounded-full border"
+                          style={{
+                            backgroundColor:
+                              option.value === "brand"
+                                ? (teacher?.branding?.primaryColor ?? option.swatch)
+                                : option.swatch,
+                          }}
+                        />
+                        {option.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <p className="text-sm font-medium">Button Shape</p>
+            <Select
+              items={buttonStyleOptions}
+              value={style.buttonStyle}
+              onValueChange={(value) => {
+                if (!value) return;
+                updateStorefrontStyle({
+                  buttonStyle: value,
+                });
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {buttonStyleOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -124,13 +168,13 @@ export function TypographySettingsDialog() {
           </div>
 
           <div className="space-y-1.5">
-            <p className="text-sm font-medium">Heading Weight</p>
+            <p className="text-sm font-medium">Corner Radius</p>
             <Select
-              items={headingWeightOptions}
-              value={typography.headingWeight}
+              items={borderRadiusOptions}
+              value={style.borderRadius}
               onValueChange={(value) => {
                 if (!value) return;
-                handleTypographyUpdate("headingWeight", value);
+                updateStorefrontStyle({ borderRadius: value });
               }}
             >
               <SelectTrigger className="w-full">
@@ -138,7 +182,7 @@ export function TypographySettingsDialog() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {headingWeightOptions.map((option) => (
+                  {borderRadiusOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -149,13 +193,15 @@ export function TypographySettingsDialog() {
           </div>
 
           <div className="space-y-1.5">
-            <p className="text-sm font-medium">Heading Spacing</p>
+            <p className="text-sm font-medium">Section Spacing</p>
             <Select
-              items={headingTrackingOptions}
-              value={typography.headingTracking}
+              items={sectionSpacingOptions}
+              value={style.sectionSpacing}
               onValueChange={(value) => {
                 if (!value) return;
-                handleTypographyUpdate("headingTracking", value);
+                updateStorefrontStyle({
+                  sectionSpacing: value,
+                });
               }}
             >
               <SelectTrigger className="w-full">
@@ -163,32 +209,7 @@ export function TypographySettingsDialog() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {headingTrackingOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <p className="text-sm font-medium">Body Line Height</p>
-            <Select
-              items={bodyLineHeightOptions}
-              value={typography.bodyLineHeight}
-              onValueChange={(value) => {
-                if (!value) return;
-                handleTypographyUpdate("bodyLineHeight", value);
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {bodyLineHeightOptions.map((option) => (
+                  {sectionSpacingOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>

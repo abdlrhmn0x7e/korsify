@@ -13,7 +13,6 @@ import { usePreloadedAuthQuery } from "@convex-dev/better-auth/nextjs/client";
 import { api } from "@/convex/_generated/api";
 import {
   StorefrontSection,
-  StorefrontTheme,
   StorefrontStyle,
   StorefrontTypography,
   defaultStorefrontTypography,
@@ -110,7 +109,6 @@ interface StorefrontContextType {
   removeSection: (sectionId: string) => void;
   reorderSections: (sectionIds: string[]) => void;
   updateStyle: (updates: {
-    theme?: StorefrontTheme;
     style?: StorefrontStyle;
   }) => void;
   updateTypography: (updates: Partial<StorefrontTypography>) => void;
@@ -242,7 +240,6 @@ export function StorefrontProvider({
   };
 
   const updateStyle = (updates: {
-    theme?: StorefrontTheme;
     style?: StorefrontStyle;
   }) => {
     updateDraft((current) => ({
@@ -275,7 +272,6 @@ export function StorefrontProvider({
     setIsSaving(true);
     try {
       await updateStorefrontMutation({
-        theme: draftStorefront.theme,
         style: draftStorefront.style,
         sections: draftStorefront.sections,
         cssVariables: draftStorefront.cssVariables,

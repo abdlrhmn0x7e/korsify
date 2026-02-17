@@ -15,8 +15,6 @@ import {
   IconDeviceImac,
   IconDeviceMobile,
   IconDeviceTablet,
-  IconMoon,
-  IconSun,
 } from "@tabler/icons-react";
 import React from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -31,7 +29,6 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
   const [device, setDevice] = React.useState<"desktop" | "tablet" | "mobile">(
     "desktop"
   );
-  const [theme, setTheme] = React.useState<"light" | "dark">("light");
 
   if (isLoading) {
     return <WholePageSpinner />;
@@ -43,19 +40,6 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
         <div className="flex-1 relative bg-muted/20 overflow-hidden">
           <Grid cellSize={24} />
           <div className="absolute z-10 end-4 top-4 flex items-center gap-3">
-            <ToggleGroup
-              variant="outline"
-              value={[theme]}
-              onValueChange={(val) => setTheme(val[0] ?? "light")}
-            >
-              <ToggleGroupItem value="light" aria-label="Light Mode">
-                <IconSun />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="dark">
-                <IconMoon />
-              </ToggleGroupItem>
-            </ToggleGroup>
-
             <ToggleGroup
               variant="outline"
               value={[device]}
@@ -79,8 +63,7 @@ export function BuilderLayout({ subdomain }: { subdomain?: string }) {
           <div
             className={cn(
               "absolute inset-x-4 max-w-[75svw] mx-auto sm:inset-x-12 bottom-4 top-18",
-              device === "mobile" && "top-12 w-xs",
-              theme === "dark" && "dark"
+              device === "mobile" && "top-12 w-xs"
             )}
           >
             {device === "desktop" && !isMobile && (

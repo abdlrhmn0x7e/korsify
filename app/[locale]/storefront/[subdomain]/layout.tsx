@@ -7,11 +7,10 @@ import {
 } from "@/lib/student-auth-server";
 import { TeacherContextProvider } from "@/components/storefront/teacher-context-provider";
 import { StudentAuthProvider } from "./_components/student-auth-provider";
-import { getStorefrontCssVariables } from "@/lib/storefront-style";
 import {
-  defaultStorefrontTypography,
-  StorefrontStyle,
-} from "@/convex/db/storefronts/validators";
+  getStorefrontCssVariables,
+  resolveStorefrontStyle,
+} from "@/lib/storefront-style";
 
 interface StorefrontLayoutProps {
   children: React.ReactNode;
@@ -38,17 +37,15 @@ export default async function StorefrontLayout({
     storefrontConfig = null;
   }
 
-  const theme = storefrontConfig?.theme || "light";
-  const style = storefrontConfig?.style || {
-    fontPair: "geist-geist",
-    buttonStyle: "rounded",
-    borderRadius: "0.5rem",
-    typography: defaultStorefrontTypography,
-  };
+  const style = resolveStorefrontStyle(
+    storefrontConfig?.style ?? {
+      fontPair: "geist-geist",
+      buttonStyle: "rounded",
+    }
+  );
   const cssVariables = getStorefrontCssVariables({
     primaryColor,
-    theme,
-    style: style as StorefrontStyle,
+    style,
     cssVariables: storefrontConfig?.cssVariables,
   });
 
@@ -56,7 +53,7 @@ export default async function StorefrontLayout({
     <StudentAuthProvider initialToken={initialToken}>
       <TeacherContextProvider teacher={teacher}>
         <div
-          className={`storefront-shell min-h-screen ${theme === "dark" ? "dark" : ""}`}
+          className="storefront-shell min-h-screen"
           style={cssVariables as React.CSSProperties}
         >
           <main>{children}</main>

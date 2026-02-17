@@ -5,7 +5,6 @@ import { authComponent } from "../auth";
 import {
   storefrontSectionValidator,
   storefrontStyleValidator,
-  storefrontThemeValidator,
 } from "../db/storefronts";
 
 const storefrontReturnValidator = v.union(
@@ -13,7 +12,6 @@ const storefrontReturnValidator = v.union(
     _id: v.id("storefronts"),
     _creationTime: v.number(),
     teacherId: v.id("teachers"),
-    theme: storefrontThemeValidator,
     style: storefrontStyleValidator,
     sections: v.array(storefrontSectionValidator),
     cssVariables: v.optional(v.record(v.string(), v.string())),
@@ -80,7 +78,6 @@ export const createFromTemplate = mutation({
 
 export const updateStyle = mutation({
   args: {
-    theme: v.optional(storefrontThemeValidator),
     style: v.optional(storefrontStyleValidator),
   },
   returns: v.null(),
@@ -104,7 +101,6 @@ export const updateStyle = mutation({
 
 export const updateStorefront = mutation({
   args: {
-    theme: storefrontThemeValidator,
     style: storefrontStyleValidator,
     sections: v.array(storefrontSectionValidator),
     cssVariables: v.optional(v.record(v.string(), v.string())),

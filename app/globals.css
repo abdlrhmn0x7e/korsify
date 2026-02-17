@@ -193,3 +193,10 @@
 .storefront-shell :where(p, li, blockquote, figcaption, small) {
   line-height: var(--storefront-body-line-height, 1.65);
 }
+
+.storefront-shell [data-slot="button"] {
+  --radius-lg: var(--storefront-button-radius, var(--radius));
+  --radius-md: var(--storefront-button-radius, var(--radius));
+  border-radius: var(--storefront-button-radius, var(--radius)) !important;
+}
+

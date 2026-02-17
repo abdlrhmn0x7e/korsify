@@ -6,19 +6,16 @@ import * as storefrontsMutations from "./mutations";
 import {
   storefrontSectionValidator,
   storefrontStyleValidator,
-  storefrontThemeValidator,
 } from "./validators";
 
 export {
   storefrontTypographyValidator,
   storefrontSectionValidator,
   storefrontStyleValidator,
-  storefrontThemeValidator,
 } from "./validators";
 
 export const storefrontsTable = defineTable({
   teacherId: v.id("teachers"),
-  theme: storefrontThemeValidator,
   style: storefrontStyleValidator,
   sections: v.array(storefrontSectionValidator),
   cssVariables: v.optional(v.record(v.string(), v.string())),

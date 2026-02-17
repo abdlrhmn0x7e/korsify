@@ -1,7 +1,6 @@
 import type {
   StorefrontSection,
   StorefrontStyle,
-  StorefrontTheme,
 } from "./validators";
 
 export interface StarterTemplate {
@@ -11,7 +10,6 @@ export interface StarterTemplate {
   description: string;
   descriptionAr: string;
   preview: string;
-  defaultTheme: StorefrontTheme;
   defaultStyle: StorefrontStyle;
   sections: Array<StorefrontSection>;
 }
@@ -462,11 +460,12 @@ export const STARTER_TEMPLATES: Record<string, StarterTemplate> = {
     description: "Clean and simple design with focus on content",
     descriptionAr: "تصميم نظيف وبسيط مع التركيز على المحتوى",
     preview: "/templates/minimalist.png",
-    defaultTheme: "light",
     defaultStyle: {
       fontPair: "geist-geist",
       buttonStyle: "rounded",
       borderRadius: "0.5rem",
+      colorPreset: "brand",
+      sectionSpacing: "comfortable",
     },
     sections: MINIMALIST_SECTIONS,
   },
@@ -477,11 +476,12 @@ export const STARTER_TEMPLATES: Record<string, StarterTemplate> = {
     description: "Professional and structured for educators",
     descriptionAr: "تصميم احترافي ومنظم للمعلمين",
     preview: "/templates/academy.png",
-    defaultTheme: "light",
     defaultStyle: {
       fontPair: "inter-playfair",
       buttonStyle: "sharp",
       borderRadius: "0.25rem",
+      colorPreset: "ocean",
+      sectionSpacing: "compact",
     },
     sections: ACADEMY_SECTIONS,
   },
@@ -492,11 +492,12 @@ export const STARTER_TEMPLATES: Record<string, StarterTemplate> = {
     description: "Bold and action-oriented for coaches",
     descriptionAr: "تصميم جريء وموجه للعمل للمدربين",
     preview: "/templates/coach.png",
-    defaultTheme: "dark",
     defaultStyle: {
       fontPair: "poppins-opensans",
       buttonStyle: "rounded",
       borderRadius: "0.75rem",
+      colorPreset: "forest",
+      sectionSpacing: "comfortable",
     },
     sections: COACH_SECTIONS,
   },
@@ -507,11 +508,12 @@ export const STARTER_TEMPLATES: Record<string, StarterTemplate> = {
     description: "Portfolio-style for artists and creators",
     descriptionAr: "تصميم معرض أعمال للفنانين والمبدعين",
     preview: "/templates/creative.png",
-    defaultTheme: "soft",
     defaultStyle: {
       fontPair: "montserrat-lora",
       buttonStyle: "rounded",
       borderRadius: "1rem",
+      colorPreset: "sunset",
+      sectionSpacing: "spacious",
     },
     sections: CREATIVE_SECTIONS,
   },
@@ -522,11 +524,12 @@ export const STARTER_TEMPLATES: Record<string, StarterTemplate> = {
     description: "Tech-focused for intensive programs",
     descriptionAr: "تصميم تقني للبرامج المكثفة",
     preview: "/templates/bootcamp.png",
-    defaultTheme: "dark",
     defaultStyle: {
       fontPair: "geist-geist",
       buttonStyle: "sharp",
       borderRadius: "0.25rem",
+      colorPreset: "violet",
+      sectionSpacing: "compact",
     },
     sections: BOOTCAMP_SECTIONS,
   },
